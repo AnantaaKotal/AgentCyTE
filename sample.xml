@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scenarios>
+  <Scenario name="Sample Scenario" scenario_total_nodes="0">
+    <ScenarioEditor>
+      <BaseScenario filepath="core_default.xml"/>
+  <section name="Node Information" density="0.0" />
+  <section name="Routing" density="0.0" />
+  <section name="Services" density="0.0" />
+  <section name="Traffic" density="0.0" />
+  <section name="Segmentation" density="0.0" />
+    </ScenarioEditor>
+  </Scenario>
+</Scenarios>

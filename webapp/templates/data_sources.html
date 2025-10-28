@@ -1,0 +1,690 @@
+{% extends 'layout.html' %}
+{% block title %}Data Sources{% endblock %}
+{% block active_page %}{% set active_page='data_sources' %}{% endblock %}
+{% block extra_head %}
+<style>
+  .dock-panel { position: fixed; bottom: 0; left: 0; right: 0; height: 32vh; background: #fff; border-top: 1px solid #dee2e6; box-shadow: 0 -2px 8px rgba(0,0,0,.08); z-index: 1030; display:none; flex-direction:column; }
+  .dock-grip { height: 6px; cursor: ns-resize; background: repeating-linear-gradient(90deg, #e9ecef 0, #e9ecef 6px, #f8f9fa 6px, #f8f9fa 12px); border-bottom: 1px solid #dee2e6; }
+  .dock-panel .nav-tabs { flex-shrink:0; }
+  .dock-panel .tab-content { flex:1 1 auto; min-height:0; overflow:auto; }
+  .dock-panel .tab-pane { height:100%; overflow:auto; }
+  .dock-panel pre { height:auto; min-height:100%; overflow:auto; }
+  #catalog-body.dimmed { opacity: 0.5; pointer-events: none; transition: opacity .15s ease-in-out; }
+  .updated-badge { font-size: .65rem; vertical-align: middle; }
+</style>
+{% endblock %}
+{% block content %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="alert alert-info py-2 px-3 mb-3">{{ messages[0] }}</div>
+    {% endif %}
+  {% endwith %}
+  <!-- Sub navigation for page sections -->
+  <ul class="nav nav-tabs mb-3" id="data-subnav" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="subnav-sources" data-bs-toggle="tab" data-bs-target="#tab-sources" type="button" role="tab">Sources</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="subnav-catalog" data-bs-toggle="tab" data-bs-target="#tab-catalog" type="button" role="tab">Vulnerability Catalog</button>
+    </li>
+  </ul>
+  <div class="tab-content" id="data-subnav-content">
+    <div class="tab-pane fade show active" id="tab-sources" role="tabpanel" aria-labelledby="subnav-sources">
+      <form class="card p-3 mb-4" action="{{ url_for('data_sources_upload') }}" method="post" enctype="multipart/form-data">
+        <div class="row g-2 align-items-end">
+          <div class="col-sm-6">
+            <label class="form-label mb-1">Import CSV</label>
+            <input type="file" class="form-control" name="csv_file" accept=".csv" required>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary" type="submit">Upload</button>
+          </div>
+          <div class="col-auto">
+            <a class="btn btn-outline-secondary" href="{{ url_for('data_sources_export_all') }}">Export All</a>
+          </div>
+        </div>
+      </form>
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <strong>Sources</strong>
+          <small class="text-muted">Total: {{ sources|length }}</small>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-sm mb-0 align-middle">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Rows</th>
+                <th>Uploaded (UTC)</th>
+                <th style="width:240px"></th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for s in sources %}
+              <tr class="{{ 'table-danger' if s.rows.startswith('ERR:') else '' }}">
+                <td><a href="{{ url_for('data_sources_edit', sid=s.id) }}" target="_blank" rel="noopener">{{ s.name }}</a></td>
+                <td>
+                  {% if s.enabled %}<span class="badge bg-success">ENABLED</span>{% else %}<span class="badge bg-secondary">DISABLED</span>{% endif %}
+                </td>
+                <td>{{ s.rows }}</td>
+                <td><small>{{ s.uploaded }}</small></td>
+                <td>
+                  <div class="d-flex flex-wrap gap-1">
+                    <form action="{{ url_for('data_sources_toggle', sid=s.id) }}" method="post" class="d-inline"><button class="btn btn-sm btn-outline-warning" type="submit">{{ 'Disable' if s.enabled else 'Enable' }}</button></form>
+                    <form action="{{ url_for('data_sources_refresh', sid=s.id) }}" method="post" class="d-inline"><button class="btn btn-sm btn-outline-info" type="submit">Refresh</button></form>
+                    <a class="btn btn-sm btn-outline-primary" href="{{ url_for('data_sources_download', sid=s.id) }}">Download</a>
+                    <form action="{{ url_for('data_sources_delete', sid=s.id) }}" method="post" class="d-inline" onsubmit="return confirm('Delete source?')"><button class="btn btn-sm btn-outline-danger" type="submit">Delete</button></form>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="5" class="text-center text-muted py-4">No data sources imported yet.</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="tab-catalog" role="tabpanel" aria-labelledby="subnav-catalog">
+      <div class="card" id="catalog-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <strong>Vulnerability Catalog [docker-compose only]</strong>
+          <div class="d-flex gap-2 align-items-center">
+            <button id="btn-check-existence" class="btn btn-sm btn-outline-secondary">Check Files</button>
+            <button id="btn-download-selected" class="btn btn-sm btn-outline-primary" disabled>Download Selected</button>
+            <button id="btn-pull-selected" class="btn btn-sm btn-outline-success" disabled>Pull Selected</button>
+            <button id="btn-remove-selected" class="btn btn-sm btn-outline-danger" disabled>Remove Selected</button>
+            <span id="catalog-status-spinner" class="ms-2 text-muted small" style="display:none;">
+              <span class="spinner-border spinner-border-sm align-text-bottom me-1" role="status" aria-hidden="true"></span>
+              Updating <span id="catalog-spin-done">0</span> of <span id="catalog-spin-total">0</span>…
+            </span>
+          </div>
+        </div>
+        <div class="p-2" id="catalog-body">
+          <div class="row g-2 align-items-center mb-2">
+            <div class="col-sm-6">
+              <input id="catalog-filter" type="text" class="form-control form-control-sm" placeholder="Filter by name/type/vector/CVE">
+            </div>
+            <div class="col-sm-6 text-end small text-muted">
+              <span id="catalog-count">0</span> items
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle" id="catalog-table">
+              <thead>
+                <tr>
+                  <th style="width:28px"><input type="checkbox" id="select-all"></th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Vector</th>
+                  <th>CVE</th>
+                  <th>Path</th>
+                      <th>Compose File</th>
+                  <th>Status</th>
+                  <th style="width:140px">Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  {% include 'partials/dock.html' %}
+
+  <!-- Modal for Download/Pull progress -->
+  <div class="modal fade" id="composeActionModal" tabindex="-1" aria-labelledby="composeActionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="composeActionModalLabel">Processing...</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="composeActionSummary" class="mb-2 small text-muted"></div>
+          <div class="progress mb-2" id="composeActionProgress" style="height: 18px; display:none;">
+            <div class="progress-bar" id="composeActionProgressBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0 / 0</div>
+          </div>
+          <ul id="composeActionList" class="list-group mb-3"></ul>
+          <div class="border rounded p-2" id="composeActionLogsBox">
+            <div class="d-flex align-items-center justify-content-between">
+              <strong>Verbose Logs</strong>
+              <button id="modalCopyLogsBtn" class="btn btn-sm btn-outline-secondary" type="button">Copy</button>
+            </div>
+            <pre id="composeActionLogs" class="mb-0" style="white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; min-height: 120px;"></pre>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span id="composeActionFooterText" class="me-auto small text-muted"></span>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+  {% block extra_scripts %}
+  <script>
+  (function(){
+    // Hash-based routing for subnav tabs
+    let catalogLoaded = false;
+    async function ensureCatalogLoaded(){
+      if(catalogLoaded) return;
+      catalogLoaded = true;
+      try { await fetchCatalog(); }
+  catch(err){ dockInfo('catalog error: ' + String(err)); }
+    }
+    function activateInitialTab(){
+      const hash = (window.location.hash || '').toLowerCase();
+      const map = { '#sources': '#tab-sources', '#catalog': '#tab-catalog' };
+      const target = map[hash] || '#tab-sources';
+      const btn = document.querySelector(`[data-bs-target="${target}"]`);
+      if(btn){
+        const tab = new bootstrap.Tab(btn);
+        tab.show();
+      }
+      if(target === '#tab-catalog'){
+        ensureCatalogLoaded();
+      }
+    }
+    document.getElementById('data-subnav')?.addEventListener('shown.bs.tab', (e) => {
+      const tgt = e.target.getAttribute('data-bs-target');
+      if(tgt === '#tab-sources') window.location.hash = '#sources';
+      else if(tgt === '#tab-catalog') { window.location.hash = '#catalog'; ensureCatalogLoaded(); }
+    });
+    window.addEventListener('hashchange', activateInitialTab);
+    // Run once on load
+    activateInitialTab();
+    const TBL = document.querySelector('#catalog-table tbody');
+    const COUNT = document.querySelector('#catalog-count');
+    const FILTER = document.querySelector('#catalog-filter');
+    const BTN_DL = document.querySelector('#btn-download-selected');
+    const BTN_PULL = document.querySelector('#btn-pull-selected');
+  const BTN_REMOVE = document.querySelector('#btn-remove-selected');
+    const BTN_CHECK = document.querySelector('#btn-check-existence');
+    const SEL_ALL = document.querySelector('#select-all');
+  const SPIN = document.querySelector('#catalog-status-spinner');
+  const SPIN_DONE = document.querySelector('#catalog-spin-done');
+  const SPIN_TOTAL = document.querySelector('#catalog-spin-total');
+  const CATBODY = document.querySelector('#catalog-body');
+    // Dock helpers: write to shared persistent buffer
+    function dockAppendPersistent(level, msg){
+      try {
+        const LOG_STORE_KEY = 'coretg_logs_v1';
+        const LOG_LEVELS = { DEBUG: 10, INFO: 20, WARN: 30, ERROR: 40 };
+        const lvlVal = LOG_LEVELS[level] ?? LOG_LEVELS.INFO;
+        const ts = new Date().toISOString();
+        const line = `[${ts}] ${level.padEnd(5)} ${msg}`;
+        let arr = [];
+        try { const raw = localStorage.getItem(LOG_STORE_KEY); if(raw){ arr = JSON.parse(raw) || []; if(!Array.isArray(arr)) arr = []; } } catch(e){}
+        arr.push({ level, levelValue: lvlVal, line });
+        if(arr.length > 5000) arr.splice(0, arr.length - 5000);
+        try { localStorage.setItem(LOG_STORE_KEY, JSON.stringify(arr)); } catch(e){}
+        const pre = document.getElementById('logsPre');
+        const sel = document.getElementById('logLevelFilter');
+        const curName = (sel && sel.value) ? sel.value : (localStorage.getItem('coretg_log_level') || 'INFO');
+        const curVal = LOG_LEVELS[curName] ?? LOG_LEVELS.INFO;
+        if(pre && lvlVal >= curVal){ pre.textContent += (pre.textContent? '\n' : '') + line; pre.scrollTop = pre.scrollHeight; }
+        const showBtn = document.getElementById('dockShowBtn'); const dock = document.getElementById('dockPanel'); if(showBtn && dock && dock.classList.contains('d-none')){ showBtn.click?.(); }
+      } catch(e){}
+    }
+    function dockInfo(msg){ dockAppendPersistent('INFO', msg); }
+    // Modal helpers
+    const modalEl = document.getElementById('composeActionModal');
+    const modalObj = new bootstrap.Modal(modalEl);
+    function setModalLogsVisible(show){
+      const box = document.getElementById('composeActionLogsBox');
+      if(box) box.style.display = show ? '' : 'none';
+    }
+    function modalPrepare(title, count){
+      document.getElementById('composeActionModalLabel').textContent = title;
+      document.getElementById('composeActionSummary').textContent = `${count} item(s)`;
+      document.getElementById('composeActionLogs').textContent = '';
+      document.getElementById('composeActionList').innerHTML = '';
+      document.getElementById('composeActionFooterText').textContent = '';
+      const pbWrap = document.getElementById('composeActionProgress');
+      const pb = document.getElementById('composeActionProgressBar');
+      pbWrap.style.display = 'none';
+      pb.style.width = '0%';
+      pb.setAttribute('aria-valuenow', '0');
+      pb.textContent = `0 / ${count}`;
+    }
+    function modalAppend(s){ const el = document.getElementById('composeActionLogs'); el.textContent += (el.textContent?'\n':'') + s; el.scrollTop = el.scrollHeight; }
+    document.getElementById('modalCopyLogsBtn')?.addEventListener('click', async ()=>{
+      try{ await navigator.clipboard.writeText(document.getElementById('composeActionLogs').textContent); }catch(e){}
+    });
+    let allItems = [];
+    let filtered = [];
+  let statusMap = new Map(); // key: Name|Path -> {exists,pulled,dir,compose,compose_path}
+  let composeName = new Map(); // key: Name|Path -> compose filename override
+  let selected = new Set(); // key Name|Path
+  let refreshingRows = new Set(); // keys for rows currently refreshing
+  let recentlyUpdated = new Set(); // keys with transient "Just updated" indicator
+    let isStatusUpdating = false; // prevent concurrent Check Files/status updates
+
+    function keyOf(it){ return (it.Name||'')+'|'+(it.Path||''); }
+    function isCompose(it){ return (it.Type||'').toLowerCase() === 'docker-compose'; }
+
+    function render(){
+      // Dispose any existing tooltips to avoid stale titles lingering
+      try {
+        const existing = document.querySelectorAll('#catalog-table [data-bs-toggle="tooltip"]');
+        existing.forEach(el => { try { bootstrap.Tooltip.getInstance(el)?.dispose(); } catch(e){} });
+      } catch(e) {}
+      TBL.innerHTML = '';
+      const rows = [];
+      for(const it of filtered){
+        const k = keyOf(it);
+  const stKnown = statusMap.has(k);
+        const st = statusMap.get(k) || {exists:false,pulled:false,dir:'',compose:'docker-compose.yml'};
+        const cmp = composeName.get(k) || st.compose || 'docker-compose.yml';
+        const checked = selected.has(k) ? 'checked' : '';
+  const isRefreshing = refreshingRows.has(k);
+  const statusTxt = isRefreshing ? 'Refreshing…' : (!stKnown ? 'Refresh' : (st.pulled ? 'Pulled' : (st.exists ? 'Downloaded' : 'Not downloaded')));
+  const statusBadge = isRefreshing ? 'secondary' : (!stKnown ? 'warning' : (st.pulled ? 'success' : (st.exists ? 'info' : 'secondary')));
+        const statusTitle = !stKnown ? 'Status unknown. Run "Check Files" to populate.' : '';
+        const canDownload = stKnown ? (!st.exists) : false;
+    const canPull = stKnown ? (st.exists && !st.pulled) : false;
+    const canRemove = stKnown ? (st.exists || st.pulled) : false;
+  const disabledAct = (isRefreshing || isStatusUpdating) ? 'disabled' : '';
+  // Label actions; if images are already pulled, offer Re-Pull
+  const actLabel = (stKnown && st.pulled) ? 'Re-Pull' : (canDownload ? 'Download' : (canPull ? 'Pull' : 'Refresh'));
+        const rowClass = !stKnown ? '' : (st.pulled ? 'table-success' : (st.exists ? 'table-info' : ''));
+        rows.push(`
+          <tr data-key="${k}" class="${rowClass}">
+            <td><input type="checkbox" class="row-check" ${checked}></td>
+            <td><code>${it.Name||''}</code></td>
+            <td><span class="badge bg-dark">${it.Type||''}</span></td>
+            <td>${it.Vector||''}</td>
+            <td><small>${it.CVE||'n/a'}</small></td>
+            <td><small class="text-break">${it.Path||''}</small></td>
+            <td><input type="text" class="form-control form-control-sm compose-input" value="${cmp}" placeholder="docker-compose.yml"></td>
+            <td>
+              ${isRefreshing ? '<span class="spinner-border spinner-border-sm align-text-bottom me-1" role="status" aria-hidden="true"></span>' : ''}
+              <span class="badge bg-${statusBadge}" ${!stKnown? 'data-bs-toggle="tooltip" data-bs-title="'+statusTitle.replace(/\"/g,'&quot;')+'"' : ''}>${statusTxt}</span>
+              ${recentlyUpdated.has(k) ? '<span class="badge bg-success updated-badge ms-1">Just updated</span>' : ''}
+              ${!isRefreshing ? `<button class="btn btn-xs btn-link text-decoration-none refresh-btn ms-1${isStatusUpdating ? ' disabled opacity-50 pe-none' : ''}" ${isStatusUpdating ? 'disabled' : ''} data-bs-toggle="tooltip" data-bs-title="Refresh this item" aria-label="Refresh"><i class="bi bi-arrow-repeat"></i></button>` : ''}
+            </td>
+            <td>
+              <div class="d-flex gap-1">
+                <button class="btn btn-sm ${canDownload? 'btn-outline-primary': (canPull? 'btn-outline-success' : 'btn-outline-secondary')} act-btn ${disabledAct? 'opacity-50 pe-none' : ''}" ${disabledAct}>${actLabel}</button>
+                ${canRemove ? `<button class="btn btn-sm btn-outline-danger remove-btn ${disabledAct? 'opacity-50 pe-none' : ''}" ${disabledAct}>Remove</button>` : ''}
+              </div>
+            </td>
+          </tr>
+        `);
+      }
+      TBL.innerHTML = rows.join('');
+      COUNT.textContent = String(filtered.length);
+      updateBatchButtons();
+      // Initialize tooltips for elements that declare it (unknown status badge and refresh buttons)
+      try {
+        const ttipEls = document.querySelectorAll('#catalog-table [data-bs-toggle="tooltip"]');
+        ttipEls.forEach(el => { try { new bootstrap.Tooltip(el); } catch(e){} });
+      } catch(e) { }
+    }
+
+    function updateBatchButtons(){
+      // Enable Download if any selected lacking compose file; Pull if any selected downloaded but not pulled
+      let anySel = selected.size > 0;
+      let anyNeedDl = false, anyNeedPull = false, anyNeedRemove = false;
+      for(const k of selected){
+        if(!statusMap.has(k)) continue; // unknown status; require Check Files first
+        const st = statusMap.get(k) || {exists:false,pulled:false};
+        if(!st.exists) anyNeedDl = true;
+        if(st.exists && !st.pulled) anyNeedPull = true;
+        if(st.exists || st.pulled) anyNeedRemove = true;
+      }
+      BTN_DL.disabled = !(anySel && anyNeedDl);
+      BTN_PULL.disabled = !(anySel && anyNeedPull);
+      if(BTN_REMOVE) BTN_REMOVE.disabled = !(anySel && anyNeedRemove);
+    }
+
+    async function fetchCatalog(){
+      const resp = await fetch('/vuln_catalog');
+      const data = await resp.json();
+      const items = (data.items||[]).filter(isCompose);
+      allItems = items;
+      applyFilter();
+      // Render immediately with unknown status (shows 'Refresh' badges). Do NOT auto-refresh statuses.
+      render();
+    }
+
+    function applyFilter(){
+      const q = (FILTER.value||'').toLowerCase();
+      if(!q){ filtered = [...allItems]; return; }
+      filtered = allItems.filter(it => {
+        const s = `${it.Name||''} ${it.Type||''} ${it.Vector||''} ${it.CVE||''} ${it.Path||''}`.toLowerCase();
+        return s.includes(q);
+      });
+    }
+
+    function spinner(on, done=0, total=0){
+      try { if(SPIN) SPIN.style.display = on ? '' : 'none'; } catch(e){}
+      try {
+        if(on){
+          if(typeof done === 'number' && SPIN_DONE) SPIN_DONE.textContent = String(done);
+          if(typeof total === 'number' && SPIN_TOTAL) SPIN_TOTAL.textContent = String(total);
+        }
+      } catch(e){}
+      try { if(CATBODY) CATBODY.classList.toggle('dimmed', !!on); } catch(e){}
+      try { if(BTN_CHECK) BTN_CHECK.disabled = !!on; } catch(e){}
+      try { if(BTN_DL) BTN_DL.disabled = !!on; } catch(e){}
+      try { if(BTN_PULL) BTN_PULL.disabled = !!on; } catch(e){}
+      try { if(BTN_REMOVE) BTN_REMOVE.disabled = !!on; } catch(e){}
+    }
+
+    async function refreshStatus(){
+      if(isStatusUpdating) return; // another update is running
+      const total = filtered.length;
+      spinner(true, 0, total);
+      if(total === 0){ render(); spinner(false); return; }
+      isStatusUpdating = true;
+      let done = 0;
+      for(const it of filtered){
+        try{
+          const payload = { items: [ { Name: it.Name, Path: it.Path, compose: composeName.get(keyOf(it)) || undefined } ] };
+          const resp = await fetch('/vuln_compose/status', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+          const data = await resp.json();
+          (data.items||[]).forEach(st => {
+            const k = (st.Name||'')+'|'+(st.Path||'');
+            statusMap.set(k, {exists: !!st.exists, pulled: !!st.pulled, dir: st.dir||'', compose: st.compose || 'docker-compose.yml', compose_path: st.compose_path || ''});
+          });
+          if(Array.isArray(data.log) && data.log.length){ data.log.forEach(l => dockInfo(String(l))); }
+        }catch(e){
+          dockInfo('status error: ' + String(e));
+        }
+        done += 1;
+        spinner(true, done, total);
+      }
+      render();
+      spinner(false);
+      isStatusUpdating = false;
+    }
+
+    async function doDownload(items){
+      const payload = { items: items.map(it => ({Name: it.Name, Path: it.Path, compose: composeName.get(keyOf(it)) || undefined})) };
+      const resp = await fetch('/vuln_compose/download', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+      const data = await resp.json();
+  if(Array.isArray(data.log) && data.log.length){ data.log.forEach(l => dockInfo(String(l))); }
+      await refreshStatus();
+      return data;
+    }
+
+    async function doPull(items){
+      const payload = { items: items.map(it => ({Name: it.Name, Path: it.Path, compose: composeName.get(keyOf(it)) || undefined})) };
+      const resp = await fetch('/vuln_compose/pull', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+      const data = await resp.json();
+  if(Array.isArray(data.log) && data.log.length){ data.log.forEach(l => dockInfo(String(l))); }
+      await refreshStatus();
+      return data;
+    }
+
+    async function doRemove(items){
+      const payload = { items: items.map(it => ({Name: it.Name, Path: it.Path, compose: composeName.get(keyOf(it)) || undefined})) };
+      const resp = await fetch('/vuln_compose/remove', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+  const data = await resp.json();
+  if(Array.isArray(data.log) && data.log.length){ data.log.forEach(l => dockInfo(String(l))); }
+      await refreshStatus();
+      return data;
+    }
+
+    // Refresh a single item's status
+    async function refreshOne(item){
+      if(isStatusUpdating) return;
+      try{
+        const kcur = keyOf(item);
+        if(refreshingRows.has(kcur)) return;
+        refreshingRows.add(kcur);
+        render();
+        await new Promise(r => requestAnimationFrame(() => r()));
+        const payload = { items: [ { Name: item.Name, Path: item.Path, compose: composeName.get(keyOf(item)) || undefined } ] };
+        const resp = await fetch('/vuln_compose/status', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        const data = await resp.json();
+  if(Array.isArray(data.log) && data.log.length){ data.log.forEach(l => dockInfo(String(l))); }
+        const st = (data.items || [])[0];
+        if(st){
+          const k = (st.Name||'')+'|'+(st.Path||'');
+          statusMap.set(k, {exists: !!st.exists, pulled: !!st.pulled, dir: st.dir||'', compose: st.compose || 'docker-compose.yml', compose_path: st.compose_path || ''});
+          recentlyUpdated.add(k);
+          setTimeout(() => { recentlyUpdated.delete(k); render(); }, 1500);
+        }
+        refreshingRows.delete(kcur);
+        render();
+  }catch(e){ dockInfo('refresh error: ' + String(e)); }
+    }
+    // Process with modal sequentially
+    async function processWithModal(action, items){
+  // ensure dock visible via persistent partial; appending will auto-show
+      setModalLogsVisible(true);
+      let title = 'Processing';
+      if(action === 'download') title = 'Downloading Compose Assets';
+      else if(action === 'pull') title = 'Pulling Images';
+      else if(action === 'remove') title = 'Removing Compose Assets';
+      modalPrepare(title, items.length);
+      // Start processing only after modal is fully shown; attach listener before show to avoid races
+      const onShown = async () => {
+        const list = document.getElementById('composeActionList');
+        const pbWrap = document.getElementById('composeActionProgress');
+        const pb = document.getElementById('composeActionProgressBar');
+        pbWrap.style.display = '';
+        // yield one frame to allow DOM to paint
+        await new Promise(r => requestAnimationFrame(() => r()));
+  let ok=0, bad=0;
+        for(const it of items){
+          const key = `${it.Name}|${it.Path}`;
+          let li = list.querySelector(`li[data-key=\"${CSS.escape(key)}\"]`);
+          if(!li){
+            li = document.createElement('li');
+            li.className = 'list-group-item d-flex justify-content-between align-items-center';
+            li.dataset.key = key;
+            li.innerHTML = `<div><div><strong>${it.Name}</strong></div><div class=\"small text-muted\">${it.Path} · compose: ${it.compose||'docker-compose.yml'}</div></div><div><span class=\"badge bg-secondary\">Queued</span></div>`;
+            list.appendChild(li);
+          }
+          const badge = li.querySelector('.badge');
+          if(badge){ badge.className='badge bg-info'; badge.textContent='Running'; }
+          const line = `[${action}] ${it.Name} — ${it.Path}`;
+          modalAppend(line); dockInfo(line);
+          if(it.Path){ const uline = `URL: ${it.Path}`; modalAppend(uline); dockInfo(uline); }
+          if(action === 'download' && /https?:\/\/github\.com\//i.test(it.Path || '')){
+            try{
+              const url = new URL(it.Path);
+              const parts = url.pathname.replace(/^\/+/, '').split('/');
+              const owner = parts[0], repo = parts[1];
+              let branch = null;
+              if(parts[2] === 'tree' || parts[2] === 'blob'){
+                branch = parts[3] || null;
+              }
+              const gitUrl = `https://github.com/${owner}/${repo}.git`;
+              const cmd = `git clone --depth 1${branch? ' --branch '+branch: ''} ${gitUrl} ${repo}`;
+              modalAppend(`[download] running: ${cmd}`);
+            }catch(e){}
+          }
+          try{
+            const payload = { items: [it] };
+            const resp = await fetch(`/vuln_compose/${action}`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+            const data = await resp.json();
+            if(Array.isArray(data.log) && data.log.length){ data.log.forEach(l => { modalAppend(l); dockInfo(String(l)); }); }
+            if(data.items){
+              await refreshOne(it);
+              const k = keyOf(it);
+              recentlyUpdated.add(k);
+              setTimeout(() => { recentlyUpdated.delete(k); render(); }, 1500);
+            }
+            if(badge){ badge.className='badge bg-success'; badge.textContent='Done'; }
+            ok++;
+          }catch(err){
+            if(badge){ badge.className='badge bg-danger'; badge.textContent='Error'; }
+            modalAppend(String(err)); dockInfo(String(err));
+            bad++;
+          }
+          const done = ok + bad;
+          const pct = Math.floor((done / items.length) * 100);
+          pb.style.width = `${pct}%`;
+          pb.setAttribute('aria-valuenow', String(pct));
+          pb.textContent = `${done} / ${items.length}`;
+          document.getElementById('composeActionFooterText').textContent = `Progress: ${done} / ${items.length}`;
+        }
+        // Mark complete in title and footer
+        const titleEl = document.getElementById('composeActionModalLabel');
+        if(titleEl) titleEl.textContent = (titleEl.textContent || '') + ' — Complete';
+        document.getElementById('composeActionFooterText').textContent = `Complete — ${ok} ok, ${bad} failed`;
+        // No global refresh at the end; each item was refreshed individually
+      };
+      modalEl.addEventListener('shown.bs.modal', onShown, { once: true });
+      modalObj.show();
+    }
+
+    // Status with modal progress
+    async function processStatusWithModal(items){
+      if(isStatusUpdating) return; // ignore if already running
+      isStatusUpdating = true;
+  // ensure dock visible via persistent partial; appending will auto-show
+      setModalLogsVisible(false); // Hide verbose logs for Check Files
+      modalPrepare('Checking Files', items.length);
+      // Change footer button text to Hide for this modal
+      try { document.querySelector('#composeActionModal .modal-footer .btn.btn-secondary').textContent = 'Hide'; } catch(e) {}
+      const onShown = async () => {
+        const pbWrap = document.getElementById('composeActionProgress');
+        const pb = document.getElementById('composeActionProgressBar');
+        document.getElementById('composeActionList').innerHTML = '';
+        pbWrap.style.display = '';
+        // yield one frame to allow DOM to paint
+        await new Promise(r => requestAnimationFrame(() => r()));
+        const total = items.length;
+        let done=0;
+        spinner(true, done, total);
+        for(const it of items){
+          try{
+            const payload = { items: [it] };
+            const resp = await fetch('/vuln_compose/status', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+            const data = await resp.json();
+            if(Array.isArray(data.log) && data.log.length){ data.log.forEach(l => { /* no modalAppend for Check Files */ dockInfo(String(l)); }); }
+            // Update statusMap from response
+            (data.items||[]).forEach(st => {
+              const k = (st.Name||'')+'|'+(st.Path||'');
+              statusMap.set(k, {exists: !!st.exists, pulled: !!st.pulled, dir: st.dir||'', compose: st.compose || 'docker-compose.yml', compose_path: st.compose_path || ''});
+            });
+          }catch(err){
+            dockInfo(String(err));
+          }
+          done++;
+          const pct = Math.floor((done / items.length) * 100);
+          pb.style.width = `${pct}%`;
+          pb.setAttribute('aria-valuenow', String(pct));
+          pb.textContent = `${done} / ${items.length}`;
+          document.getElementById('composeActionFooterText').textContent = `Progress: ${done} / ${items.length}`;
+          spinner(true, done, total);
+        }
+        // Render with newly updated statusMap
+        render();
+        // Mark complete in title and footer
+        const titleEl2 = document.getElementById('composeActionModalLabel');
+        if(titleEl2) titleEl2.textContent = (titleEl2.textContent || '') + ' — Complete';
+        document.getElementById('composeActionFooterText').textContent = `Complete — ${items.length} checked`;
+        spinner(false);
+        isStatusUpdating = false;
+        try { document.querySelector('#composeActionModal .modal-footer .btn.btn-secondary').textContent = 'Close'; } catch(e) {}
+      };
+      modalEl.addEventListener('shown.bs.modal', onShown, { once: true });
+      modalObj.show();
+    }
+    // Track compose name edits
+    TBL.addEventListener('input', (e) => {
+      const inp = e.target.closest('.compose-input');
+      if(!inp) return;
+      const tr = inp.closest('tr');
+      const key = tr.getAttribute('data-key');
+      let val = (inp.value||'').trim();
+      if(!val) val = 'docker-compose.yml';
+      composeName.set(key, val);
+    });
+
+    document.querySelector('#btn-check-existence').addEventListener('click', async () => {
+      if(isStatusUpdating) return; // prevent concurrent runs
+      // Build items list from current filtered set including compose overrides
+      const items = filtered.map(it => ({ Name: it.Name, Path: it.Path, compose: composeName.get(keyOf(it)) || 'docker-compose.yml' }));
+      // Defer to next tick so modal can render immediately
+      setTimeout(() => { processStatusWithModal(items); }, 0);
+    });
+
+    // Event wiring
+  FILTER.addEventListener('input', async () => { applyFilter(); render(); /* No auto-refresh; wait for user to Check Files */ });
+    SEL_ALL.addEventListener('change', () => {
+      if(SEL_ALL.checked){
+        filtered.forEach(it => selected.add(keyOf(it)));
+      } else {
+        selected.clear();
+      }
+      render();
+    });
+    TBL.addEventListener('change', (e) => {
+      if(e.target && e.target.classList.contains('row-check')){
+        const tr = e.target.closest('tr');
+        const key = tr.getAttribute('data-key');
+        if(e.target.checked) selected.add(key); else selected.delete(key);
+        updateBatchButtons();
+      }
+    });
+    TBL.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.act-btn');
+      const rbtn = e.target.closest('.refresh-btn');
+      const rmBtn = e.target.closest('.remove-btn');
+      const tr = e.target.closest('tr');
+      if(rbtn && tr){
+        if(isStatusUpdating) return; // block per-row refresh during global update
+        const key = tr.getAttribute('data-key');
+        const it = filtered.find(x => keyOf(x) === key);
+        if(it){ await refreshOne(it); }
+        return;
+      }
+      if(rmBtn && tr){
+        if(isStatusUpdating) return; // block during global update
+        // Confirm per-row removal
+        if(!window.confirm('Remove containers/images and downloaded assets for this item?')) return;
+        const key = tr.getAttribute('data-key');
+        const it = filtered.find(x => keyOf(x) === key);
+        if(it){ const item = { Name: it.Name, Path: it.Path, compose: composeName.get(key) || 'docker-compose.yml' }; setTimeout(() => { processWithModal('remove', [item]); }, 0); }
+        return;
+      }
+  if(!btn) return;
+  if(isStatusUpdating) return; // block actions during global update
+      const key = tr.getAttribute('data-key');
+      const it = filtered.find(x => keyOf(x) === key);
+  const stKnown = statusMap.has(key);
+  const st = statusMap.get(key) || {exists:false,pulled:false};
+      const item = { Name: it.Name, Path: it.Path, compose: composeName.get(key) || 'docker-compose.yml' };
+      // Defer to next tick so modal can render immediately
+  if(!stKnown){ await refreshOne(it); }
+  else if(!st.exists){ setTimeout(() => { processWithModal('download', [item]); }, 0); }
+  else if(st.exists && !st.pulled){ setTimeout(() => { processWithModal('pull', [item]); }, 0); }
+  else { setTimeout(() => { processWithModal('pull', [item]); }, 0); }
+    });
+    BTN_DL.addEventListener('click', async () => {
+      const items = filtered
+        .filter(it => selected.has(keyOf(it)) && !(statusMap.get(keyOf(it))||{exists:false}).exists)
+        .map(it => ({ Name: it.Name, Path: it.Path, compose: composeName.get(keyOf(it)) || 'docker-compose.yml' }));
+      if(items.length) setTimeout(() => { processWithModal('download', items); }, 0);
+    });
+    BTN_PULL.addEventListener('click', async () => {
+      const items = filtered
+        .filter(it => selected.has(keyOf(it)) && (statusMap.get(keyOf(it))||{exists:false,pulled:false}).exists && !(statusMap.get(keyOf(it))||{pulled:false}).pulled)
+        .map(it => ({ Name: it.Name, Path: it.Path, compose: composeName.get(keyOf(it)) || 'docker-compose.yml' }));
+      if(items.length) setTimeout(() => { processWithModal('pull', items); }, 0);
+    });
+    BTN_REMOVE.addEventListener('click', async () => {
+      // Confirm batch removal
+      if(!window.confirm('Remove containers/images and downloaded assets for all selected items?')) return;
+      const items = filtered
+        .filter(it => selected.has(keyOf(it)) && ((statusMap.get(keyOf(it))||{exists:false,pulled:false}).exists || (statusMap.get(keyOf(it))||{exists:false,pulled:false}).pulled))
+        .map(it => ({ Name: it.Name, Path: it.Path, compose: composeName.get(keyOf(it)) || 'docker-compose.yml' }));
+      if(items.length) setTimeout(() => { processWithModal('remove', items); }, 0);
+    });
+
+  // Dock visibility handled by shared partial; no explicit show/hide here
+  // Initial load handled by activateInitialTab; catalog will lazy-load when its tab activates
+  })();
+  </script>
+  {% endblock %}

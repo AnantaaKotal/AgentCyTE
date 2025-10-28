@@ -1,0 +1,159 @@
+{# Shared persistent logs/XML dock partial. Set xml_preview_enabled = True before include to add XML tab. #}
+{% set _xml_enabled = xml_preview_enabled | default(False) %}
+{% set _xml_text = xml_preview_text | default('') %}
+<style>
+  .dock-panel { position: fixed; bottom: 0; left: 0; right: 0; height: 40vh; background: #fff; border-top: 1px solid #dee2e6; box-shadow: 0 -2px 8px rgba(0,0,0,.08); z-index: 1030; display:flex; flex-direction:column; }
+  .dock-grip { height: 6px; cursor: ns-resize; background: repeating-linear-gradient(90deg, #e9ecef 0, #e9ecef 6px, #f8f9fa 6px, #f8f9fa 12px); border-bottom: 1px solid #dee2e6; }
+  .dock-panel .nav-tabs { flex-shrink:0; }
+  .dock-panel .tab-content { flex:1 1 auto; min-height:0; overflow:auto; }
+  .dock-panel .tab-pane { height:100%; overflow:auto; }
+  .dock-panel pre { height:auto; min-height:100%; overflow:auto; }
+  .dock-toggle-btn { position: fixed; right: 12px; bottom: 12px; z-index: 1040; }
+</style>
+<div class="dock-panel d-none" id="dockPanel">
+  <div class="dock-grip" id="dockGrip" title="Drag to resize"></div>
+  <ul class="nav nav-tabs px-3 pt-2 align-items-center" role="tablist">
+    <li class="nav-item d-flex align-items-center" role="presentation">
+      <button class="nav-link active" id="tab-logs" data-bs-toggle="tab" data-bs-target="#dock-logs" type="button" role="tab">Logs</button>
+    </li>
+    {% if _xml_enabled %}
+    <li class="nav-item d-flex align-items-center" role="presentation">
+      <button class="nav-link" id="tab-xml" data-bs-toggle="tab" data-bs-target="#dock-xml" type="button" role="tab">XML Preview</button>
+    </li>
+    {% endif %}
+    <li class="nav-item d-flex align-items-center ms-3 small" role="presentation">
+      <div class="d-flex align-items-center gap-1">
+        <label class="form-label mb-0 me-1">Level</label>
+        <select id="logLevelFilter" class="form-select form-select-sm" style="width:auto;">
+          <option value="DEBUG">DEBUG</option>
+          <option value="INFO" selected>INFO</option>
+          <option value="WARN">WARN</option>
+          <option value="ERROR">ERROR</option>
+        </select>
+        <label class="form-label mb-0 ms-3 me-1">Filter</label>
+        <input id="logFilterInput" class="form-control form-control-sm" style="width:180px;" type="text" placeholder="substr or /regex/" />
+        <div class="form-check form-check-inline ms-1 me-0">
+          <input class="form-check-input" type="checkbox" id="logFilterRegex" />
+          <label class="form-check-label small" for="logFilterRegex" title="Interpret filter as RegExp">Regex</label>
+        </div>
+        <button class="btn btn-sm btn-outline-secondary ms-1" id="logFilterClearBtn" type="button" title="Clear filter">✕</button>
+        <button class="btn btn-sm btn-outline-secondary ms-2" id="logFollowToggle" type="button" title="Toggle auto-scroll">Follow On</button>
+        <button class="btn btn-sm btn-outline-danger ms-2" id="clearLogsBtn" type="button" title="Clear log buffer">Clear</button>
+      </div>
+    </li>
+    <li class="ms-auto nav-item" role="presentation">
+      <button class="btn btn-sm btn-outline-secondary" id="dockHideBtn" type="button">Hide</button>
+    </li>
+  </ul>
+  <div class="tab-content px-3 pb-2">
+    <div class="tab-pane fade show active" id="dock-logs" role="tabpanel" aria-labelledby="tab-logs">
+      <pre class="w-100 m-0" style="white-space: pre; overflow:auto; width:100%; font-size:0.8rem;" id="logsPre"></pre>
+    </div>
+    {% if _xml_enabled %}
+    <div class="tab-pane fade" id="dock-xml" role="tabpanel" aria-labelledby="tab-xml">
+      <pre class="w-100 m-0" style="white-space: pre; overflow:auto; width:100%; font-size:0.75rem;" id="xmlPre">{{ _xml_text | e }}</pre>
+    </div>
+    {% endif %}
+  </div>
+</div>
+<button class="btn btn-primary btn-sm dock-toggle-btn d-none" id="dockShowBtn" type="button">Advanced Information</button>
+<script>
+(function(){
+  // Shared persistent logs/XML dock behavior with global logging helpers
+  const LOG_LEVELS = { DEBUG: 10, INFO: 20, WARN: 30, ERROR: 40 };
+  const LOG_STORE_KEY = 'coretg_logs_v1';
+  const DOCK_HEIGHT_KEY = 'coretg_dock_height_px';
+  const DOCK_HIDDEN_KEY = 'coretg_dock_hidden';
+  const DOCK_ACTIVE_TAB_KEY = 'coretg_dock_active_tab';
+  const LOG_FOLLOW_KEY = 'coretg_log_follow';
+  let currentLogLevel = LOG_LEVELS.INFO;
+  // Preload any existing buffer immediately so the UI isn't blank between load and init()
+  let logBuffer = [];
+  try {
+    const _preRaw = localStorage.getItem(LOG_STORE_KEY);
+    if(_preRaw){ const _arr = JSON.parse(_preRaw); if(Array.isArray(_arr)) logBuffer = _arr; }
+  } catch(e) {}
+  let filterText = '';
+  let filterIsRegex = false;
+  let filterRegexObj = null;
+  const LOG_FILTER_TEXT_KEY = 'coretg_log_filter_text';
+  const LOG_FILTER_REGEX_KEY = 'coretg_log_filter_regex';
+  function scrollLogsToBottom(primaryEl){
+    const preEl = primaryEl || document.getElementById('logsPre');
+    if(!preEl) return;
+    const paneEl = preEl.closest('.tab-pane');
+    const targets = [preEl, paneEl].filter(Boolean);
+    const doScroll = () => {
+      targets.forEach(el => {
+        if(typeof el.scrollTo === 'function'){
+          el.scrollTo({ top: el.scrollHeight, behavior: 'auto' });
+        } else {
+          el.scrollTop = el.scrollHeight;
+        }
+      });
+    };
+    if(typeof requestAnimationFrame === 'function'){
+      requestAnimationFrame(() => requestAnimationFrame(doScroll));
+    } else {
+      doScroll();
+    }
+  }
+  function compileFilter(){ filterRegexObj=null; if(!filterText) return; if(filterIsRegex){ let pattern=filterText; let flags='i'; const m=filterText.match(/^\/(.*)\/(\w*)$/); if(m){ pattern=m[1]; flags=m[2]||'i'; } try{ filterRegexObj=new RegExp(pattern, flags);}catch(e){ filterRegexObj=null; } } }
+  function passFilter(line){ if(!filterText) return true; if(filterIsRegex){ if(!filterRegexObj) return true; return filterRegexObj.test(line); } return line.toLowerCase().includes(filterText.toLowerCase()); }
+  let followLogs = true;
+  function renderLogs(){ const el=document.getElementById('logsPre'); if(!el) return; const filtered = logBuffer.filter(r => (r.levelValue||20) >= currentLogLevel).filter(r=>passFilter(r.line)).map(r => r.line); const text = filtered.join('\n'); if(typeof el.replaceChildren === 'function'){ const frag=document.createDocumentFragment(); if(text){ frag.append(text + '\n'); } el.replaceChildren(frag); } else { el.textContent = text + (filtered.length ? '\n' : ''); } if(followLogs){ scrollLogsToBottom(el); const progEl=document.getElementById('runProgressLog'); if(progEl){ scrollLogsToBottom(progEl); } } }
+  function persistLogs(){ try{ localStorage.setItem(LOG_STORE_KEY, JSON.stringify(logBuffer)); }catch(e){} }
+  function isFilterActive(){ return !!filterText; }
+  function logLine(level, msg){ const ts=new Date().toISOString(); const lvlVal = LOG_LEVELS[level] ?? LOG_LEVELS.INFO; const line = `[${ts}] ${level.padEnd(5)} ${msg}`; logBuffer.push({ level, levelValue: lvlVal, line }); if(logBuffer.length>5000){ logBuffer.splice(0, logBuffer.length-5000); } persistLogs(); if(lvlVal >= currentLogLevel){ if(isFilterActive()){ renderLogs(); } else { if(passFilter(line)){ const el=document.getElementById('logsPre'); if(el){ const text = line + '\n'; if(typeof el.append === 'function'){ el.append(text); } else { el.appendChild(document.createTextNode(text)); } if(followLogs){ scrollLogsToBottom(el); const progEl=document.getElementById('runProgressLog'); if(progEl){ scrollLogsToBottom(progEl); } } } } } } }
+  function logDebug(m){ logLine('DEBUG', m); }
+  function logInfo(m){ logLine('INFO', m); }
+  function logWarn(m){ logLine('WARN', m); }
+  function logError(m){ logLine('ERROR', m); }
+  // Expose globally if not already defined
+  if(!window.LOG_LEVELS) window.LOG_LEVELS = LOG_LEVELS;
+  if(!window.logLine) { window.logLine = logLine; window.logDebug = logDebug; window.logInfo = logInfo; window.logWarn = logWarn; window.logError = logError; window._coretg_logBuffer = logBuffer; }
+  function setupDock(){
+    const dock = document.getElementById('dockPanel'); const grip = document.getElementById('dockGrip'); const hideBtn = document.getElementById('dockHideBtn'); const showBtn = document.getElementById('dockShowBtn'); if(!dock||!grip||!hideBtn||!showBtn) return;
+    const setBodyPad = (px) => { document.body.style.paddingBottom = Math.max(px, 0) + 'px'; };
+    const applyHeight = (px) => { dock.style.height = px + 'px'; setBodyPad(px + 12); try{ localStorage.setItem(DOCK_HEIGHT_KEY, String(px)); }catch(e){} };
+    const savedH = parseInt(localStorage.getItem(DOCK_HEIGHT_KEY) || '0', 10); const initialH = (savedH > 100 ? savedH : (dock.offsetHeight||300)); applyHeight(initialH);
+    let resizing=false, startY=0, startH=initialH;
+    const onMove = (e) => { if(!resizing) return; const y = (e.touches? e.touches[0].clientY : e.clientY); const dy = startY - y; const nh = Math.min(Math.max(startH + dy, 120), window.innerHeight - 80); applyHeight(nh); };
+    const onUp = () => { resizing=false; document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); document.removeEventListener('touchmove', onMove); document.removeEventListener('touchend', onUp); };
+    grip.addEventListener('mousedown', (e)=>{resizing=true; startY=e.clientY; startH=dock.offsetHeight; document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);});
+    grip.addEventListener('touchstart', (e)=>{resizing=true; startY=e.touches[0].clientY; startH=dock.offsetHeight; document.addEventListener('touchmove', onMove); document.addEventListener('touchend', onUp);}, {passive:true});
+  const applyHidden = (hidden) => { if(hidden){ dock.classList.add('d-none'); showBtn.classList.remove('d-none'); setBodyPad(12);} else { dock.classList.remove('d-none'); showBtn.classList.add('d-none'); applyHeight(parseInt(localStorage.getItem(DOCK_HEIGHT_KEY) || String(initialH), 10)); if(followLogs){ if(typeof requestAnimationFrame === 'function'){ requestAnimationFrame(renderLogs); } else { renderLogs(); } } } try{ localStorage.setItem(DOCK_HIDDEN_KEY, hidden?'1':'0'); }catch(e){} };
+    const savedHidden = localStorage.getItem(DOCK_HIDDEN_KEY); applyHidden(savedHidden ? savedHidden==='1' : true);
+    hideBtn.addEventListener('click', () => applyHidden(true)); showBtn.addEventListener('click', () => applyHidden(false));
+    // Tab persistence
+    const tabButtons = dock.querySelectorAll(".nav-link[data-bs-toggle='tab']");
+    tabButtons.forEach(btn => {
+      btn.addEventListener('shown.bs.tab', (ev)=>{ const target = ev.target.getAttribute('data-bs-target'); if(target){ try{ localStorage.setItem(DOCK_ACTIVE_TAB_KEY, target); }catch(e){} } });
+    });
+    const savedTab = localStorage.getItem(DOCK_ACTIVE_TAB_KEY);
+    if(savedTab){ const btn = dock.querySelector(".nav-link[data-bs-target='" + savedTab + "']"); if(btn){ try{ new bootstrap.Tab(btn).show(); }catch(e){} } }
+  }
+  function init(){
+    setupDock();
+    try { const savedFollow = localStorage.getItem(LOG_FOLLOW_KEY); if(savedFollow !== null){ followLogs = savedFollow !== '0'; } } catch(e){}
+    try { const raw = localStorage.getItem(LOG_STORE_KEY); if(raw){ const arr = JSON.parse(raw); if(Array.isArray(arr)){ logBuffer = arr; if(window._coretg_logBuffer) window._coretg_logBuffer = logBuffer; } } } catch(e){}
+    try { const savedLvl = localStorage.getItem('coretg_log_level'); if(savedLvl && LOG_LEVELS[savedLvl] !== undefined){ currentLogLevel = LOG_LEVELS[savedLvl]; const sel=document.getElementById('logLevelFilter'); if(sel) sel.value=savedLvl; } } catch(e){}
+  // If we preloaded, paint them before applying filters/level to avoid flash of empty
+  renderLogs();
+    const sel = document.getElementById('logLevelFilter'); sel?.addEventListener('change', () => { const v=sel.value; if(LOG_LEVELS[v]!==undefined){ currentLogLevel=LOG_LEVELS[v]; try{ localStorage.setItem('coretg_log_level', v); }catch(e){} renderLogs(); }});
+  const followBtn = document.getElementById('logFollowToggle');
+  function updateFollowBtn(){ if(!followBtn) return; followBtn.classList.toggle('btn-primary', followLogs); followBtn.classList.toggle('btn-outline-secondary', !followLogs); followBtn.textContent = followLogs ? 'Follow On' : 'Follow Off'; followBtn.setAttribute('aria-pressed', followLogs ? 'true' : 'false'); }
+  updateFollowBtn();
+  followBtn?.addEventListener('click', ()=>{ followLogs = !followLogs; updateFollowBtn(); try{ localStorage.setItem(LOG_FOLLOW_KEY, followLogs ? '1' : '0'); }catch(e){} if(followLogs){ renderLogs(); } });
+  document.getElementById('clearLogsBtn')?.addEventListener('click', () => { try { localStorage.setItem(LOG_STORE_KEY, JSON.stringify([])); } catch(e){} logBuffer = []; if(window._coretg_logBuffer) window._coretg_logBuffer = logBuffer; renderLogs(); });
+    // Restore filter state
+    try { const ft = localStorage.getItem(LOG_FILTER_TEXT_KEY); if(ft){ filterText=ft; const inp=document.getElementById('logFilterInput'); if(inp) inp.value=filterText; } } catch(e){}
+    try { const fr = localStorage.getItem(LOG_FILTER_REGEX_KEY); if(fr==='1'){ filterIsRegex=true; const cb=document.getElementById('logFilterRegex'); if(cb) cb.checked=true; } } catch(e){}
+    compileFilter(); renderLogs();
+    document.getElementById('logFilterInput')?.addEventListener('input', (ev)=>{ filterText = ev.target.value.trim(); try{ localStorage.setItem(LOG_FILTER_TEXT_KEY, filterText);}catch(_e){} compileFilter(); renderLogs(); });
+    document.getElementById('logFilterRegex')?.addEventListener('change', (ev)=>{ filterIsRegex = !!ev.target.checked; try{ localStorage.setItem(LOG_FILTER_REGEX_KEY, filterIsRegex?'1':'0');}catch(_e){} compileFilter(); renderLogs(); });
+    document.getElementById('logFilterClearBtn')?.addEventListener('click', ()=>{ filterText=''; filterIsRegex=false; const inp=document.getElementById('logFilterInput'); if(inp) inp.value=''; const cb=document.getElementById('logFilterRegex'); if(cb) cb.checked=false; try{ localStorage.removeItem(LOG_FILTER_TEXT_KEY); localStorage.removeItem(LOG_FILTER_REGEX_KEY);}catch(_e){} compileFilter(); renderLogs(); });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>

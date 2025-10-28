@@ -1,0 +1,13 @@
+<Topology>
+  <node id="101" name="base-router-alpha" type="router">
+    <position x="100" y="80" />
+  </node>
+  <node id="102" name="base-switch" type="switch">
+    <position x="150" y="120" />
+  </node>
+  <node id="103" name="base-router-beta" type="router">
+    <position x="200" y="80" />
+  </node>
+  <link node1="101" node2="102" />
+  <link node1="102" node2="103" />
+</Topology>

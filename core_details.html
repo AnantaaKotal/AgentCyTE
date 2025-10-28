@@ -1,0 +1,348 @@
+{% extends 'layout.html' %}
+{% block title %}Scenario Details{% endblock %}
+{% block active_page %}{% set active_page='core' %}{% endblock %}
+{% block extra_head %}
+<style>
+  #topologyGraphCard .link.highlight { stroke: #ff5722 !important; stroke-width: 2.2px; }
+  #topologyGraphCard .node.fade { opacity: 0.15; }
+  #topologyGraphCard .node text { font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; }
+  #topologyGraphCard .node rect { transition: stroke-dasharray 0.25s, width 0.25s, height 0.25s; }
+  #topologyGraphCard .node:hover rect { stroke-width: 2; }
+  /* Distinct styling for switches */
+  #topologyGraphCard .node.switch-node rect { stroke: #ff9800; stroke-width: 2; }
+  #topologyGraphCard .node.switch-node text.label { font-weight: 600; }
+  #topologyGraphCard .btn-group .btn { white-space: nowrap; }
+  /* Graph tooltip */
+  #topologyGraph .graph-tooltip { position:absolute; pointer-events:none; background:rgba(33,33,33,0.92); color:#fff; font-size:11px; line-height:1.3; padding:6px 8px; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.3); z-index:20; max-width:260px; text-align:left; }
+  #topologyGraph .graph-tooltip.hidden { display:none; }
+  /* Flash highlight for accordion heading when node is clicked from graph */
+  @keyframes highlightPulse { 0% { background-color:#fff3cd; box-shadow:0 0 0 0 rgba(255,193,7,0.7); } 55% { background-color:#fff8e1; box-shadow:0 0 0 6px rgba(255,193,7,0); } 100% { background-color:var(--bs-accordion-btn-bg); box-shadow:none; } }
+  .accordion-item.flash-highlight > h2 > .accordion-button { animation: highlightPulse 1.8s ease-out; }
+</style>
+{% endblock %}
+{% block content %}
+  <div class="container-fluid px-0">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="mb-0">Scenario Details</h3>
+      {% if xml_path %}
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
+          <div class="btn-group btn-group-sm">
+            <a class="btn btn-outline-secondary" href="{{ url_for('download_report') }}?path={{ xml_path | urlencode }}">Download XML</a>
+            <button class="btn btn-outline-primary" id="createPlanBtn" type="button" data-xml="{{ xml_path }}" title="Show Full Preview JSON">Full Preview</button>
+          </div>
+          <div class="small text-muted">Legacy plan approval workflow removed; use Full Preview + Run.</div>
+        </div>
+      <!-- Removed legacy approval script block -->
+          {% if summary.__invalid %}
+            <div class="alert alert-warning mt-2 py-1 px-2 mb-0" style="font-size:0.75rem;">XML did not fully validate; graph derived from best-effort parse.</div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-6">
+              <input type="search" class="form-control" id="nodeFilter" placeholder="Filter nodes by name, id, type, service, or linked node">
+              <div class="form-text" id="visibleCount">&nbsp;</div>
+            </div>
+            <div class="col-md-6 d-flex justify-content-end gap-2">
+              <button class="btn btn-sm btn-outline-secondary" id="clearFilterBtn" type="button">Clear</button>
+              <button class="btn btn-sm btn-outline-primary" id="expandAllBtn" type="button">Expand All</button>
+              <button class="btn btn-sm btn-outline-primary" id="collapseAllBtn" type="button">Collapse All</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion" id="nodesAccordion">
+        {% if summary.nodes and summary.nodes|length > 0 %}
+          {% for node in summary.nodes %}
+            {% set nid = 'node' ~ loop.index %}
+            {% set searchtext = (node.name ~ ' ' ~ node.id ~ ' ' ~ (node.type or '') ~ ' ' ~ (node.services|join(' ')) ~ ' ' ~ (node.linked_nodes|join(' '))) %}
+            <div class="accordion-item" data-search="{{ searchtext|lower|e }}" data-node-id="{{ node.id }}">
+              <h2 class="accordion-header" id="heading-{{ nid }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ nid }}" aria-expanded="false" aria-controls="collapse-{{ nid }}">
+                  {{ node.name }} (ID: {{ node.id }})
+                </button>
+              </h2>
+              <div id="collapse-{{ nid }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ nid }}">
+                <div class="accordion-body">
+                  <div class="row g-3">
+                    <div class="col-md-3">
+                      <div class="card h-100" data-card="type">
+                        <div class="card-header"><strong>Node Type</strong></div>
+                        <div class="card-body" data-role="node-type"><span class="badge bg-secondary">{{ node.type or 'N/A' }}</span></div>
+                      </div>
+                    </div>
+                    <div class="col-md-5">
+                      <div class="card h-100" data-card="linked">
+                        <div class="card-header"><strong>Linked Nodes</strong></div>
+                        <div class="card-body">
+                          {% if node.linked_nodes and node.linked_nodes|length > 0 %}
+                            <ul class="mb-0" data-role="linked-nodes-list">
+                              {% for ln in node.linked_nodes %}
+                                <li class="linked-item">{{ ln }}</li>
+                              {% endfor %}
+                            </ul>
+                          {% else %}
+                            <em>None</em>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="card h-100" data-card="services">
+                        <div class="card-header"><strong>Services</strong></div>
+                        <div class="card-body" data-role="service-badges">
+                          {% if node.services and node.services|length > 0 %}
+                            <div class="d-flex flex-wrap gap-2">
+                              {% for s in node.services %}
+                                <span class="badge text-bg-info service-item">{{ s }}</span>
+                              {% endfor %}
+                            </div>
+                          {% else %}
+                            <em>None</em>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <em>No nodes found</em>
+        {% endif %}
+      </div>
+      <div id="noMatches" class="text-muted fst-italic d-none">No nodes match the filter.</div>
+      {% endif %}
+    {% endif %}
+
+    {% if session %}
+      <div class="card mb-3">
+        <div class="card-header"><strong>Session</strong></div>
+        <div class="card-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-3">ID</dt><dd class="col-sm-9">{{ session.id }}</dd>
+            <dt class="col-sm-3">State</dt><dd class="col-sm-9">{{ session.state }}</dd>
+            <dt class="col-sm-3">Nodes</dt><dd class="col-sm-9">{{ '-' if session.nodes is none else session.nodes }}</dd>
+            <dt class="col-sm-3">File</dt><dd class="col-sm-9">{{ session.file or '-' }}</dd>
+          </dl>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="{{ url_for('static', filename='core_graph.js') }}"></script>
+{% if summary and (summary.nodes or summary.switches or summary.switch_nodes) %}
+  {% set base_nodes = summary.nodes or [] %}
+  {% set extra_switch_nodes = [] %}
+  {% if summary.switch_nodes %}
+    {% for sn in summary.switch_nodes %}
+      {% set exists = (summary.nodes and (summary.nodes|selectattr('id','equalto', sn.id)|list|length > 0)) %}
+      {% if not exists %}
+        {% set _ = extra_switch_nodes.append({
+          'id': sn.id,
+          'name': sn.name or sn.id,
+          'type': 'switch',
+          'services': [],
+          'linked_nodes': sn.linked_nodes or []
+        }) %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% set combined_nodes = base_nodes + extra_switch_nodes %}
+  <script id="summaryNodesJson" type="application/json">{{ combined_nodes|tojson }}</script>
+{% endif %}
+{% if summary and summary.links_detail %}
+  <script id="summaryLinksJson" type="application/json">[
+    {%- for l in summary.links_detail -%}
+    {"node1": {{ l.node1|tojson }}, "node2": {{ l.node2|tojson }}, "node1_name": {{ l.node1_name|tojson }}, "node2_name": {{ l.node2_name|tojson }}}{% if not loop.last %},{% endif %}
+    {%- endfor -%}
+  ]</script>
+{% endif %}
+<div id="xmlPathMeta" data-xml="{{ xml_path|e if xml_path else '' }}" class="d-none"></div>
+  <script>
+    window.__SUMMARY_NODES__ = window.__SUMMARY_NODES__ || JSON.parse(document.getElementById('summaryNodesJson')?.textContent || '[]');
+    window.__SUMMARY_LINKS__ = window.__SUMMARY_LINKS__ || JSON.parse(document.getElementById('summaryLinksJson')?.textContent || '[]');
+    const xmlPathRef = (document.getElementById('xmlPathMeta')?.getAttribute('data-xml') || '_default');
+    // Remove loading indicator if present
+    (function(){ const loadingEl = document.getElementById('graphLoading'); if(loadingEl) loadingEl.remove(); })();
+    // Initialize extracted graph module (only if nodes present). If none, show diagnostic placeholder.
+    (function(){
+      const noDataEl = document.getElementById('graphNoData');
+      if (window.__SUMMARY_NODES__.length === 0) {
+        if (noDataEl) {
+          const linksCount = window.__SUMMARY_LINKS__?.length || 0;
+            noDataEl.classList.remove('d-none');
+            const lc = document.getElementById('graphNoDataLinksCount');
+            if (lc) lc.textContent = linksCount.toString();
+        }
+        return; // skip init
+      }
+      if(window.CoreGraph){
+        window._coreGraphInstance = CoreGraph.init({
+          containerSelector: '#topologyGraph',
+          nodes: window.__SUMMARY_NODES__,
+          linksRaw: window.__SUMMARY_LINKS__,
+          xmlPath: xmlPathRef
+        });
+      }
+    })();
+
+  (function(){
+    const filterInput = document.getElementById('nodeFilter');
+    const clearBtn = document.getElementById('clearFilterBtn');
+    const expandAllBtn = document.getElementById('expandAllBtn');
+    const collapseAllBtn = document.getElementById('collapseAllBtn');
+    const acc = document.getElementById('nodesAccordion');
+    const noMatches = document.getElementById('noMatches');
+    const visibleCountEl = document.getElementById('visibleCount');
+    if (!acc) return;
+    const items = Array.from(acc.querySelectorAll('.accordion-item'));
+    const totalNodes = items.length;
+    function applyFilter() {
+      const q = (filterInput?.value || '').trim().toLowerCase();
+      let shown = 0;
+      items.forEach(item => {
+        const headerText = (item.querySelector('.accordion-button')?.textContent || '').toLowerCase();
+        const typeText = (item.querySelector('[data-role="node-type"]')?.textContent || '').toLowerCase();
+        const linkedList = item.querySelector('[data-role="linked-nodes-list"]');
+        const serviceWrap = item.querySelector('[data-role="service-badges"]');
+        let match = false;
+        if (q === '') { match = true; }
+        else if (headerText.includes(q) || typeText.includes(q)) { match = true; }
+        else {
+          if (linkedList) {
+            for (const li of Array.from(linkedList.querySelectorAll('.linked-item'))) {
+              if (((li.textContent || '').toLowerCase()).includes(q)) { match = true; break; }
+            }
+          }
+          if (!match && serviceWrap) {
+            for (const b of Array.from(serviceWrap.querySelectorAll('.service-item'))) {
+              if (((b.textContent || '').toLowerCase()).includes(q)) { match = true; break; }
+            }
+          }
+        }
+        if (match) {
+          item.classList.remove('d-none');
+          const linkedCard = item.querySelector('[data-card="linked"]');
+          if (linkedCard) linkedCard.classList.remove('d-none');
+          if (linkedList) Array.from(linkedList.querySelectorAll('.linked-item')).forEach(li => li.classList.remove('d-none'));
+          const svcCard = item.querySelector('[data-card="services"]');
+          if (svcCard) svcCard.classList.remove('d-none');
+          if (serviceWrap) Array.from(serviceWrap.querySelectorAll('.service-item')).forEach(b => b.classList.remove('d-none'));
+          shown += 1;
+        } else {
+          item.classList.add('d-none');
+          const col = item.querySelector('.accordion-collapse');
+          try { if (col && col.classList.contains('show')) new bootstrap.Collapse(col, { toggle: false }).hide(); } catch(e){}
+        }
+      });
+      if (noMatches) noMatches.classList.toggle('d-none', shown !== 0);
+      if (visibleCountEl) visibleCountEl.textContent = `Showing ${shown} of ${totalNodes} nodes`;
+    }
+    function expandAll() {
+      items.forEach(item => {
+        if (item.classList.contains('d-none')) return;
+        const col = item.querySelector('.accordion-collapse');
+        try { if (col && !col.classList.contains('show')) new bootstrap.Collapse(col, { toggle: false }).show(); } catch(e){}
+      });
+    }
+    function collapseAll() {
+      items.forEach(item => {
+        const col = item.querySelector('.accordion-collapse');
+        try { if (col && col.classList.contains('show')) new bootstrap.Collapse(col, { toggle: false }).hide(); } catch(e){}
+      });
+    }
+    filterInput?.addEventListener('input', applyFilter);
+    clearBtn?.addEventListener('click', () => { if (filterInput) { filterInput.value = ''; } applyFilter(); });
+    expandAllBtn?.addEventListener('click', expandAll);
+    collapseAllBtn?.addEventListener('click', collapseAll);
+    applyFilter();
+  })();
+  </script>
+  <script>
+  (function(){
+    const createBtn = document.getElementById('createPlanBtn');
+    const approveBtn = document.getElementById('approvePlanBtn');
+    const runBtn = document.getElementById('runWithPlanBtn');
+    const approvedInput = document.getElementById('approvedPlanPathInput');
+    const modalApproveBtn = document.getElementById('modalApproveBtn');
+    const planJsonEl = document.getElementById('planJson');
+    const planLoadingEl = document.getElementById('planLoading');
+    const planViolWrap = document.getElementById('planViolationsWrap');
+    const planViolList = document.getElementById('planViolationsList');
+    const approvedStatus = document.getElementById('approvedPlanStatus');
+    const viewApprovedBtn = document.getElementById('viewApprovedPlanBtn');
+    const delApprovedBtn = document.getElementById('deleteApprovedPlanBtn');
+    let currentPlanPath = null; // preview path
+    let approvedPlanPath = approvedInput?.value || null;
+    function hydrateApprovedState(){
+      if(!approvedPlanPath){ return; }
+      if(runBtn){ runBtn.classList.remove('d-none'); runBtn.disabled=false; }
+    }
+    hydrateApprovedState();
+    function computePlan(){
+      if(!createBtn) return;
+      const xml = createBtn.getAttribute('data-xml');
+      if(!xml) return;
+      createBtn.disabled = true;
+      approveBtn.classList.add('d-none');
+      planJsonEl.classList.add('d-none');
+      planLoadingEl.classList.remove('d-none');
+      planViolWrap.classList.add('d-none');
+      modalApproveBtn.classList.add('d-none');
+      planLoadingEl.textContent = 'Computing plan...';
+  // Modal removed; legacy preview display suppressed
+      fetch('/api/plan/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ xml_path: xml }) })
+        .then(r => r.json())
+        .then(data => {
+          createBtn.disabled = false;
+            if(!data.ok){ planLoadingEl.textContent = 'Failed: ' + (data.error || 'unknown'); return; }
+            currentPlanPath = data.plan_path;
+            try { planJsonEl.textContent = JSON.stringify(data.plan, null, 2); } catch(e){ planJsonEl.textContent = 'Plan loaded'; }
+            planLoadingEl.classList.add('d-none');
+            planJsonEl.classList.remove('d-none');
+            if(data.violations && data.violations.length){
+              planViolList.innerHTML=''; data.violations.forEach(v=>{ const li=document.createElement('li'); li.textContent=v; planViolList.appendChild(li); });
+              planViolWrap.classList.remove('d-none');
+            }
+            approveBtn.classList.remove('d-none');
+            modalApproveBtn.classList.remove('d-none');
+        }).catch(err => { createBtn.disabled = false; planLoadingEl.textContent='Error: ' + err; });
+    }
+    function approvePlan(){
+      if(!currentPlanPath) return; approveBtn.disabled=true; modalApproveBtn.disabled=true;
+      fetch('/api/plan/approve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan_path: currentPlanPath, xml_path: createBtn.getAttribute('data-xml') }) })
+        .then(r=>r.json())
+        .then(data=>{
+          approveBtn.disabled=false; modalApproveBtn.disabled=false;
+          if(!data.ok){ alert('Plan approval failed: ' + (data.error||'')); return; }
+          const approvedPath = data.approved_path; approvedInput.value = approvedPath; runBtn.classList.remove('d-none'); runBtn.disabled=false; approveBtn.classList.add('d-none'); modalApproveBtn.classList.add('d-none');
+          approvedPlanPath = approvedPath;
+          if(approvedStatus){ approvedStatus.classList.remove('text-muted'); approvedStatus.classList.add('text-success'); approvedStatus.innerHTML = '<span class="me-1">Approved plan ready</span><button type="button" class="btn btn-link btn-sm p-0 align-baseline" id="viewApprovedPlanBtn">view</button><button type="button" class="btn btn-link btn-sm text-danger p-0 ms-2 align-baseline" id="deleteApprovedPlanBtn" title="Delete approved plan">delete</button>'; }
+          try { planJsonEl.insertAdjacentHTML('beforebegin','<div class="alert alert-success py-1 mb-2">Plan approved.</div>'); } catch(e){}
+          wireApprovedPlanButtons();
+        }).catch(err=>{ approveBtn.disabled=false; modalApproveBtn.disabled=false; alert('Approve error: '+err); });
+    }
+    function wireApprovedPlanButtons(){
+      const vBtn = document.getElementById('viewApprovedPlanBtn');
+      const dBtn = document.getElementById('deleteApprovedPlanBtn');
+  if(vBtn){ vBtn.onclick = ()=>{ /* legacy approved plan view removed */ } }
+      if(dBtn){ dBtn.onclick = ()=>{ if(!approvedPlanPath) return; if(!confirm('Delete approved plan?')) return; fetch('/api/plan/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ plan_path: approvedPlanPath }) }).then(r=>r.json()).then(resp=>{ if(resp.ok){ approvedPlanPath=null; approvedInput.value=''; runBtn.classList.add('d-none'); runBtn.disabled=true; approvedStatus.classList.remove('text-success'); approvedStatus.classList.add('text-muted'); approvedStatus.textContent='No approved plan'; } else { alert('Delete failed: '+(resp.error||'')); } }); } }
+    }
+    wireApprovedPlanButtons();
+    createBtn?.addEventListener('click', computePlan);
+    approveBtn?.addEventListener('click', approvePlan);
+    modalApproveBtn?.addEventListener('click', approvePlan);
+  })();
+  </script>
+  {% endblock %}

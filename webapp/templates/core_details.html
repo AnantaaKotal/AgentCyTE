@@ -1,0 +1,398 @@
+{% extends 'layout.html' %}
+{% block title %}Scenario Details{% endblock %}
+{% block active_page %}{% set active_page='core' %}{% endblock %}
+{% block extra_head %}
+<style>
+  #topologyGraphCard .link.highlight { stroke: #ff5722 !important; stroke-width: 2.2px; }
+  #topologyGraphCard .node.fade { opacity: 0.15; }
+  #topologyGraphCard .node text { font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; }
+  #topologyGraphCard .node rect { transition: stroke-dasharray 0.25s, width 0.25s, height 0.25s; }
+  #topologyGraphCard .node:hover rect { stroke-width: 2; }
+  /* Distinct styling for switches */
+  #topologyGraphCard .node.switch-node rect { stroke: #ff9800; stroke-width: 2; }
+  #topologyGraphCard .node.switch-node text.label { font-weight: 600; }
+  #topologyGraphCard .btn-group .btn { white-space: nowrap; }
+  /* Graph tooltip */
+  #topologyGraph .graph-tooltip { position:absolute; pointer-events:none; background:rgba(33,33,33,0.92); color:#fff; font-size:11px; line-height:1.3; padding:6px 8px; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.3); z-index:20; max-width:260px; text-align:left; }
+  #topologyGraph .graph-tooltip.hidden { display:none; }
+  /* Flash highlight for accordion heading when node is clicked from graph */
+  @keyframes highlightPulse { 0% { background-color:#fff3cd; box-shadow:0 0 0 0 rgba(255,193,7,0.7); } 55% { background-color:#fff8e1; box-shadow:0 0 0 6px rgba(255,193,7,0); } 100% { background-color:var(--bs-accordion-btn-bg); box-shadow:none; } }
+  .accordion-item.flash-highlight > h2 > .accordion-button { animation: highlightPulse 1.8s ease-out; }
+</style>
+{% endblock %}
+{% block content %}
+  <div class="container-fluid px-0">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="mb-0">Scenario Details</h3>
+      {% if xml_path %}
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
+          <div class="btn-group btn-group-sm">
+            <a class="btn btn-outline-secondary" href="{{ url_for('download_report') }}?path={{ xml_path | urlencode }}">Download XML</a>
+          </div>
+          <div class="small text-muted">Generate Full Previews from the Scenarios page.</div>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if xml_path %}
+      <div class="mb-2">
+        {% if valid %}
+          <span class="badge text-bg-success">VALID</span>
+        {% else %}
+          <span class="badge text-bg-danger">INVALID</span>
+        {% endif %}
+      </div>
+
+      {% if not valid %}
+        <div class="alert alert-danger" role="alert" style="white-space: pre-wrap;">{{ errors }}</div>
+      {% endif %}
+
+      {% if summary %}
+      <div class="card mb-3">
+        <div class="card-header"><strong>Summary</strong></div>
+        <div class="card-body">
+          <ul class="mb-0">
+            <li>File classification: {{ classification|default('unknown')|title }}</li>
+            <li>Nodes: {{ summary.nodes_count or summary.devices_count or 0 }}</li>
+            {% if summary.switches_count is defined %}
+            <li>Switches: {{ summary.switches_count }}{% if summary.switches and summary.switches|length>0 %} ({{ summary.switches|join(', ') }}){% endif %}</li>
+            {% endif %}
+            <li>Networks: {{ summary.networks_count or 0 }}</li>
+            <li>Links (count): {{ summary.links_count or 0 }}{% if summary.links_sample is defined %} (showing sample: {{ summary.links_sample or 0 }}){% endif %}</li>
+            <li>Services (total occurrences): {{ summary.services_count or 0 }}</li>
+            {% if summary.file_size_bytes %}
+            <li>File size: {{ summary.file_size_bytes }} bytes</li>
+            {% endif %}
+            {% if summary.router_degree_stats %}
+            <li>Router Degrees: min {{ summary.router_degree_stats.min }}, avg {{ summary.router_degree_stats.avg }}, max {{ summary.router_degree_stats.max }}</li>
+            {% endif %}
+            {% if summary.routing_edges_policies and summary.routing_edges_policies|length > 0 %}
+            <li>Connectivity Policies: {{ summary.routing_edges_policies|length }} routing item(s)
+              <details class="mt-1">
+                <summary class="small">Show items</summary>
+                <div class="small mt-1" style="max-height:180px;overflow:auto;">
+                  {% for pol in summary.routing_edges_policies %}
+                    <div class="mb-1">
+                      <strong>{{ pol.protocol or 'Protocol' }}</strong>:
+                      R2R=<span class="text-nowrap">{{ pol.r2r_mode or 'Random' }}{% if pol.edges is not none %}({{ pol.edges }}){% endif %}</span>
+                      {% if pol.r2s_mode or pol.r2s_edges %}
+                        &middot; R2S=<span class="text-nowrap">{{ pol.r2s_mode or 'Random' }}{% if pol.r2s_edges is not none %}({{ pol.r2s_edges }}){% endif %}</span>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+              </details>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- Topology Graph Card (auto-generated from summary.nodes / linked_nodes). Render even if invalid to aid debugging -->
+      {# Render the graph card if we have any indication of topology data: nodes, switches, switch_nodes, or links_detail #}
+      {% if summary and ( (summary.nodes and summary.nodes|length > 0) or (summary.switch_nodes and summary.switch_nodes|length > 0) or (summary.links_detail and summary.links_detail|length > 0) ) %}
+      <div class="card mb-3" id="topologyGraphCard">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <strong>Graph View</strong>
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-outline-secondary" id="graphResetBtn" title="Reset zoom & layout">Reset</button>
+              <button type="button" class="btn btn-outline-secondary" id="graphClusterBtn" title="Cluster by type">Cluster: Off</button>
+            </div>
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-outline-secondary" id="graphExportSvgBtn" title="Download SVG">SVG</button>
+              <button type="button" class="btn btn-outline-secondary" id="graphExportPngBtn" title="Download PNG">PNG</button>
+            </div>
+          </div>
+          <div class="small text-muted" id="graphStats"></div>
+        </div>
+        <div class="card-body p-2">
+          <div id="topologyGraph" style="width:100%; height:460px; position:relative; border:1px solid #e0e0e0; border-radius:4px; background:#fafafa; overflow:hidden;">
+            <div class="position-absolute top-50 start-50 translate-middle text-muted" id="graphLoading">Rendering graph...</div>
+            <div class="position-absolute top-50 start-50 translate-middle text-muted d-none" id="graphNoData" style="max-width:70%; text-align:center;">
+              <div class="mb-2">No device nodes were parsed from this XML.</div>
+              <div class="small text-muted">If you expected a topology graph, the parser may have classified nodes differently or the XML structure is missing the <code>devices</code>/<code>nodes</code> section. Links detected: <span id="graphNoDataLinksCount">0</span>.</div>
+            </div>
+            <div class="position-absolute top-0 end-0 m-2 p-2 bg-white border rounded shadow-sm small" id="graphLegend" style="max-width:220px;">
+              <div class="fw-semibold mb-1">Legend</div>
+              <div id="graphLegendItems" class="d-flex flex-wrap gap-2"></div>
+              <div class="mt-1 text-muted" style="font-size:0.7rem;">Circle size = services count</div>
+            </div>
+            <div id="graphMiniMap" class="position-absolute bg-white border rounded shadow-sm" style="bottom:8px; right:8px; width:160px; height:120px; overflow:hidden; cursor:grab;">
+              <svg width="160" height="120"></svg>
+            </div>
+            <div id="graphTooltip" class="graph-tooltip hidden"></div>
+          </div>
+          <div class="form-text mt-1">Drag nodes to reposition (they’ll stay pinned), scroll or pinch to zoom, and drag the background to pan. Hover highlights neighbors. Use Reset to clear zoom & unpin positions; Cluster groups by type; SVG/PNG export the view.</div>
+          {% if summary.__invalid %}
+            <div class="alert alert-warning mt-2 py-1 px-2 mb-0" style="font-size:0.75rem;">XML did not fully validate; graph derived from best-effort parse.</div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-6">
+              <input type="search" class="form-control" id="nodeFilter" placeholder="Filter nodes by name, id, type, service, or linked node">
+              <div class="form-text" id="visibleCount">&nbsp;</div>
+            </div>
+            <div class="col-md-6 d-flex justify-content-end gap-2">
+              <button class="btn btn-sm btn-outline-secondary" id="clearFilterBtn" type="button">Clear</button>
+              <button class="btn btn-sm btn-outline-primary" id="expandAllBtn" type="button">Expand All</button>
+              <button class="btn btn-sm btn-outline-primary" id="collapseAllBtn" type="button">Collapse All</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion" id="nodesAccordion">
+        {% if summary.nodes and summary.nodes|length > 0 %}
+          {% for node in summary.nodes %}
+            {% set nid = 'node' ~ loop.index %}
+            {% set iface_ns = namespace(val='') %}
+            {% for iface in node.interfaces or [] %}
+              {% set iface_ns.val = iface_ns.val ~ ' ' ~ (iface.name or '') ~ ' ' ~ (iface.mac or '') ~ ' ' ~ (iface.ipv4 or '') ~ ' ' ~ (iface.ipv6 or '') %}
+            {% endfor %}
+            {% set searchtext = (node.name ~ ' ' ~ node.id ~ ' ' ~ (node.type or '') ~ ' ' ~ (node.services|join(' ')) ~ ' ' ~ (node.linked_nodes|join(' ')) ~ ' ' ~ iface_ns.val) %}
+            <div class="accordion-item" data-search="{{ searchtext|lower|e }}" data-node-id="{{ node.id }}">
+              <h2 class="accordion-header" id="heading-{{ nid }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ nid }}" aria-expanded="false" aria-controls="collapse-{{ nid }}">
+                  {{ node.name }} (ID: {{ node.id }})
+                </button>
+              </h2>
+              <div id="collapse-{{ nid }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ nid }}">
+                <div class="accordion-body">
+                  <div class="row g-3">
+                    <div class="col-lg-3 col-md-6">
+                      <div class="card h-100" data-card="type">
+                        <div class="card-header"><strong>Node Type</strong></div>
+                        <div class="card-body" data-role="node-type"><span class="badge bg-secondary">{{ node.type or 'N/A' }}</span></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                      <div class="card h-100" data-card="linked">
+                        <div class="card-header"><strong>Linked Nodes</strong></div>
+                        <div class="card-body">
+                          {% if node.linked_nodes and node.linked_nodes|length > 0 %}
+                            <ul class="mb-0" data-role="linked-nodes-list">
+                              {% for ln in node.linked_nodes %}
+                                <li class="linked-item">{{ ln }}</li>
+                              {% endfor %}
+                            </ul>
+                          {% else %}
+                            <em>None</em>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                      <div class="card h-100" data-card="services">
+                        <div class="card-header"><strong>Services</strong></div>
+                        <div class="card-body" data-role="service-badges">
+                          {% if node.services and node.services|length > 0 %}
+                            <div class="d-flex flex-wrap gap-2">
+                              {% for s in node.services %}
+                                <span class="badge text-bg-info service-item">{{ s }}</span>
+                              {% endfor %}
+                            </div>
+                          {% else %}
+                            <em>None</em>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                      <div class="card h-100" data-card="addresses">
+                        <div class="card-header"><strong>Addresses</strong></div>
+                        <div class="card-body" data-role="addresses-list">
+                          {% if node.interfaces and node.interfaces|length > 0 %}
+                            <ul class="list-unstyled mb-0">
+                              {% for iface in node.interfaces %}
+                                <li class="address-item mb-2">
+                                  <div class="small fw-semibold">{{ iface.name or 'iface ' ~ loop.index }}</div>
+                                  {% if iface.mac %}<div class="small text-muted">{{ iface.mac }}</div>{% endif %}
+                                  {% if iface.ipv4 %}<div class="small">IPv4: {{ iface.ipv4 }}{% if iface.ipv4_mask %}/{{ iface.ipv4_mask }}{% endif %}</div>{% endif %}
+                                  {% if iface.ipv6 %}<div class="small">IPv6: {{ iface.ipv6 }}{% if iface.ipv6_mask %}/{{ iface.ipv6_mask }}{% endif %}</div>{% endif %}
+                                </li>
+                              {% endfor %}
+                            </ul>
+                          {% else %}
+                            <em>None</em>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <em>No nodes found</em>
+        {% endif %}
+      </div>
+      <div id="noMatches" class="text-muted fst-italic d-none">No nodes match the filter.</div>
+      {% endif %}
+    {% endif %}
+
+    {% if session %}
+      <div class="card mb-3">
+        <div class="card-header"><strong>Session</strong></div>
+        <div class="card-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-3">ID</dt><dd class="col-sm-9">{{ session.id }}</dd>
+            <dt class="col-sm-3">State</dt><dd class="col-sm-9">{{ session.state }}</dd>
+            <dt class="col-sm-3">Nodes</dt><dd class="col-sm-9">{{ '-' if session.nodes is none else session.nodes }}</dd>
+            <dt class="col-sm-3">File</dt><dd class="col-sm-9">{{ session.file or '-' }}</dd>
+          </dl>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="{{ url_for('static', filename='core_graph.js') }}"></script>
+{% if summary and (summary.nodes or summary.switches or summary.switch_nodes) %}
+  {% set base_nodes = summary.nodes or [] %}
+  {% set extra_switch_nodes = [] %}
+  {% if summary.switch_nodes %}
+    {% for sn in summary.switch_nodes %}
+      {% set exists = (summary.nodes and (summary.nodes|selectattr('id','equalto', sn.id)|list|length > 0)) %}
+      {% if not exists %}
+        {% set _ = extra_switch_nodes.append({
+          'id': sn.id,
+          'name': sn.name or sn.id,
+          'type': 'switch',
+          'services': [],
+          'linked_nodes': sn.linked_nodes or []
+        }) %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% set combined_nodes = base_nodes + extra_switch_nodes %}
+  <script id="summaryNodesJson" type="application/json">{{ combined_nodes|tojson }}</script>
+{% endif %}
+{% if summary and summary.links_detail %}
+  <script id="summaryLinksJson" type="application/json">[
+    {%- for l in summary.links_detail -%}
+    {"node1": {{ l.node1|tojson }}, "node2": {{ l.node2|tojson }}, "node1_name": {{ l.node1_name|tojson }}, "node2_name": {{ l.node2_name|tojson }}}{% if not loop.last %},{% endif %}
+    {%- endfor -%}
+  ]</script>
+{% endif %}
+<div id="xmlPathMeta" data-xml="{{ xml_path|e if xml_path else '' }}" class="d-none"></div>
+  <script>
+    window.__SUMMARY_NODES__ = window.__SUMMARY_NODES__ || JSON.parse(document.getElementById('summaryNodesJson')?.textContent || '[]');
+    window.__SUMMARY_LINKS__ = window.__SUMMARY_LINKS__ || JSON.parse(document.getElementById('summaryLinksJson')?.textContent || '[]');
+    const xmlPathRef = (document.getElementById('xmlPathMeta')?.getAttribute('data-xml') || '_default');
+    // Remove loading indicator if present
+    (function(){ const loadingEl = document.getElementById('graphLoading'); if(loadingEl) loadingEl.remove(); })();
+    // Initialize extracted graph module (only if nodes present). If none, show diagnostic placeholder.
+    (function(){
+      const noDataEl = document.getElementById('graphNoData');
+      if (window.__SUMMARY_NODES__.length === 0) {
+        if (noDataEl) {
+          const linksCount = window.__SUMMARY_LINKS__?.length || 0;
+            noDataEl.classList.remove('d-none');
+            const lc = document.getElementById('graphNoDataLinksCount');
+            if (lc) lc.textContent = linksCount.toString();
+        }
+        return; // skip init
+      }
+      if(window.CoreGraph){
+        window._coreGraphInstance = CoreGraph.init({
+          containerSelector: '#topologyGraph',
+          nodes: window.__SUMMARY_NODES__,
+          linksRaw: window.__SUMMARY_LINKS__,
+          xmlPath: xmlPathRef
+        });
+      }
+    })();
+
+  (function(){
+    const filterInput = document.getElementById('nodeFilter');
+    const clearBtn = document.getElementById('clearFilterBtn');
+    const expandAllBtn = document.getElementById('expandAllBtn');
+    const collapseAllBtn = document.getElementById('collapseAllBtn');
+    const acc = document.getElementById('nodesAccordion');
+    const noMatches = document.getElementById('noMatches');
+    const visibleCountEl = document.getElementById('visibleCount');
+    if (!acc) return;
+    const items = Array.from(acc.querySelectorAll('.accordion-item'));
+    const totalNodes = items.length;
+    function applyFilter() {
+      const q = (filterInput?.value || '').trim().toLowerCase();
+      let shown = 0;
+      items.forEach(item => {
+        const headerText = (item.querySelector('.accordion-button')?.textContent || '').toLowerCase();
+        const typeText = (item.querySelector('[data-role="node-type"]')?.textContent || '').toLowerCase();
+        const linkedList = item.querySelector('[data-role="linked-nodes-list"]');
+        const serviceWrap = item.querySelector('[data-role="service-badges"]');
+        const addrList = item.querySelector('[data-role="addresses-list"]');
+        let match = false;
+        if (q === '') { match = true; }
+        else if (headerText.includes(q) || typeText.includes(q)) { match = true; }
+        else {
+          if (linkedList) {
+            for (const li of Array.from(linkedList.querySelectorAll('.linked-item'))) {
+              if (((li.textContent || '').toLowerCase()).includes(q)) { match = true; break; }
+            }
+          }
+          if (!match && serviceWrap) {
+            for (const b of Array.from(serviceWrap.querySelectorAll('.service-item'))) {
+              if (((b.textContent || '').toLowerCase()).includes(q)) { match = true; break; }
+            }
+          }
+          if (!match && addrList) {
+            for (const li of Array.from(addrList.querySelectorAll('.address-item'))) {
+              if (((li.textContent || '').toLowerCase()).includes(q)) { match = true; break; }
+            }
+          }
+        }
+        if (match) {
+          item.classList.remove('d-none');
+          const linkedCard = item.querySelector('[data-card="linked"]');
+          if (linkedCard) linkedCard.classList.remove('d-none');
+          if (linkedList) Array.from(linkedList.querySelectorAll('.linked-item')).forEach(li => li.classList.remove('d-none'));
+          const svcCard = item.querySelector('[data-card="services"]');
+          if (svcCard) svcCard.classList.remove('d-none');
+          if (serviceWrap) Array.from(serviceWrap.querySelectorAll('.service-item')).forEach(b => b.classList.remove('d-none'));
+          const addrCard = item.querySelector('[data-card="addresses"]');
+          if (addrCard) addrCard.classList.remove('d-none');
+          if (addrList) Array.from(addrList.querySelectorAll('.address-item')).forEach(li => li.classList.remove('d-none'));
+          shown += 1;
+        } else {
+          item.classList.add('d-none');
+          const col = item.querySelector('.accordion-collapse');
+          try { if (col && col.classList.contains('show')) new bootstrap.Collapse(col, { toggle: false }).hide(); } catch(e){}
+        }
+      });
+      if (noMatches) noMatches.classList.toggle('d-none', shown !== 0);
+      if (visibleCountEl) visibleCountEl.textContent = `Showing ${shown} of ${totalNodes} nodes`;
+    }
+    function expandAll() {
+      items.forEach(item => {
+        if (item.classList.contains('d-none')) return;
+        const col = item.querySelector('.accordion-collapse');
+        try { if (col && !col.classList.contains('show')) new bootstrap.Collapse(col, { toggle: false }).show(); } catch(e){}
+      });
+    }
+    function collapseAll() {
+      items.forEach(item => {
+        const col = item.querySelector('.accordion-collapse');
+        try { if (col && col.classList.contains('show')) new bootstrap.Collapse(col, { toggle: false }).hide(); } catch(e){}
+      });
+    }
+    filterInput?.addEventListener('input', applyFilter);
+    clearBtn?.addEventListener('click', () => { if (filterInput) { filterInput.value = ''; } applyFilter(); });
+    expandAllBtn?.addEventListener('click', expandAll);
+    collapseAllBtn?.addEventListener('click', collapseAll);
+    applyFilter();
+  })();
+  </script>
+  {% endblock %}

@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "id": "aa5babd34875",
+      "name": "vuln_list_w_url.csv",
+      "path": "/Users/jcacosta/Documents/core-topo-gen/data_sources/20251009-160138-dac310-vuln_list_w_url.csv",
+      "enabled": true,
+      "rows": "238 rows",
+      "uploaded": "2025-10-09T22:01:38.755636Z"
+    }
+  ]
+}

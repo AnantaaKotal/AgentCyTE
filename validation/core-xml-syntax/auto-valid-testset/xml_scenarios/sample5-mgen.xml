@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scenario name="/home/ubuntu/Downloads/xml_scenarios/sample5-mgen.xml">
+  <networks/>
+  <devices>
+    <device id="1" name="n1" type="router" class="" image="">
+      <position x="312" y="120" lat="47.57807592948524" lon="-122.12811788447031" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv2"/>
+        <service name="OSPFv3"/>
+        <service name="IPForward"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="2" name="n2" type="router" class="" image="">
+      <position x="72" y="48" lat="47.57873039452099" lon="-122.13135181949315" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv2"/>
+        <service name="OSPFv3"/>
+        <service name="IPForward"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+  </devices>
+  <links>
+    <link node1="2" node2="1">
+      <iface1 id="0" name="eth0" mac="00:00:00:aa:01:8b" ip4="10.0.0.1" ip4_mask="24" ip6="a::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:8c" ip4="10.0.0.2" ip4_mask="24" ip6="a::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+  </links>
+  <service_configurations>
+    <service name="UserDefined" node="1">
+      <startups>
+        <startup>sh mgen.sh</startup>
+      </startups>
+      <files>
+        <file name="mgen.sh"><![CDATA[#!/bin/sh
+SCRIPTDIR=$SESSION_DIR
+LOGDIR=/var/log
+if [ `uname` = "Linux" ]; then
+  cd $SCRIPTDIR
+else
+  cd /tmp/e0_`hostname`
+fi
+(
+cat << 'EOF'
+# mgen receiver script
+15.0 LISTEN UDP 5001
+EOF
+) > recv.mgn
+mgen input recv.mgn output $LOGDIR/mgen.log > /dev/null 2> /dev/null < /dev/null &]]></file>
+      </files>
+    </service>
+    <service name="UserDefined" node="2">
+      <startups>
+        <startup>sh mgen.sh</startup>
+      </startups>
+      <files>
+        <file name="mgen.sh"><![CDATA[#!/bin/sh
+HN=`hostname`
+SCRIPTDIR=$SESSION_DIR
+LOGDIR=/var/log
+
+cd $SCRIPTDIR
+(
+cat << 'EOF'
+# mgen sender script: send UDP traffic to UDP port 5001 after 15 seconds
+15.0 ON 1 UDP SRC 5000 DST 10.0.0.2/5001 PERIODIC [1 4096]
+EOF
+) > send_$HN.mgn
+mgen input send_$HN.mgn output $LOGDIR/mgen_$HN.log > /dev/null 2> /dev/null < /dev/null &]]></file>
+      </files>
+    </service>
+  </service_configurations>
+  <session_origin lat="47.5791667" lon="-122.132322" alt="2.0" scale="150.0"/>
+  <session_options>
+    <configuration name="controlnet" value=""/>
+    <configuration name="controlnet0" value=""/>
+    <configuration name="controlnet1" value=""/>
+    <configuration name="controlnet2" value=""/>
+    <configuration name="controlnet3" value=""/>
+    <configuration name="controlnet_updown_script" value=""/>
+    <configuration name="enablerj45" value="1"/>
+    <configuration name="preservedir" value="0"/>
+    <configuration name="enablesdt" value="0"/>
+    <configuration name="sdturl" value="tcp://127.0.0.1:50000/"/>
+    <configuration name="ovs" value="0"/>
+    <configuration name="platform_id_start" value="1"/>
+    <configuration name="nem_id_start" value="1"/>
+    <configuration name="link_enabled" value="1"/>
+    <configuration name="loss_threshold" value="30"/>
+    <configuration name="link_interval" value="1"/>
+    <configuration name="link_timeout" value="4"/>
+    <configuration name="mtu" value="0"/>
+  </session_options>
+  <session_metadata>
+    <configuration name="canvas c1" value="{name {Canvas1}}"/>
+    <configuration name="global_options" value="interface_names=no ip_addresses=yes ipv6_addresses=yes node_labels=yes link_labels=yes show_api=no background_images=no annotations=yes grid=yes traffic_start=0"/>
+  </session_metadata>
+  <default_services>
+    <node type="mdr">
+      <service name="zebra"/>
+      <service name="OSPFv3MDR"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="PC">
+      <service name="DefaultRoute"/>
+    </node>
+    <node type="prouter"/>
+    <node type="router">
+      <service name="zebra"/>
+      <service name="OSPFv2"/>
+      <service name="OSPFv3"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="host">
+      <service name="DefaultRoute"/>
+      <service name="SSH"/>
+    </node>
+  </default_services>
+</scenario>

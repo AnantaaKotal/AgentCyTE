@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "core-topo-gen"
+version = "0.1.0"
+description = "Generate CORE network topologies from XML scenarios via CLI or Web UI."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "CORE Topo Gen Contributors" }
+]
+dependencies = [
+  "lxml==6.0.0",
+  "Flask==3.0.3",
+  "Werkzeug==3.0.3",
+  "PyYAML==6.0.2",
+  "psutil==5.9.8",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["core_topo_gen*"]
+exclude = ["tests*", "MCP*", "scripts*", "archive*", "outputs*", "reports*", "uploads*", "validation*", "webapp*", "envoy*", "nginx*", "data_sources*", "repo*"]
+
+[tool.uv]
+# Install default and dev dependencies with: uv sync --all

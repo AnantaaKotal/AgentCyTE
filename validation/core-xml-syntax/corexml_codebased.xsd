@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <!-- ===== Common types ===== -->
+  <xs:simpleType name="Float">
+    <xs:restriction base="xs:double"/>
+  </xs:simpleType>
+  <xs:simpleType name="PosInt">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="NonEmpty">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="NodeTypeToken">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Z0-9_]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Ipv4">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="((25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(25[0-5]|2[0-4]\d|1?\d?\d)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ===== Root ===== -->
+  <xs:element name="scenario">
+    <xs:complexType>
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="networks"/>
+        <xs:element ref="devices"/>
+        <xs:element ref="links"/>
+        <xs:element ref="emane_configurations"/>
+        <xs:element ref="mobility_configurations"/>
+        <xs:element ref="service_configurations"/>
+        <xs:element ref="default_services"/>
+        <xs:element ref="servers"/>
+        <xs:element ref="session_origin"/>
+        <xs:element ref="session_hooks"/>
+        <xs:element ref="session_options"/>
+        <xs:element ref="session_metadata"/>
+        <!-- Legacy alias -->
+        <xs:element name="configservice_configurations" type="ServiceConfigurationsType"/>
+      </xs:choice>
+      <xs:attribute name="name" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ===== Position type ===== -->
+  <xs:complexType name="PositionType">
+    <xs:attribute name="x" type="Float" use="optional"/>
+    <xs:attribute name="y" type="Float" use="optional"/>
+    <xs:attribute name="z" type="Float" use="optional"/>
+    <xs:attribute name="lat" type="Float" use="optional"/>
+    <xs:attribute name="lon" type="Float" use="optional"/>
+    <xs:attribute name="alt" type="Float" use="optional"/>
+  </xs:complexType>
+
+  <!-- ===== Networks ===== -->
+  <xs:element name="networks">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="network" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="position" type="PositionType" minOccurs="0"/>
+              <xs:element name="wireless" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="configuration" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="name" type="NonEmpty" use="required"/>
+                        <xs:attribute name="value" type="xs:string" use="optional"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" type="PosInt" use="required"/>
+            <xs:attribute name="name" type="xs:string" use="optional"/>
+            <xs:attribute name="server" type="xs:string" use="optional"/>
+            <xs:attribute name="icon" type="xs:string" use="optional"/>
+            <xs:attribute name="canvas" type="PosInt" use="optional"/>
+            <xs:attribute name="type" type="NodeTypeToken" use="required"/>
+            <xs:attribute name="model" type="xs:string" use="optional"/>
+            <xs:attribute name="mobility" type="xs:string" use="optional"/>
+            <xs:attribute name="grekey" type="PosInt" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ===== Devices ===== -->
+  <xs:element name="devices">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="device" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="position" type="PositionType" minOccurs="0"/>
+              <xs:choice minOccurs="0">
+                <xs:element name="services">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="service" maxOccurs="unbounded" minOccurs="0">
+                        <xs:complexType>
+                          <xs:attribute name="name" type="NonEmpty" use="required"/>
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+                <xs:element name="configservices">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="service" maxOccurs="unbounded" minOccurs="0">
+                        <xs:complexType>
+                          <xs:attribute name="name" type="NonEmpty" use="required"/>
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:choice>
+            </xs:sequence>
+            <xs:attribute name="id" type="PosInt" use="required"/>
+            <xs:attribute name="name" type="xs:string" use="optional"/>
+            <xs:attribute name="server" type="xs:string" use="optional"/>
+            <xs:attribute name="icon" type="xs:string" use="optional"/>
+            <xs:attribute name="canvas" type="PosInt" use="optional"/>
+            <xs:attribute name="type" type="xs:string" use="optional"/>
+            <xs:attribute name="class" type="xs:string" use="optional"/>
+            <xs:attribute name="image" type="xs:string" use="optional"/>
+            <xs:attribute name="compose" type="xs:string" use="optional"/>
+            <xs:attribute name="compose_name" type="xs:string" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ===== Links ===== -->
+  <xs:element name="links">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="link" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:choice minOccurs="0">
+                <xs:element name="iface1" type="IfaceType"/>
+                <xs:element name="interface_one" type="IfaceType"/>
+              </xs:choice>
+              <xs:choice minOccurs="0">
+                <xs:element name="iface2" type="IfaceType"/>
+                <xs:element name="interface_two" type="IfaceType"/>
+              </xs:choice>
+              <xs:element name="options" type="LinkOptionsType" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="node1" type="PosInt" use="optional"/>
+            <xs:attribute name="node2" type="PosInt" use="optional"/>
+            <xs:attribute name="node_one" type="PosInt" use="optional"/>
+            <xs:attribute name="node_two" type="PosInt" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="IfaceType">
+    <xs:attribute name="id" type="PosInt" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="optional"/>
+    <xs:attribute name="mac" type="xs:string" use="optional"/>
+    <xs:attribute name="ip4" type="Ipv4" use="optional"/>
+    <xs:attribute name="ip4_mask" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:integer">
+          <xs:minInclusive value="0"/>
+          <xs:maxInclusive value="32"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="ip6" type="xs:string" use="optional"/>
+    <xs:attribute name="ip6_mask" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:integer">
+          <xs:minInclusive value="0"/>
+          <xs:maxInclusive value="128"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="nem" type="PosInt" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="LinkOptionsType">
+    <xs:attribute name="delay" type="PosInt" use="optional"/>
+    <xs:attribute name="bandwidth" type="PosInt" use="optional"/>
+    <xs:attribute name="loss" type="Float" use="optional"/>
+    <xs:attribute name="per" type="Float" use="optional"/>
+    <xs:attribute name="dup" type="Float" use="optional"/>
+    <xs:attribute name="jitter" type="PosInt" use="optional"/>
+    <xs:attribute name="mer" type="PosInt" use="optional"/>
+    <xs:attribute name="burst" type="PosInt" use="optional"/>
+    <xs:attribute name="mburst" type="PosInt" use="optional"/>
+    <xs:attribute name="unidirectional" type="PosInt" use="optional"/>
+    <xs:attribute name="key" type="PosInt" use="optional"/>
+    <xs:attribute name="buffer" type="PosInt" use="optional"/>
+  </xs:complexType>
+
+  <!-- ===== EMANE ===== -->
+  <xs:element name="emane_configurations" type="EmaneConfigurationsType"/>
+  <xs:complexType name="EmaneConfigurationsType">
+    <xs:sequence>
+      <xs:element name="emane_configuration" maxOccurs="unbounded" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="platform" type="EmaneConfigBucketType" minOccurs="0"/>
+            <xs:element name="mac" type="EmaneConfigBucketType" minOccurs="0"/>
+            <xs:element name="phy" type="EmaneConfigBucketType" minOccurs="0"/>
+            <xs:element name="external" type="EmaneConfigBucketType" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="node" type="PosInt" use="required"/>
+          <xs:attribute name="iface" type="PosInt" use="optional"/>
+          <xs:attribute name="model" type="NonEmpty" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EmaneConfigBucketType">
+    <xs:sequence>
+      <xs:element name="configuration" maxOccurs="unbounded" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="name" type="NonEmpty" use="required"/>
+          <xs:attribute name="value" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ===== Mobility ===== -->
+  <xs:element name="mobility_configurations" type="MobilityConfigurationsType"/>
+  <xs:complexType name="MobilityConfigurationsType">
+    <xs:sequence>
+      <xs:element name="mobility_configuration" maxOccurs="unbounded" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="configuration" maxOccurs="unbounded" minOccurs="0">
+              <xs:complexType>
+                <xs:attribute name="name" type="NonEmpty" use="required"/>
+                <xs:attribute name="value" type="xs:string" use="optional"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="node" type="PosInt" use="required"/>
+          <xs:attribute name="model" type="NonEmpty" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ===== Service configurations ===== -->
+  <xs:element name="service_configurations" type="ServiceConfigurationsType"/>
+  <xs:complexType name="ServiceConfigurationsType">
+    <xs:sequence>
+      <xs:element name="service" maxOccurs="unbounded" minOccurs="0">
+        <xs:complexType mixed="true">
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="configs">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="config" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:attribute name="key" type="xs:string" use="required"/>
+                        <xs:attribute name="value" type="xs:string" use="optional"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="templates">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="template" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType mixed="true">
+                        <xs:attribute name="name" type="xs:string" use="required"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="directories">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="directory" type="xs:string" maxOccurs="unbounded" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="startups">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="startup" type="xs:string" maxOccurs="unbounded" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="validates">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="validate" type="xs:string" maxOccurs="unbounded" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="shutdowns">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="shutdown" type="xs:string" maxOccurs="unbounded" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="files">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="file" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType mixed="true">
+                        <xs:attribute name="name" type="xs:string" use="required"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="hosts">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="host" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType mixed="true">
+                        <xs:attribute name="name" type="xs:string" use="optional"/>
+                        <xs:attribute name="address" type="xs:string" use="optional"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="helpers">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="helper" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType mixed="true">
+                        <xs:attribute name="name" type="xs:string" use="optional"/>
+                        <xs:attribute name="path" type="xs:string" use="optional"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- Inline default_services allowed -->
+              <xs:element ref="default_services"/>
+            </xs:choice>
+          </xs:sequence>
+          <xs:attribute name="name" type="xs:string" use="required"/>
+          <xs:attribute name="node" type="xs:integer" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ===== Default services (top-level) ===== -->
+  <xs:element name="default_services">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="node" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="service" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:attribute name="name" type="NonEmpty" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="type" type="NonEmpty" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ===== Servers ===== -->
+  <xs:element name="servers">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="server" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:attribute name="name" type="NonEmpty" use="required"/>
+            <xs:attribute name="address" type="NonEmpty" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ===== Session ===== -->
+  <xs:element name="session_origin">
+    <xs:complexType>
+      <xs:attribute name="lat" type="Float" use="optional"/>
+      <xs:attribute name="lon" type="Float" use="optional"/>
+      <xs:attribute name="alt" type="Float" use="optional"/>
+      <xs:attribute name="x" type="Float" use="optional"/>
+      <xs:attribute name="y" type="Float" use="optional"/>
+      <xs:attribute name="z" type="Float" use="optional"/>
+      <xs:attribute name="scale" type="Float" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="session_hooks">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="hook" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType mixed="true">
+            <xs:attribute name="name" type="NonEmpty" use="required"/>
+            <xs:attribute name="state" type="xs:integer" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="session_options" type="KVListType"/>
+  <xs:element name="session_metadata" type="KVListType"/>
+  <xs:complexType name="KVListType">
+    <xs:sequence>
+      <xs:element name="configuration" maxOccurs="unbounded" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="name" type="NonEmpty" use="required"/>
+          <xs:attribute name="value" type="xs:string" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

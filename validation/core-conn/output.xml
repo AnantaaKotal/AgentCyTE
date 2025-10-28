@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scenario name="/tmp/tmp_17fzk3f">
+  <networks>
+    <network id="1" name="n1" icon="" canvas="0" type="SWITCH">
+      <position x="300" y="400" lat="47.57654010808209" lon="-122.1300662866428" alt="2.0"/>
+    </network>
+  </networks>
+  <devices>
+    <device id="2" name="n2" icon="" canvas="0" type="router" class="" image="">
+      <position x="200" y="300" lat="47.57510362568999" lon="-122.13048217333825" alt="2.0"/>
+      <configservices>
+        <service name="zebra"/>
+        <service name="OSPFv2"/>
+        <service name="IPForward"/>
+        <service name="OSPFv3"/>
+      </configservices>
+    <services><service name="UserDefined"/></services></device>
+    <device id="3" name="n3" icon="" canvas="0" type="PC" class="" image="">
+      <position x="100" y="200" lat="47.578111215688836" lon="-122.1311808630113" alt="2.0"/>
+      <configservices>
+        <service name="DefaultRoute"/>
+      </configservices>
+    <services><service name="UserDefined"/></services></device>
+    <device id="4" name="n4" icon="" canvas="0" type="PC" class="" image="">
+      <position x="400" y="500" lat="47.5775164447498" lon="-122.12800348850175" alt="2.0"/>
+      <configservices>
+        <service name="DefaultRoute"/>
+      </configservices>
+    <services><service name="UserDefined"/></services></device>
+  </devices>
+  <links>
+    <link node1="1" node2="2">
+      <iface2 id="0" name="eth0" ip4="10.0.0.1" ip4_mask="24" ip6="2001::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0" buffer="0"/>
+    </link>
+    <link node1="1" node2="3">
+      <iface2 id="0" name="eth0" ip4="10.0.0.2" ip4_mask="24" ip6="2001::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0" buffer="0"/>
+    </link>
+    <link node1="1" node2="4">
+      <iface2 id="0" name="eth0" ip4="10.0.0.3" ip4_mask="24" ip6="2001::3" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0" buffer="0"/>
+    </link>
+  </links>
+  <configservice_configurations>
+    <service name="DefaultRoute" node="3"/>
+    <service name="DefaultRoute" node="4"/>
+    <service name="zebra" node="2"/>
+    <service name="OSPFv2" node="2"/>
+    <service name="IPForward" node="2"/>
+    <service name="OSPFv3" node="2"/>
+  </configservice_configurations>
+  <session_origin lat="47.579166412353516" lon="-122.13232421875" alt="2.0" scale="150.0"/>
+  <session_options>
+    <configuration name="controlnet" value=""/>
+    <configuration name="enablerj45" value="1"/>
+    <configuration name="preservedir" value="0"/>
+    <configuration name="enablesdt" value="0"/>
+    <configuration name="sdturl" value="tcp://127.0.0.1:50000/"/>
+    <configuration name="ovs" value="0"/>
+    <configuration name="link_enabled" value="1"/>
+  </session_options>
+  <session_metadata>
+    <configuration name="hidden" value="[]"/>
+    <configuration name="canvas" value="{&quot;gridlines&quot;: true, &quot;canvases&quot;: [{&quot;id&quot;: 1, &quot;wallpaper&quot;: null, &quot;wallpaper_style&quot;: 1, &quot;fit_image&quot;: false, &quot;dimensions&quot;: [1000, 750]}]}"/>
+    <configuration name="edges" value="[]"/>
+    <configuration name="shapes" value="[]"/>
+  </session_metadata>
+  <default_services>
+    <node type="router">
+      <service name="zebra"/>
+      <service name="OSPFv2"/>
+      <service name="OSPFv3"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="PC">
+      <service name="DefaultRoute"/>
+    </node>
+  </default_services>
+<service_configurations><service name="UserDefined" node="2"><startups><startup>/bin/bash pings_2.sh</startup></startups><files><file name="pings_2.sh"><![CDATA[#!/bin/bash
+ping 10.0.0.2 -c 60 | grep ' bytes from ' | wc -l > /tmp/2_to_3___10.0.0.2.txt &
+ping 10.0.0.3 -c 60 | grep ' bytes from ' | wc -l > /tmp/2_to_4___10.0.0.3.txt &
+]]></file></files></service><service name="UserDefined" node="3"><startups><startup>/bin/bash pings_3.sh</startup></startups><files><file name="pings_3.sh"><![CDATA[#!/bin/bash
+ping 10.0.0.1 -c 60 | grep ' bytes from ' | wc -l > /tmp/3_to_2___10.0.0.1.txt &
+ping 10.0.0.3 -c 60 | grep ' bytes from ' | wc -l > /tmp/3_to_4___10.0.0.3.txt &
+]]></file></files></service><service name="UserDefined" node="4"><startups><startup>/bin/bash pings_4.sh</startup></startups><files><file name="pings_4.sh"><![CDATA[#!/bin/bash
+ping 10.0.0.1 -c 60 | grep ' bytes from ' | wc -l > /tmp/4_to_2___10.0.0.1.txt &
+ping 10.0.0.2 -c 60 | grep ' bytes from ' | wc -l > /tmp/4_to_3___10.0.0.2.txt &
+]]></file></files></service></service_configurations></scenario>

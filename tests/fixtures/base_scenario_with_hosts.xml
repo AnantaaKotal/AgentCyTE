@@ -1,0 +1,33 @@
+<Topology>
+  <node id="201" name="base-router-core" type="router">
+    <position x="120" y="90" />
+  </node>
+  <node id="202" name="base-switch" type="switch">
+    <position x="180" y="130" />
+  </node>
+  <node id="203" name="alpha-host" type="pc">
+    <position x="220" y="170" />
+  </node>
+  <node id="204" name="beta-host" type="workstation">
+    <position x="260" y="150" />
+  </node>
+  <node id="205" name="uplink-hub" type="RJ45">
+    <position x="140" y="120" />
+  </node>
+  <node id="206" name="wifi-ap" type="WirelessLan">
+    <position x="180" y="70" />
+  </node>
+  <node id="207" name="gamma-host" type="pc">
+    <position x="220" y="40" />
+  </node>
+  <node id="208" name="mystery-device" type="CustomThing">
+    <position x="240" y="10" />
+  </node>
+  <link node1="201" node2="202" />
+  <link node1="202" node2="203" />
+  <link node1="202" node2="204" />
+  <link node1="201" node2="205" />
+  <link node1="205" node2="206" />
+  <link node1="206" node2="207" />
+  <link node1="207" node2="208" />
+</Topology>

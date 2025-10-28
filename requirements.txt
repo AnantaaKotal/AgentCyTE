@@ -1,0 +1,6 @@
+lxml==6.0.0
+Flask==3.0.3
+Werkzeug==3.0.3
+PyYAML==6.0.2
+psutil==5.9.8
+pytest>=8.0.0

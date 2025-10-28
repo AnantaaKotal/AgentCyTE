@@ -1,0 +1,802 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scenario name="/home/ubuntu/Downloads/xml_scenarios/exam3_exercises_almostdone.xml">
+  <networks>
+    <network id="1" name="n1" type="HUB">
+      <position x="145" y="207" lat="47.57728510665231" lon="-122.13036816425704" alt="2.0"/>
+    </network>
+    <network id="6" name="n6" type="SWITCH">
+      <position x="170" y="94" lat="47.57831226502517" lon="-122.1300312960255" alt="2.0"/>
+    </network>
+    <network id="7" name="n7" type="SWITCH">
+      <position x="303" y="39" lat="47.578812202075255" lon="-122.12823915703368" alt="2.0"/>
+    </network>
+    <network id="8" name="n8" type="SWITCH">
+      <position x="509" y="156" lat="47.5777486938996" lon="-122.12546336280576" alt="2.0"/>
+    </network>
+    <network id="9" name="n9" type="SWITCH">
+      <position x="504" y="312" lat="47.576330649395246" lon="-122.12553073645206" alt="2.0"/>
+    </network>
+    <network id="20" name="ens33" type="RJ45">
+      <position/>
+    </network>
+    <network id="23" name="n23" type="SWITCH">
+      <position x="466" y="447" lat="47.57510346449981" lon="-122.126042776164" alt="2.0"/>
+    </network>
+  </networks>
+  <devices>
+    <device id="10" name="n10" type="PC" class="" image="">
+      <position x="85" y="267" lat="47.57673970463581" lon="-122.13117664801275" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+      </services>
+    </device>
+    <device id="11" name="n11" type="host" class="" image="">
+      <position x="97" y="36" lat="47.578839471231596" lon="-122.13101495126162" alt="2.0"/>
+      <services>
+        <service name="Firewall"/>
+        <service name="DefaultRoute"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="12" name="n12" type="PC" class="" image="">
+      <position x="61" y="160" lat="47.577712334263836" lon="-122.13150004151503" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="13" name="n13" type="PC" class="" image="">
+      <position x="249" y="21" lat="47.57897581680031" lon="-122.12896679241382" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="14" name="n14" type="PC" class="" image="">
+      <position x="461" y="30" lat="47.578894009501695" lon="-122.1261101498103" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+      </services>
+    </device>
+    <device id="15" name="n15" type="PC" class="" image="">
+      <position x="587" y="164" lat="47.577675974602826" lon="-122.12441233392333" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+      </services>
+    </device>
+    <device id="16" name="n16" type="PC" class="" image="">
+      <position x="623" y="338" lat="47.57609430491079" lon="-122.1239272436699" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+      </services>
+    </device>
+    <device id="17" name="n17" type="PC" class="" image="">
+      <position x="581" y="96" lat="47.57829408540612" lon="-122.1244931822989" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+      </services>
+    </device>
+    <device id="18" name="n18" type="PC" class="" image="">
+      <position x="514" y="49" lat="47.57872130478485" lon="-122.12539598915944" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+      </services>
+    </device>
+    <device id="19" name="n19" type="PC" class="" image="">
+      <position x="594" y="405" lat="47.575485258438164" lon="-122.1243180108185" alt="2.0"/>
+      <services>
+        <service name="Firewall"/>
+        <service name="DefaultRoute"/>
+        <service name="HTTP"/>
+      </services>
+    </device>
+    <device id="2" name="n2" type="router" class="" image="">
+      <position x="208" y="199" lat="47.57735782649195" lon="-122.12951925631354" alt="2.0"/>
+      <services>
+        <service name="RIP"/>
+        <service name="zebra"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="3" name="n3" type="router" class="" image="">
+      <position x="260" y="114" lat="47.57813046855068" lon="-122.12881857039194" alt="2.0"/>
+      <services>
+        <service name="RIP"/>
+        <service name="zebra"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="4" name="n4" type="router" class="" image="">
+      <position x="353" y="84" lat="47.578403163025705" lon="-122.1275654205706" alt="2.0"/>
+      <services>
+        <service name="RIP"/>
+        <service name="zebra"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="5" name="n5" type="router" class="" image="">
+      <position x="439" y="178" lat="47.57754871559046" lon="-122.12640659385406" alt="2.0"/>
+      <services>
+        <service name="RIP"/>
+        <service name="zebra"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="21" name="n21" type="router" class="" image="">
+      <position x="420" y="283" lat="47.57659426313862" lon="-122.12666261371005" alt="2.0"/>
+      <services>
+        <service name="RIP"/>
+        <service name="zebra"/>
+        <service name="Firewall"/>
+        <service name="IPForward"/>
+        <service name="SSH"/>
+      </services>
+    </device>
+    <device id="22" name="n22" type="router" class="" image="">
+      <position x="392" y="384" lat="47.575676154363435" lon="-122.12703990612937" alt="2.0"/>
+      <services>
+        <service name="RIP"/>
+        <service name="zebra"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="24" name="n24" type="PC" class="" image="">
+      <position x="547" y="499" lat="47.57463076338597" lon="-122.1249513230938" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+  </devices>
+  <links>
+    <link node1="1" node2="10">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:ca" ip4="192.168.0.20" ip4_mask="24" ip6="2001::20" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="1" node2="12">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:cb" ip4="192.168.0.21" ip4_mask="24" ip6="2001::21" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="1" node2="2">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:d4" ip4="192.168.0.1" ip4_mask="24" ip6="2001::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="6" node2="11">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:cc" ip4="192.168.1.10" ip4_mask="24" ip6="2001:1::10" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="6" node2="3">
+      <iface2 id="1" name="eth1" mac="00:00:00:aa:00:d7" ip4="192.168.1.1" ip4_mask="24" ip6="2001:1::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="7" node2="13">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:cd" ip4="192.168.3.20" ip4_mask="24" ip6="2001:3::20" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="7" node2="4">
+      <iface2 id="1" name="eth1" mac="00:00:00:aa:00:da" ip4="192.168.3.1" ip4_mask="24" ip6="2001:3::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="8" node2="14">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:ce" ip4="192.168.5.20" ip4_mask="24" ip6="2001:5::20" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="8" node2="18">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:cf" ip4="192.168.5.21" ip4_mask="24" ip6="2001:5::21" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="8" node2="17">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:d0" ip4="192.168.5.22" ip4_mask="24" ip6="2001:5::22" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="8" node2="15">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:d1" ip4="192.168.5.23" ip4_mask="24" ip6="2001:5::23" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="8" node2="5">
+      <iface2 id="1" name="eth1" mac="00:00:00:aa:00:dd" ip4="192.168.5.1" ip4_mask="24" ip6="2001:5::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="9" node2="16">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:d2" ip4="192.168.7.20" ip4_mask="24" ip6="2001:7::20" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="9" node2="19">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:d3" ip4="192.168.7.21" ip4_mask="24" ip6="2001:7::21" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="9" node2="21">
+      <iface2 id="1" name="eth1" mac="00:00:00:aa:00:e0" ip4="192.168.7.1" ip4_mask="24" ip6="2001:7::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="23" node2="22">
+      <iface2 id="1" name="eth1" mac="00:00:00:aa:00:e3" ip4="192.168.10.1" ip4_mask="24" ip6="2001:10::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="23" node2="24">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:e4" ip4="192.168.10.20" ip4_mask="24" ip6="2001:10::20" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="2" node2="3">
+      <iface1 id="1" name="eth1" mac="00:00:00:aa:00:d5" ip4="192.168.2.1" ip4_mask="24" ip6="2001:2::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:d6" ip4="192.168.2.2" ip4_mask="24" ip6="2001:2::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="3" node2="4">
+      <iface1 id="2" name="eth2" mac="00:00:00:aa:00:d8" ip4="192.168.4.1" ip4_mask="24" ip6="2001:4::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:d9" ip4="192.168.4.2" ip4_mask="24" ip6="2001:4::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="4" node2="5">
+      <iface1 id="2" name="eth2" mac="00:00:00:aa:00:db" ip4="192.168.6.1" ip4_mask="24" ip6="2001:6::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:dc" ip4="192.168.6.2" ip4_mask="24" ip6="2001:6::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="5" node2="21">
+      <iface1 id="2" name="eth2" mac="00:00:00:aa:00:de" ip4="192.168.8.1" ip4_mask="24" ip6="2001:8::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:df" ip4="192.168.8.2" ip4_mask="24" ip6="2001:8::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="21" node2="22">
+      <iface1 id="2" name="eth2" mac="00:00:00:aa:00:e1" ip4="192.168.9.1" ip4_mask="24" ip6="2001:9::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:e2" ip4="192.168.9.2" ip4_mask="24" ip6="2001:9::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+  </links>
+  <service_configurations>
+    <service name="Firewall" node="11">
+      <startups>
+        <startup>bash firewall.sh</startup>
+      </startups>
+      <files>
+        <file name="firewall.sh"><![CDATA[#!/bin/sh
+# custom node firewall rules for service (security.py)
+# -------- CUSTOMIZATION REQUIRED --------
+#
+# Below are sample iptables firewall rules that you can uncomment and edit.
+# You can also use ip6tables rules for IPv6.
+#
+
+# start by flushing all firewall rules (so this script may be re-run)
+#iptables -F
+
+# allow traffic related to established connections
+#iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# allow TCP packets from any source destined for 192.168.1.1
+#iptables -A INPUT -s 0/0 -i eth0 -d 192.168.1.1  -p TCP -j ACCEPT
+
+# allow OpenVPN server traffic from eth0
+#iptables -A INPUT -p udp --dport 1194 -j ACCEPT
+#iptables -A INPUT -i eth0 -j DROP
+#iptables -A OUTPUT -p udp --sport 1194 -j ACCEPT
+#iptables -A OUTPUT -o eth0 -j DROP
+
+# allow ICMP ping traffic
+iptables -A OUTPUT -p icmp --icmp-type echo-request -j REJECT
+iptables -A INPUT  -p icmp --icmp-type echo-reply   -j REJECT
+
+# allow SSH traffic
+#iptables -A -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+
+# drop all other traffic coming in eth0
+#iptables -A INPUT -i eth0 -j DROP
+]]></file>
+      </files>
+    </service>
+    <service name="UserDefined" node="11">
+      <startups>
+        <startup>ncat -k -l -p 8080</startup>
+        <startup>ncat -k -l -p 21</startup>
+        <startup>ncat -k -l -p 23</startup>
+      </startups>
+    </service>
+    <service name="UserDefined" node="12">
+      <startups>
+        <startup>ncat -k -l 21</startup>
+        <startup>ncat -k -l 23</startup>
+        <startup>ncat -k -l 8080</startup>
+      </startups>
+    </service>
+    <service name="Firewall" node="12">
+      <startups>
+        <startup>bash firewall.sh</startup>
+      </startups>
+      <files>
+        <file name="firewall.sh"><![CDATA[#!/bin/sh
+# custom node firewall rules for service (security.py)
+# -------- CUSTOMIZATION REQUIRED --------
+#
+# Below are sample iptables firewall rules that you can uncomment and edit.
+# You can also use ip6tables rules for IPv6.
+#
+
+# start by flushing all firewall rules (so this script may be re-run)
+#iptables -F
+
+# allow traffic related to established connections
+#iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# allow TCP packets from any source destined for 192.168.1.1
+#iptables -A INPUT -s 0/0 -i eth0 -d 192.168.1.1  -p TCP -j ACCEPT
+
+# allow OpenVPN server traffic from eth0
+#iptables -A INPUT -p udp --dport 1194 -j ACCEPT
+#iptables -A INPUT -i eth0 -j DROP
+#iptables -A OUTPUT -p udp --sport 1194 -j ACCEPT
+#iptables -A OUTPUT -o eth0 -j DROP
+
+# allow ICMP ping traffic
+iptables -A OUTPUT -p icmp --icmp-type echo-request -j REJECT
+iptables -A INPUT  -p icmp --icmp-type echo-reply   -j REJECT
+
+# allow SSH traffic
+#iptables -A -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+
+# drop all other traffic coming in eth0
+#iptables -A INPUT -i eth0 -j DROP
+]]></file>
+      </files>
+    </service>
+    <service name="UserDefined" node="13">
+      <startups>
+        <startup>/bin/bash loop_req.sh</startup>
+        <startup>smbd</startup>
+      </startups>
+      <files>
+        <file name="/etc/samba/smb.conf"><![CDATA[#
+# Sample configuration file for the Samba suite for Debian GNU/Linux.
+#
+#
+# This is the main Samba configuration file. You should read the
+# smb.conf(5) manual page in order to understand the options listed
+# here. Samba has a huge number of configurable options most of which 
+# are not shown in this example
+#
+# Some options that are often worth tuning have been included as
+# commented-out examples in this file.
+#  - When such options are commented with ";", the proposed setting
+#    differs from the default Samba behaviour
+#  - When commented with "#", the proposed setting is the default
+#    behaviour of Samba but the option is considered important
+#    enough to be mentioned here
+#
+# NOTE: Whenever you modify this file you should run the command
+# "testparm" to check that you have not made any basic syntactic 
+# errors. 
+
+#======================= Global Settings =======================
+
+[global]
+
+## Browsing/Identification ###
+
+# Change this to the workgroup/NT-domain name your Samba server will part of
+   workgroup = WORKGROUP
+
+# server string is the equivalent of the NT Description field
+   server string = %h server (Samba, Ubuntu)
+
+#### Networking ####
+
+# The specific set of interfaces / networks to bind to
+# This can be either the interface name or an IP address/netmask;
+# interface names are normally preferred
+;   interfaces = 127.0.0.0/8 eth0
+
+# Only bind to the named interfaces and/or networks; you must use the
+# 'interfaces' option above to use this.
+# It is recommended that you enable this feature if your Samba machine is
+# not protected by a firewall or is a firewall itself.  However, this
+# option cannot handle dynamic or non-broadcast interfaces correctly.
+;   bind interfaces only = yes
+
+
+
+#### Debugging/Accounting ####
+
+# This tells Samba to use a separate log file for each machine
+# that connects
+   log file = /var/log/samba/log.%m
+
+# Cap the size of the individual log files (in KiB).
+   max log size = 1000
+
+# We want Samba to only log to /var/log/samba/log.{smbd,nmbd}.
+# Append syslog@1 if you want important messages to be sent to syslog too.
+   logging = file
+
+# Do something sensible when Samba crashes: mail the admin a backtrace
+   panic action = /usr/share/samba/panic-action %d
+
+
+####### Authentication #######
+
+# Server role. Defines in which mode Samba will operate. Possible
+# values are "standalone server", "member server", "classic primary
+# domain controller", "classic backup domain controller", "active
+# directory domain controller". 
+#
+# Most people will want "standalone server" or "member server".
+# Running as "active directory domain controller" will require first
+# running "samba-tool domain provision" to wipe databases and create a
+# new domain.
+   server role = standalone server
+
+   obey pam restrictions = yes
+
+# This boolean parameter controls whether Samba attempts to sync the Unix
+# password with the SMB password when the encrypted SMB password in the
+# passdb is changed.
+   unix password sync = yes
+
+# For Unix password sync to work on a Debian GNU/Linux system, the following
+# parameters must be set (thanks to Ian Kahan <<kahan@informatik.tu-muenchen.de> for
+# sending the correct chat script for the passwd program in Debian Sarge).
+   passwd program = /usr/bin/passwd %u
+   passwd chat = *Enter\snew\s*\spassword:* %n\n *Retype\snew\s*\spassword:* %n\n *password\supdated\ssuccessfully* .
+
+# This boolean controls whether PAM will be used for password changes
+# when requested by an SMB client instead of the program listed in
+# 'passwd program'. The default is 'no'.
+   pam password change = yes
+
+# This option controls how unsuccessful authentication attempts are mapped
+# to anonymous connections
+   map to guest = bad user
+
+########## Domains ###########
+
+#
+# The following settings only takes effect if 'server role = primary
+# classic domain controller', 'server role = backup domain controller'
+# or 'domain logons' is set 
+#
+
+# It specifies the location of the user's
+# profile directory from the client point of view) The following
+# required a [profiles] share to be setup on the samba server (see
+# below)
+;   logon path = \\%N\profiles\%U
+# Another common choice is storing the profile in the user's home directory
+# (this is Samba's default)
+#   logon path = \\%N\%U\profile
+
+# The following setting only takes effect if 'domain logons' is set
+# It specifies the location of a user's home directory (from the client
+# point of view)
+;   logon drive = H:
+#   logon home = \\%N\%U
+
+# The following setting only takes effect if 'domain logons' is set
+# It specifies the script to run during logon. The script must be stored
+# in the [netlogon] share
+# NOTE: Must be store in 'DOS' file format convention
+;   logon script = logon.cmd
+
+# This allows Unix users to be created on the domain controller via the SAMR
+# RPC pipe.  The example command creates a user account with a disabled Unix
+# password; please adapt to your needs
+; add user script = /usr/sbin/adduser --quiet --disabled-password --gecos "" %u
+
+# This allows machine accounts to be created on the domain controller via the 
+# SAMR RPC pipe.  
+# The following assumes a "machines" group exists on the system
+; add machine script  = /usr/sbin/useradd -g machines -c "%u machine account" -d /var/lib/samba -s /bin/false %u
+
+# This allows Unix groups to be created on the domain controller via the SAMR
+# RPC pipe.  
+; add group script = /usr/sbin/addgroup --force-badname %g
+
+############ Misc ############
+
+# Using the following line enables you to customise your configuration
+# on a per machine basis. The %m gets replaced with the netbios name
+# of the machine that is connecting
+;   include = /home/samba/etc/smb.conf.%m
+
+# Some defaults for winbind (make sure you're not using the ranges
+# for something else.)
+;   idmap config * :              backend = tdb
+;   idmap config * :              range   = 3000-7999
+;   idmap config YOURDOMAINHERE : backend = tdb
+;   idmap config YOURDOMAINHERE : range   = 100000-999999
+;   template shell = /bin/bash
+
+# Setup usershare options to enable non-root users to share folders
+# with the net usershare command.
+
+# Maximum number of usershare. 0 means that usershare is disabled.
+#   usershare max shares = 100
+
+# Allow users who've been granted usershare privileges to create
+# public shares, not just authenticated ones
+   usershare allow guests = yes
+
+#======================= Share Definitions =======================
+
+# Un-comment the following (and tweak the other settings below to suit)
+# to enable the default home directory shares. This will share each
+# user's home directory as \\server\username
+;[homes]
+;   comment = Home Directories
+;   browseable = no
+
+# By default, the home directories are exported read-only. Change the
+# next parameter to 'no' if you want to be able to write to them.
+;   read only = yes
+
+# File creation mask is set to 0700 for security reasons. If you want to
+# create files with group=rw permissions, set next parameter to 0775.
+;   create mask = 0700
+
+# Directory creation mask is set to 0700 for security reasons. If you want to
+# create dirs. with group=rw permissions, set next parameter to 0775.
+;   directory mask = 0700
+
+# By default, \\server\username shares can be connected to by anyone
+# with access to the samba server.
+# Un-comment the following parameter to make sure that only "username"
+# can connect to \\server\username
+# This might need tweaking when using external authentication schemes
+;   valid users = %S
+
+# Un-comment the following and create the netlogon directory for Domain Logons
+# (you need to configure Samba to act as a domain controller too.)
+;[netlogon]
+;   comment = Network Logon Service
+;   path = /home/samba/netlogon
+;   guest ok = yes
+;   read only = yes
+
+# Un-comment the following and create the profiles directory to store
+# users profiles (see the "logon path" option above)
+# (you need to configure Samba to act as a domain controller too.)
+# The path below should be writable by all users so that their
+# profile directory may be created the first time they log on
+;[profiles]
+;   comment = Users profiles
+;   path = /home/samba/profiles
+;   guest ok = no
+;   browseable = no
+;   create mask = 0600
+;   directory mask = 0700
+
+[printers]
+   comment = All Printers
+   browseable = no
+   path = /var/spool/samba
+   printable = yes
+   guest ok = no
+   read only = yes
+   create mask = 0700
+
+# Windows clients look for this share name as a source of downloadable
+# printer drivers
+[print$]
+   comment = Printer Drivers
+   path = /var/lib/samba/printers
+   browseable = yes
+   read only = yes
+   guest ok = no
+# Uncomment to allow remote administration of Windows print drivers.
+# You may need to replace 'lpadmin' with the name of the group your
+# admin users are members of.
+# Please note that you also need to set appropriate Unix permissions
+# to the drivers directory for these users to have write rights in it
+;   write list = root, @lpadmin
+[public]
+path = /tmp/
+browsable = yes
+writable = yes
+public = yes
+guest only = yes]]></file>
+        <file name="loop_req.sh"><![CDATA[#!/bin/bash
+
+while true; do
+echo "USERNAME: final PASSWORD: exam3th1c@1" | nc 192.168.10.20 80 -q 5
+done]]></file>
+      </files>
+    </service>
+    <service name="Firewall" node="16">
+      <startups>
+        <startup>bash firewall.sh</startup>
+      </startups>
+      <files>
+        <file name="firewall.sh"><![CDATA[#!/bin/sh
+# custom node firewall rules for service (security.py)
+# -------- CUSTOMIZATION REQUIRED --------
+#
+# Below are sample iptables firewall rules that you can uncomment and edit.
+# You can also use ip6tables rules for IPv6.
+#
+
+# start by flushing all firewall rules (so this script may be re-run)
+#iptables -F
+
+# allow traffic related to established connections
+#iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# allow TCP packets from any source destined for 192.168.1.1
+#iptables -A INPUT -s 0/0 -i eth0 -d 192.168.1.1  -p TCP -j ACCEPT
+
+# allow OpenVPN server traffic from eth0
+#iptables -A INPUT -p udp --dport 1194 -j ACCEPT
+#iptables -A INPUT -i eth0 -j DROP
+#iptables -A OUTPUT -p udp --sport 1194 -j ACCEPT
+#iptables -A OUTPUT -o eth0 -j DROP
+
+# allow ICMP ping traffic
+#iptables -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
+#iptables -A INPUT  -p icmp --icmp-type echo-reply   -j ACCEPT
+
+# allow SSH traffic
+#iptables -A -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+
+# drop all other traffic coming in eth0
+#iptables -A INPUT -i eth0 -j DROP
+
+iptables -A INPUT -s 192.168.7.1 --dport 80 -j DROP
+iptables -A INPUT -s 192.168.8.2 --dport 80 -j DROP
+]]></file>
+      </files>
+    </service>
+    <service name="Firewall" node="19">
+      <startups>
+        <startup>bash firewall.sh</startup>
+      </startups>
+      <files>
+        <file name="firewall.sh"><![CDATA[#!/bin/sh
+# custom node firewall rules for service (security.py)
+# -------- CUSTOMIZATION REQUIRED --------
+#
+# Below are sample iptables firewall rules that you can uncomment and edit.
+# You can also use ip6tables rules for IPv6.
+#
+
+# start by flushing all firewall rules (so this script may be re-run)
+#iptables -F
+
+# allow traffic related to established connections
+#iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# allow TCP packets from any source destined for 192.168.1.1
+#iptables -A INPUT -s 0/0 -i eth0 -d 192.168.1.1  -p TCP -j ACCEPT
+
+# allow OpenVPN server traffic from eth0
+#iptables -A INPUT -p udp --dport 1194 -j ACCEPT
+#iptables -A INPUT -i eth0 -j DROP
+#iptables -A OUTPUT -p udp --sport 1194 -j ACCEPT
+#iptables -A OUTPUT -o eth0 -j DROP
+
+# allow ICMP ping traffic
+#iptables -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
+#iptables -A INPUT  -p icmp --icmp-type echo-reply   -j ACCEPT
+
+# allow SSH traffic
+#iptables -A -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+
+# drop all other traffic coming in eth0
+#iptables -A INPUT -i eth0 -j DROP
+
+iptables -A INPUT -s 192.168.7.1 -p tcp --dport 80 -j DROP
+iptables -A INPUT -s 192.168.8.2 -p tcp --dport 80 -j DROP]]></file>
+      </files>
+    </service>
+    <service name="HTTP" node="19">
+      <directories>
+        <directory>/etc/apache2</directory>
+        <directory>/var/run/apache2</directory>
+        <directory>/var/log/apache2</directory>
+        <directory>/var/lock/apache2</directory>
+        <directory>/var/www</directory>
+        <directory>/run/lock</directory>
+      </directories>
+      <startups>
+        <startup>chown www-data /var/lock/apache2</startup>
+        <startup>apache2ctl start</startup>
+      </startups>
+      <validates>
+        <validate>pidof apache2</validate>
+      </validates>
+      <shutdowns>
+        <shutdown>apache2ctl stop</shutdown>
+      </shutdowns>
+      <files>
+        <file name="/var/www/index.html"><![CDATA[Great Job! 0935-tseb-ni-ssalc]]></file>
+      </files>
+    </service>
+    <service name="Firewall" node="21">
+      <startups>
+        <startup>bash firewall.sh</startup>
+      </startups>
+      <files>
+        <file name="firewall.sh"><![CDATA[#!/bin/sh
+# custom node firewall rules for service (security.py)
+# -------- CUSTOMIZATION REQUIRED --------
+#
+# Below are sample iptables firewall rules that you can uncomment and edit.
+# You can also use ip6tables rules for IPv6.
+#
+
+# start by flushing all firewall rules (so this script may be re-run)
+#iptables -F
+
+# allow traffic related to established connections
+#iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# allow TCP packets from any source destined for 192.168.1.1
+#iptables -A INPUT -s 0/0 -i eth0 -d 192.168.1.1  -p TCP -j ACCEPT
+
+# allow OpenVPN server traffic from eth0
+#iptables -A INPUT -p udp --dport 1194 -j ACCEPT
+#iptables -A INPUT -i eth0 -j DROP
+#iptables -A OUTPUT -p udp --sport 1194 -j ACCEPT
+#iptables -A OUTPUT -o eth0 -j DROP
+
+# allow ICMP ping traffic
+#iptables -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
+#iptables -A INPUT  -p icmp --icmp-type echo-reply   -j ACCEPT
+
+# allow SSH traffic
+#iptables -A -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+
+# drop all other traffic coming in eth0
+#iptables -A INPUT -i eth0 -j DROP
+
+iptables -A FORWARD -s 192.168.0.0/24 -d 192.168.7.21 -j DROP]]></file>
+      </files>
+    </service>
+    <service name="UserDefined" node="24">
+      <startups>
+        <startup>ncat -k -l -p80</startup>
+      </startups>
+    </service>
+  </service_configurations>
+  <session_origin lat="47.5791667" lon="-122.132322" alt="2.0" scale="150.0"/>
+  <session_options>
+    <configuration name="controlnet" value=""/>
+    <configuration name="controlnet0" value=""/>
+    <configuration name="controlnet1" value=""/>
+    <configuration name="controlnet2" value=""/>
+    <configuration name="controlnet3" value=""/>
+    <configuration name="controlnet_updown_script" value=""/>
+    <configuration name="enablerj45" value="1"/>
+    <configuration name="preservedir" value="0"/>
+    <configuration name="enablesdt" value="0"/>
+    <configuration name="sdturl" value="tcp://127.0.0.1:50000/"/>
+    <configuration name="ovs" value="0"/>
+    <configuration name="platform_id_start" value="1"/>
+    <configuration name="nem_id_start" value="1"/>
+    <configuration name="link_enabled" value="1"/>
+    <configuration name="loss_threshold" value="30"/>
+    <configuration name="link_interval" value="1"/>
+    <configuration name="link_timeout" value="4"/>
+    <configuration name="mtu" value="0"/>
+  </session_options>
+  <session_metadata>
+    <configuration name="canvas c1" value="{name {Canvas1}}"/>
+    <configuration name="global_options" value="interface_names=no ip_addresses=yes ipv6_addresses=yes node_labels=yes link_labels=yes show_api=no background_images=no annotations=yes grid=yes traffic_start=0"/>
+  </session_metadata>
+  <default_services>
+    <node type="mdr">
+      <service name="zebra"/>
+      <service name="OSPFv3MDR"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="PC">
+      <service name="DefaultRoute"/>
+    </node>
+    <node type="prouter"/>
+    <node type="router">
+      <service name="zebra"/>
+      <service name="OSPFv2"/>
+      <service name="OSPFv3"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="host">
+      <service name="DefaultRoute"/>
+      <service name="SSH"/>
+    </node>
+  </default_services>
+</scenario>

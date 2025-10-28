@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edit: {{ name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    table#csvTable td[contenteditable="true"] { outline: none; min-width: 120px; }
+    table#csvTable th { position: sticky; top: 0; background: #f8f9fa; }
+    table#csvTable td.index-cell, table#csvTable th.index-head { background: #f1f3f5; color: #6c757d; font-weight: 600; width: 64px; text-align: right; }
+    table#csvTable td.selected { outline: 2px solid #ffca2c; }
+    .table-wrap { max-height: 70vh; overflow: auto; }
+    td.invalid, th.invalid { background: #ffe3e3 !important; }
+    td.warning { background: #fff3cd !important; }
+    .nav-link.core-link, .btn.core-link { font-weight: 600; color: #0d6efd !important; border: 1px solid rgba(13,110,253,.2); border-radius: .25rem; }
+    .btn.core-link .bi { margin-right: .25rem; }
+  </style>
+</head>
+<body class="p-3" data-sid="{{ sid }}" data-name="{{ name }}">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center justify-content-between bg-primary text-white rounded-top shadow-sm px-3 py-2">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-table"></i>
+        <h5 class="mb-0">Editing: {{ name }}</h5>
+      </div>
+      <div class="d-flex align-items-center gap-2 small">
+        <a class="btn btn-sm btn-outline-light" href="{{ url_for('data_sources_page') }}">Back</a>
+        <a class="btn btn-sm btn-outline-light" href="{{ url_for('reports_page') }}">Reports</a>
+        <a class="btn btn-sm btn-outline-light core-link" href="{{ url_for('core_page') }}"><i class="bi bi-diagram-3-fill"></i> CORE</a>
+        {% if current_user and current_user.role == 'admin' %}
+        <div class="dropdown ms-2">
+          <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Settings
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{{ url_for('users_page') }}">Users</a></li>
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="border rounded-bottom shadow-sm p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <small class="text-muted">File: {{ path }}</small>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <div class="input-group input-group-sm" style="width: 280px;">
+            <span class="input-group-text"><i class="bi bi-funnel"></i></span>
+            <input type="text" class="form-control" id="filterInput" placeholder="Filter (text or /regex/)" />
+            <button class="btn btn-outline-secondary" type="button" id="clearFilterBtn">Clear</button>
+          </div>
+          <button class="btn btn-success btn-sm" id="saveBtn"><i class="bi bi-save"></i> Save</button>
+          <button class="btn btn-outline-secondary btn-sm" id="undoBtn" disabled><i class="bi bi-arrow-counterclockwise"></i></button>
+          <button class="btn btn-outline-secondary btn-sm" id="redoBtn" disabled><i class="bi bi-arrow-clockwise"></i></button>
+          <button class="btn btn-outline-secondary btn-sm" id="addRowBtn">Add Row</button>
+          <button class="btn btn-outline-secondary btn-sm" id="addColBtn">Add Column</button>
+          <button class="btn btn-outline-danger btn-sm" id="delRowBtn">Delete Row</button>
+          <button class="btn btn-outline-danger btn-sm" id="delColBtn">Delete Column</button>
+          <button class="btn btn-outline-primary btn-sm" id="downloadBtn">Download</button>
+        </div>
+      </div>
+      <div class="row g-2 mb-2 small" id="legendRow">
+        <div class="col-auto"><span class="badge text-bg-danger">Invalid</span> required empty or bad enum</div>
+        <div class="col-auto"><span class="badge text-bg-warning text-dark">Warning</span> suspicious path/URL</div>
+        <div class="col-auto"><span class="badge text-bg-secondary">*</span> unsaved changes</div>
+      </div>
+      <div class="table-wrap">
+        <table class="table table-sm table-bordered align-middle" id="csvTable">
+          <thead>
+            <tr id="theadRow">
+              <th class="index-head">#</th>
+              {% if rows and rows|length > 0 %}
+                {% for h in rows[0] %}
+                  <th contenteditable="true">{{ h }}</th>
+                {% endfor %}
+              {% else %}
+                <th contenteditable="true">Header1</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            {% for r in rows[1:] %}
+              <tr>
+                <td class="index-cell" data-nondata="1">{{ loop.index }}</td>
+                {% for c in r %}
+                  <td contenteditable="true">{{ c }}</td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mt-2">
+        <div id="saveStatus" class="small text-muted"></div>
+        <div id="selStatus" class="small text-muted"></div>
+        <div id="metaBadge" class="small"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const sid = document.body.getAttribute('data-sid');
+    const INDEX_COL = 0; // non-data index column
+    let selectedCell = null;
+    const TYPE_OPTIONS = ['artifact','docker','docker-compose','misconfig','incompetence'];
+    const VECTOR_OPTIONS = ['local','remote'];
+    let dirty = false;
+    const undoStack = [];
+    const redoStack = [];
+    const MAX_STACK = 100;
+    function markDirty(){
+      if(!dirty){ dirty = true; document.title = '* ' + document.title; document.getElementById('saveStatus').classList.remove('text-success','text-danger'); }
+      updateUndoRedoButtons();
+    }
+    function clearDirty(){ dirty=false; document.title = document.title.replace(/^\*\s+/,''); updateUndoRedoButtons(); }
+    function snapshot(){
+      const rows = currentData();
+      return JSON.stringify(rows);
+    }
+    function pushUndo(){
+      undoStack.push(snapshot());
+      if(undoStack.length>MAX_STACK) undoStack.shift();
+      redoStack.length = 0;
+      updateUndoRedoButtons();
+    }
+    function restoreFrom(dataJson){
+      try {
+        const rows = JSON.parse(dataJson);
+        // rebuild table (except index column)
+        const thead = document.getElementById('theadRow');
+        // remove all current non-index headers
+        Array.from(thead.querySelectorAll('th')).forEach((th,i)=>{ if(i!==INDEX_COL) th.remove(); });
+        rows[0].forEach(h=>{ const th=document.createElement('th'); th.contentEditable='true'; th.textContent=h; thead.appendChild(th); });
+        const tbody = document.getElementById('tbody');
+        tbody.innerHTML='';
+        rows.slice(1).forEach(r => {
+          const tr = document.createElement('tr');
+          const idxTd = document.createElement('td'); idxTd.className='index-cell'; idxTd.setAttribute('data-nondata','1'); tr.appendChild(idxTd);
+          r.forEach((v,ci) => {
+            const td = document.createElement('td');
+            td.textContent = v;
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        upgradeCellsToInputs();
+        renumber();
+        updateMeta();
+      } catch(e) { console.error('restore failed', e); }
+    }
+    function doUndo(){
+      if(!undoStack.length) return;
+      const cur = snapshot();
+      const prev = undoStack.pop();
+      redoStack.push(cur);
+      restoreFrom(prev);
+      markDirty();
+    }
+    function doRedo(){
+      if(!redoStack.length) return;
+      const cur = snapshot();
+      const next = redoStack.pop();
+      undoStack.push(cur);
+      restoreFrom(next);
+      markDirty();
+    }
+    function updateUndoRedoButtons(){
+      document.getElementById('undoBtn').disabled = undoStack.length===0;
+      document.getElementById('redoBtn').disabled = redoStack.length===0;
+    }
+    // Header drag & drop
+    let dragSrcTh = null;
+    function enableHeaderDrag(){
+      const ths = Array.from(document.querySelectorAll('#theadRow th'));
+      ths.forEach((th,i)=>{
+        if(i===INDEX_COL) return; // skip index
+        th.setAttribute('draggable','true');
+        th.addEventListener('dragstart', (e)=>{
+          dragSrcTh = th;
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', i.toString());
+          th.classList.add('opacity-50');
+        });
+        th.addEventListener('dragend', ()=>{ th.classList.remove('opacity-50'); dragSrcTh=null; });
+        th.addEventListener('dragover', (e)=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; });
+        th.addEventListener('drop', (e)=>{
+          e.preventDefault();
+          const fromIndex = parseInt(e.dataTransfer.getData('text/plain'),10);
+          const toIndex = Array.from(th.parentElement.children).indexOf(th);
+          if(fromIndex===toIndex || fromIndex===INDEX_COL || toIndex===INDEX_COL) return;
+          reorderColumns(fromIndex, toIndex);
+        });
+      });
+    }
+    function reorderColumns(fromIdx, toIdx){
+      pushUndo();
+      const theadRow = document.getElementById('theadRow');
+      const ths = Array.from(theadRow.children);
+      const movingTh = ths[fromIdx];
+      if(!movingTh) return;
+      if(toIdx >= ths.length){ theadRow.appendChild(movingTh); }
+      else if(fromIdx < toIdx){ theadRow.insertBefore(movingTh, ths[toIdx].nextSibling); }
+      else { theadRow.insertBefore(movingTh, ths[toIdx]); }
+      // Reorder each row's corresponding td
+      document.querySelectorAll('#tbody tr').forEach(tr => {
+        const tds = Array.from(tr.children);
+        const movingTd = tds[fromIdx];
+        if(!movingTd) return;
+        if(toIdx >= tds.length){ tr.appendChild(movingTd); }
+        else if(fromIdx < toIdx){ tr.insertBefore(movingTd, tds[toIdx].nextSibling); }
+        else { tr.insertBefore(movingTd, tds[toIdx]); }
+      });
+      upgradeCellsToInputs();
+      updateMeta();
+      markDirty();
+      enableHeaderDrag(); // rebind
+      persistHeaderOrder();
+    }
+    function persistHeaderOrder(){
+      const headers = Array.from(document.querySelectorAll('#theadRow th')).map((th,i)=>({i,v:(th.textContent||'').trim()})).filter(h=>h.i!==INDEX_COL).map(h=>h.v);
+      try { localStorage.setItem('ds_hdr_'+sid, JSON.stringify(headers)); } catch(e){}
+    }
+    function applyStoredHeaderOrder(){
+      try {
+        const raw = localStorage.getItem('ds_hdr_'+sid);
+        if(!raw) return;
+        const stored = JSON.parse(raw);
+        const current = Array.from(document.querySelectorAll('#theadRow th')).map((th,i)=>({i,v:(th.textContent||'').trim()})).filter(h=>h.i!==INDEX_COL).map(h=>h.v);
+        // only apply if sets match
+        const setStored = new Set(stored);
+        const setCurrent = new Set(current);
+        if(setStored.size !== setCurrent.size) return;
+        for(const h of setStored){ if(!setCurrent.has(h)) return; }
+        // Rebuild headers in stored order
+        const thead = document.getElementById('theadRow');
+        const indexTh = thead.querySelector('th');
+        const hdrMap = {};
+        Array.from(thead.querySelectorAll('th')).forEach((th,i)=>{ if(i!==INDEX_COL) hdrMap[(th.textContent||'').trim()] = th; });
+        // capture body rows data by header name
+        const bodyRows = Array.from(document.querySelectorAll('#tbody tr')).map(tr => {
+          const obj = {};
+            Array.from(tr.children).forEach((td,i)=>{ if(i!==INDEX_COL){ const hName = (thead.children[i].textContent||'').trim(); obj[hName] = td; }});
+            return { tr, obj };
+        });
+        // remove all non-index headers
+        Array.from(thead.querySelectorAll('th')).forEach((th,i)=>{ if(i!==INDEX_COL) th.remove(); });
+        // append headers in order
+        stored.forEach(h => { const th = hdrMap[h]; if(th){ thead.appendChild(th); }});
+        // reorder each body row's tds to match stored order
+        bodyRows.forEach(({tr,obj}) => {
+          // remove existing data tds
+          Array.from(tr.querySelectorAll('td')).forEach((td,i)=>{ if(i!==INDEX_COL) td.remove(); });
+          stored.forEach(h => { const td = obj[h]; if(td) tr.appendChild(td); });
+        });
+        upgradeCellsToInputs();
+      } catch(e) { console.warn('applyStoredHeaderOrder failed', e); }
+    }
+    window.addEventListener('beforeunload', (e) => {
+      if (dirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    });
+    function headerIndex(name){
+      const ths = Array.from(document.querySelectorAll('#theadRow th'));
+      for(let i=0;i<ths.length;i++){
+        if(i===INDEX_COL) continue;
+        if((ths[i].textContent||'').trim() === name) return i;
+      }
+      return -1;
+    }
+    function isTypeCol(i){ const th = document.querySelectorAll('#theadRow th')[i]; return th && (th.textContent||'').trim()==='Type'; }
+    function isVectorCol(i){ const th = document.querySelectorAll('#theadRow th')[i]; return th && (th.textContent||'').trim()==='Vector'; }
+    function makeTypeSelect(value){
+      const sel = document.createElement('select');
+      sel.className = 'form-select form-select-sm';
+      TYPE_OPTIONS.forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; if((value||'').toLowerCase()===v) o.selected=true; sel.appendChild(o); });
+      return sel;
+    }
+    function makeVectorSelect(value){
+      const sel = document.createElement('select');
+      sel.className = 'form-select form-select-sm';
+      VECTOR_OPTIONS.forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; if((value||'').toLowerCase()===v) o.selected=true; sel.appendChild(o); });
+      return sel;
+    }
+    function upgradeCellsToInputs(){
+      const rows = document.querySelectorAll('#tbody tr');
+      rows.forEach(tr => {
+        Array.from(tr.children).forEach((td, idx) => {
+          if (idx===INDEX_COL) return;
+          if (td.querySelector('select')) return; // already processed
+          const raw = (td.textContent||'').trim();
+          if (isTypeCol(idx)) { td.textContent=''; td.appendChild(makeTypeSelect(raw)); }
+          else if (isVectorCol(idx)) { td.textContent=''; td.appendChild(makeVectorSelect(raw)); }
+          else { td.contentEditable = 'true'; }
+        });
+      });
+    }
+    function currentData() {
+      const table = document.getElementById('csvTable');
+      const headCells = Array.from(document.querySelectorAll('#theadRow th'));
+      const bodyRows = Array.from(document.querySelectorAll('#tbody tr'));
+      const rows = [];
+      const headers = headCells
+        .map((th, i) => ({ i, v: th.textContent ?? '' }))
+        .filter(h => h.i !== INDEX_COL)
+        .map(h => h.v);
+      rows.push(headers);
+      bodyRows.forEach(tr => {
+        const cells = Array.from(tr.querySelectorAll('td'))
+          .map((td, i) => {
+            if (i===INDEX_COL) return { i, v: '' };
+            const sel = td.querySelector('select');
+            if (sel) return { i, v: sel.value };
+            return { i, v: td.textContent ?? '' };
+          })
+          .filter(c => c.i !== INDEX_COL)
+          .map(c => c.v);
+        rows.push(cells);
+      });
+      return rows;
+    }
+    function setStatus(msg, ok=true){
+      const el = document.getElementById('saveStatus');
+      el.textContent = msg;
+      el.classList.toggle('text-success', ok);
+      el.classList.toggle('text-danger', !ok);
+    }
+    function updateMeta(){
+      const hv = headersValid();
+      const bodyRows = document.querySelectorAll('#tbody tr');
+      const el = document.getElementById('metaBadge');
+      const visible = Array.from(bodyRows).filter(tr => tr.style.display !== 'none').length;
+      const msg = `${visible}/${bodyRows.length} shown | ${hv.ok ? 'VALID' : 'INVALID: '+hv.msg}`;
+      el.textContent = msg;
+      el.className = 'small ' + (hv.ok ? 'text-success' : 'text-danger');
+      runCellValidation();
+    }
+    function getCellValue(td){
+      const sel = td.querySelector('select');
+      if (sel) return sel.value || '';
+      return (td.textContent||'').trim();
+    }
+    function rowMatchesFilter(tr, filterRaw){
+      if (!filterRaw) return true;
+      let regex = null; let text = null; const val = filterRaw.trim();
+      if (val.length >= 2 && val.startsWith('/') && val.endsWith('/')){
+        try { regex = new RegExp(val.slice(1, -1), 'i'); } catch(e){ regex = null; }
+      }
+      if (!regex) text = val.toLowerCase();
+      const tds = Array.from(tr.querySelectorAll('td')).slice(1);
+      for (const td of tds){
+        const v = getCellValue(td);
+        if (regex){ if (regex.test(v)) return true; }
+        else { if ((v||'').toLowerCase().includes(text)) return true; }
+      }
+      return false;
+    }
+    function applyFilter(skipPersist){
+      const inp = document.getElementById('filterInput');
+      if (!inp) return;
+      const val = inp.value || '';
+      const isRegex = (val.trim().length>=2 && val.trim().startsWith('/') && val.trim().endsWith('/'));
+      if (isRegex){
+        try { new RegExp(val.trim().slice(1,-1)); inp.classList.remove('is-invalid'); }
+        catch(e){ inp.classList.add('is-invalid'); }
+      } else { inp.classList.remove('is-invalid'); }
+      const rows = Array.from(document.querySelectorAll('#tbody tr'));
+      rows.forEach(tr => { tr.style.display = rowMatchesFilter(tr, val) ? '' : 'none'; });
+      if (!skipPersist){ try { localStorage.setItem('ds_filter_'+sid, val); } catch(e){} }
+    }
+    function runCellValidation(){
+      // Clear previous marks
+      document.querySelectorAll('#csvTable td, #csvTable th').forEach(c=>{c.classList.remove('invalid','warning'); c.removeAttribute('title');});
+      // Determine column indices dynamically (supports re-ordered columns)
+      const idxName = headerIndex('Name');
+      const idxPath = headerIndex('Path');
+      const idxType = headerIndex('Type');
+      const idxStartup = headerIndex('Startup');
+      const idxVector = headerIndex('Vector');
+      const requiredIdx = [idxName, idxPath, idxType, idxStartup, idxVector].filter(i=>i>=0);
+      // Mark header issues
+      if (idxName < 0 || idxPath < 0 || idxType < 0 || idxStartup < 0 || idxVector < 0){
+        // Missing required header(s) -> mark invalid headers
+        const ths = document.querySelectorAll('#theadRow th');
+        ths.forEach((th,i)=>{ if(i!==INDEX_COL && !ths[i].textContent.trim()) th.classList.add('invalid'); });
+        return; // can't validate rows without required headers
+      }
+      const TYPE_SET = new Set(TYPE_OPTIONS);
+      const VECTOR_SET = new Set(VECTOR_OPTIONS);
+      const pathRegexLocal = /^(\.{1,2}\/[\w.@%\-\/]+|\/[\w.@%\-\/]+)$/; // relative or absolute unix-ish
+      const urlRegex = /^(https?:)\/\/[\w\-._~%]+(:\d+)?(\/[^\s]*)?$/i;
+      const ipRegex = /^(https?:\/\/)?(\d{1,3}\.){3}\d{1,3}(:\d+)?(\/[^\s]*)?$/;
+      // Validate each row
+      document.querySelectorAll('#tbody tr').forEach(tr => {
+        const tds = tr.querySelectorAll('td');
+        requiredIdx.forEach(i => {
+            const cell = tds[i];
+            if (!cell) return;
+            const val = cell.querySelector('select') ? cell.querySelector('select').value : (cell.textContent||'').trim();
+            if (!val) cell.classList.add('invalid');
+        });
+        // Type value
+        const typeCell = tds[idxType];
+        if (typeCell){
+          const v = typeCell.querySelector('select') ? typeCell.querySelector('select').value : (typeCell.textContent||'').trim();
+          if (v && !TYPE_SET.has(v.toLowerCase())) typeCell.classList.add('invalid');
+        }
+        // Vector value
+        const vecCell = tds[idxVector];
+        if (vecCell){
+          const v = vecCell.querySelector('select') ? vecCell.querySelector('select').value : (vecCell.textContent||'').trim();
+          if (v && !VECTOR_SET.has(v.toLowerCase())) vecCell.classList.add('invalid');
+        }
+        // Path heuristics
+        if (idxPath>=0){
+          const pCell = tds[idxPath];
+          if (pCell){
+            const pVal = (pCell.textContent||'').trim();
+            if (pVal){
+              let reason = '';
+              if (urlRegex.test(pVal)) {
+                // ok URL
+              } else if (ipRegex.test(pVal)) {
+                // possibly URL without scheme
+                pCell.classList.add('warning');
+                reason = 'Possible URL missing scheme (http/https)';
+              } else if (pathRegexLocal.test(pVal)) {
+                // looks like local path
+              } else {
+                pCell.classList.add('warning');
+                reason = 'Unrecognized path/URL pattern';
+              }
+              if (reason) pCell.setAttribute('title', reason);
+            }
+          }
+        }
+      });
+    }
+    function setSelStatus(text){
+      const el = document.getElementById('selStatus');
+      el.textContent = text || '';
+    }
+    function renumber(){
+      const rows = Array.from(document.querySelectorAll('#tbody tr'));
+      let shown = 0;
+      rows.forEach(tr => {
+        const idxCell = tr.querySelector('td');
+        if (!idxCell || !idxCell.hasAttribute('data-nondata')) return;
+        if (tr.style.display === 'none') idxCell.textContent = '';
+        else { shown += 1; idxCell.textContent = String(shown); }
+      });
+    }
+    function headersValid(){
+      const ths = Array.from(document.querySelectorAll('#theadRow th'));
+      const headers = ths.map((th,i)=>({i,v:(th.textContent||'').trim()})).filter(h=>h.i!==INDEX_COL).map(h=>h.v);
+      if (headers.length === 0) return { ok:false, msg:'No headers defined' };
+      if (headers.some(h => h === '')) return { ok:false, msg:'Headers must not be empty' };
+      const set = new Set(headers);
+      if (set.size !== headers.length) return { ok:false, msg:'Headers must be unique' };
+      return { ok:true };
+    }
+    function clearSelection(){
+      document.querySelectorAll('#csvTable td.selected').forEach(td=>td.classList.remove('selected'));
+      selectedCell = null;
+      setSelStatus('');
+    }
+    function selectCell(td){
+      clearSelection();
+      if (!td || td.getAttribute('data-nondata') === '1') return;
+      td.classList.add('selected');
+      selectedCell = td;
+      // compute coordinates
+      const tr = td.parentElement;
+      const rowIndex = Array.from(tr.parentElement.children).indexOf(tr); // 0-based in tbody
+      const colIndex = Array.from(tr.children).indexOf(td); // includes index col
+      setSelStatus(`Selected: row ${rowIndex+1}, col ${colIndex} (data col ${colIndex-INDEX_COL})`);
+    }
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+      const hv = headersValid();
+      if (!hv.ok){ setStatus(hv.msg, false); return; }
+      if (!confirm('Overwrite the CSV file with current table contents?')) return;
+      const rows = currentData();
+      try {
+        const res = await fetch(`/data_sources/save/${encodeURIComponent(sid)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rows })
+        });
+        const j = await res.json();
+        if (j.ok){ setStatus('Saved successfully.', true); clearDirty(); }
+        else setStatus('Save failed: ' + (j.error || 'unknown'), false);
+      } catch (e) {
+        setStatus('Save failed: ' + e.message, false);
+      }
+    });
+    document.getElementById('addRowBtn').addEventListener('click', () => {
+      pushUndo();
+      const headCells = document.querySelectorAll('#theadRow th');
+      const cols = Math.max((headCells.length - 1), 1);
+      const tr = document.createElement('tr');
+      const idxTd = document.createElement('td'); idxTd.className='index-cell'; idxTd.setAttribute('data-nondata','1'); tr.appendChild(idxTd);
+      for (let i=0; i<cols; i++) {
+        const td = document.createElement('td');
+        const colIndex = i + 1; // data column's actual th index (accounting for index col)
+        if (isTypeCol(colIndex)) td.appendChild(makeTypeSelect(''));
+        else if (isVectorCol(colIndex)) td.appendChild(makeVectorSelect(''));
+        else td.contentEditable = 'true';
+        tr.appendChild(td);
+      }
+      document.getElementById('tbody').appendChild(tr);
+      applyFilter();
+      renumber();
+      updateMeta();
+      markDirty();
+    });
+    document.getElementById('addColBtn').addEventListener('click', () => {
+      pushUndo();
+      const th = document.createElement('th');
+      th.contentEditable = 'true';
+      th.textContent = '';
+      document.getElementById('theadRow').appendChild(th);
+      document.querySelectorAll('#tbody tr').forEach(tr => {
+        const td = document.createElement('td');
+        // Last column = newly added header
+        const ths = document.querySelectorAll('#theadRow th');
+        const newIdx = ths.length - 1; // index of new column including index col
+        if (isTypeCol(newIdx)) td.appendChild(makeTypeSelect(''));
+        else if (isVectorCol(newIdx)) td.appendChild(makeVectorSelect(''));
+        else td.contentEditable = 'true';
+        tr.appendChild(td);
+      });
+      updateMeta();
+      markDirty();
+    });
+    document.getElementById('delRowBtn').addEventListener('click', () => {
+      if (!selectedCell){ setStatus('Select a cell in the row to delete.', false); return; }
+      pushUndo();
+      const tr = selectedCell.parentElement;
+      tr.remove();
+      clearSelection();
+      renumber();
+      markDirty();
+    });
+    document.getElementById('delColBtn').addEventListener('click', () => {
+      if (!selectedCell){ setStatus('Select a cell in the column to delete.', false); return; }
+      const tr = selectedCell.parentElement;
+      const colIndex = Array.from(tr.children).indexOf(selectedCell); // includes index col
+      if (colIndex === INDEX_COL){ setStatus('Cannot delete index column.', false); return; }
+      pushUndo();
+      // Remove header at the same data column index
+      const thead = document.getElementById('theadRow');
+      if (thead.children[colIndex]) thead.children[colIndex].remove();
+      // Remove from body
+      document.querySelectorAll('#tbody tr').forEach(r => { const c = r.children[colIndex]; if (c) c.remove(); });
+      clearSelection();
+      applyFilter();
+      updateMeta();
+      markDirty();
+    });
+    // Cell selection
+    document.getElementById('csvTable').addEventListener('mousedown', (e) => {
+      const td = e.target.closest('td');
+      if (!td) return;
+      selectCell(td);
+    });
+    document.getElementById('theadRow').addEventListener('input', () => { updateMeta(); markDirty(); pushUndo(); });
+    document.getElementById('tbody').addEventListener('input', (e) => { updateMeta(); markDirty(); });
+    document.getElementById('tbody').addEventListener('change', (e) => { updateMeta(); markDirty(); });
+    document.getElementById('undoBtn').addEventListener('click', () => doUndo());
+    document.getElementById('redoBtn').addEventListener('click', () => doRedo());
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const rows = currentData();
+      const csv = rows.map(r => r.map(v => {
+        if (v == null) return '';
+        const s = String(v);
+        if (s.includes('"') || s.includes(',') || s.includes('\n')) return '"' + s.replaceAll('"','""') + '"';
+        return s;
+      }).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+  const fname = document.body.getAttribute('data-name') || 'data_source';
+  a.download = fname + '.csv';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+    });
+    // Filter wiring and init
+    (function(){
+      const inp = document.getElementById('filterInput');
+      const clr = document.getElementById('clearFilterBtn');
+      if (inp){ try { const saved = localStorage.getItem('ds_filter_'+sid); if (saved) inp.value = saved; } catch(e){}; inp.addEventListener('input', () => { applyFilter(); renumber(); updateMeta(); }); }
+      if (clr){ clr.addEventListener('click', () => { const i = document.getElementById('filterInput'); if (i){ i.value=''; applyFilter(); renumber(); updateMeta(); } }); }
+    })();
+    // Initialize numbering & capture initial state
+  applyStoredHeaderOrder();
+  upgradeCellsToInputs();
+  enableHeaderDrag();
+  applyFilter(true);
+  renumber();
+  updateMeta();
+  pushUndo(); // initial snapshot
+  </script>
+</body>
+</html>

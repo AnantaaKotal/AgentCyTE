@@ -1,0 +1,848 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scenario name="/home/ubuntu/Desktop/ehhw3.xml">
+  <networks>
+    <network id="1" name="ens33" type="RJ45">
+      <position x="100" y="330" lat="47.576167026404235" lon="-122.13097452707383" alt="2.0"/>
+    </network>
+    <network id="2" name="n2" type="SWITCH">
+      <position x="110" y="450" lat="47.5750761933977" lon="-122.1308397797812" alt="2.0"/>
+    </network>
+    <network id="12" name="n12" type="SWITCH">
+      <position x="159" y="66" lat="47.57856677902899" lon="-122.13017951804738" alt="2.0"/>
+    </network>
+    <network id="15" name="n15" type="SWITCH">
+      <position x="129" y="218" lat="47.57718511670792" lon="-122.13058375992523" alt="2.0"/>
+    </network>
+    <network id="22" name="n22" type="SWITCH">
+      <position x="342" y="65" lat="47.578575868791965" lon="-122.12771364259248" alt="2.0"/>
+    </network>
+    <network id="25" name="n25" type="SWITCH">
+      <position x="580" y="163" lat="47.57768506452045" lon="-122.12450665702816" alt="2.0"/>
+    </network>
+    <network id="27" name="ens36" type="RJ45">
+      <position x="477" y="84" lat="47.578403163025705" lon="-122.12589455414212" alt="2.0"/>
+    </network>
+    <network id="30" name="n30" type="SWITCH">
+      <position x="581" y="340" lat="47.576076124521634" lon="-122.1244931822989" alt="2.0"/>
+    </network>
+  </networks>
+  <devices>
+    <device id="3" name="n3" type="PC" class="" image="">
+      <position x="30" y="376" lat="47.57574887643763" lon="-122.13191775812214" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+      </services>
+    </device>
+    <device id="4" name="n4" type="host" class="" image="">
+      <position x="48" y="529" lat="47.57435804926386" lon="-122.13167521299543" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+      </services>
+    </device>
+    <device id="5" name="n5" type="host" class="" image="">
+      <position x="264" y="512" lat="47.574512587440765" lon="-122.1287646714749" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="HTTP"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="6" name="n6" type="host" class="" image="">
+      <position x="263" y="580" lat="47.57389443199671" lon="-122.12877814620416" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="7" name="n7" type="router" class="" image="">
+      <position x="236" y="308" lat="47.57636700999047" lon="-122.12914196389421" alt="2.0"/>
+      <services>
+        <service name="RIP"/>
+        <service name="zebra"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="8" name="n8" type="host" class="" image="">
+      <position x="283" y="391" lat="47.575612522465676" lon="-122.1285086516189" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+      </services>
+    </device>
+    <device id="9" name="n9" type="host" class="" image="">
+      <position x="314" y="467" lat="47.57492165688409" lon="-122.1280909350118" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+      </services>
+    </device>
+    <device id="10" name="n10" type="host" class="" image="">
+      <position x="161" y="595" lat="47.57375807319581" lon="-122.13015256858885" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+      </services>
+    </device>
+    <device id="11" name="n11" type="router" class="" image="">
+      <position x="232" y="120" lat="47.57807592948524" lon="-122.12919586281126" alt="2.0"/>
+      <services>
+        <service name="RIP"/>
+        <service name="zebra"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="13" name="n13" type="PC" class="" image="">
+      <position x="49" y="65" lat="47.578575868791965" lon="-122.13166173826617" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="14" name="n14" type="router" class="" image="">
+      <position x="170" y="258" lat="47.576821515300466" lon="-122.1300312960255" alt="2.0"/>
+      <services>
+        <service name="RIP"/>
+        <service name="zebra"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="16" name="n16" type="host" class="" image="">
+      <position x="76" y="130" lat="47.5779850309166" lon="-122.1312979205761" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="HTTP"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="17" name="n17" type="PC" class="" image="">
+      <position x="42" y="167" lat="47.5776487048405" lon="-122.131756061371" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="18" name="n18" type="PC" class="" image="">
+      <position x="45" y="232" lat="47.57705785650252" lon="-122.13171563718322" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="19" name="n19" type="PC" class="" image="">
+      <position x="159" y="144" lat="47.577857772655385" lon="-122.13017951804738" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="20" name="n20" type="host" class="" image="">
+      <position x="252" y="29" lat="47.57890309920786" lon="-122.12892636822603" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="HTTP"/>
+      </services>
+    </device>
+    <device id="21" name="n21" type="router" class="" image="">
+      <position x="335" y="116" lat="47.57811228886851" lon="-122.1278079656973" alt="2.0"/>
+      <services>
+        <service name="RIP"/>
+        <service name="zebra"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="23" name="n23" type="host" class="" image="">
+      <position x="391" y="30" lat="47.578894009501695" lon="-122.12705338085864" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="24" name="n24" type="router" class="" image="">
+      <position x="507" y="222" lat="47.5771487566808" lon="-122.12549031226428" alt="2.0"/>
+      <services>
+        <service name="RIP"/>
+        <service name="zebra"/>
+        <service name="IPForward"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+    <device id="26" name="n26" type="host" class="" image="">
+      <position x="666" y="99" lat="47.578266815965726" lon="-122.12334783031164" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="HTTP"/>
+      </services>
+    </device>
+    <device id="29" name="n29" type="host" class="" image="">
+      <position x="335" y="240" lat="47.57698513624628" lon="-122.1278079656973" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="HTTP"/>
+      </services>
+    </device>
+    <device id="28" name="n28" type="router" class="" image="">
+      <position x="511" y="303" lat="47.576412460699004" lon="-122.12543641334723" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv2"/>
+        <service name="OSPFv3"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="31" name="n31" type="PC" class="" image="">
+      <position x="690" y="316" lat="47.576294288774754" lon="-122.12302443680937" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="HTTP"/>
+      </services>
+    </device>
+  </devices>
+  <links>
+    <link node1="2" node2="1">
+      <iface2 id="0" name="ens33"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="2" node2="3">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:2e" ip4="172.16.0.20" ip4_mask="24" ip6="2001::20" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="2" node2="4">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:2f" ip4="172.16.0.10" ip4_mask="24" ip6="2001::10" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="2" node2="5">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:30" ip4="172.16.0.11" ip4_mask="24" ip6="2001::11" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="2" node2="6">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:31" ip4="172.16.0.12" ip4_mask="24" ip6="2001::12" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="2" node2="7">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:32" ip4="172.16.0.1" ip4_mask="24" ip6="2001::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="2" node2="8">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:33" ip4="172.16.0.13" ip4_mask="24" ip6="2001::13" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="2" node2="9">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:34" ip4="172.16.0.14" ip4_mask="24" ip6="2001::14" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="2" node2="10">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:35" ip4="172.16.0.15" ip4_mask="24" ip6="2001::15" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="12" node2="11">
+      <iface2 id="1" name="eth1" mac="00:00:00:aa:00:38" ip4="192.168.1.1" ip4_mask="24" ip6="2001:2::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="12" node2="13">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:39" ip4="192.168.1.20" ip4_mask="24" ip6="2001:2::20" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="12" node2="20">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:41" ip4="192.168.1.10" ip4_mask="24" ip6="2001:2::10" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="15" node2="14">
+      <iface2 id="1" name="eth1" mac="00:00:00:aa:00:3c" ip4="21.227.2.1" ip4_mask="24" ip6="2001:4::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="15" node2="16">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:3d" ip4="21.227.2.33" ip4_mask="24"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="15" node2="17">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:3e" ip4="21.227.2.20" ip4_mask="24" ip6="2001:4::20" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="15" node2="18">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:3f" ip4="21.227.2.21" ip4_mask="24" ip6="2001:4::21" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="15" node2="19">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:40" ip4="21.227.2.22" ip4_mask="24" ip6="2001:4::22" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="22" node2="21">
+      <iface2 id="1" name="eth1" mac="00:00:00:aa:00:44" ip4="83.38.34.1" ip4_mask="24" ip6="2001:6::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="22" node2="23">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:45" ip4="83.38.34.145" ip4_mask="24"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="22" node2="27">
+      <iface2 id="0" name="ens36"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="25" node2="24">
+      <iface2 id="1" name="eth1" mac="00:00:00:aa:00:46" ip4="11.0.1.1" ip4_mask="24" ip6="2001:8::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="25" node2="26">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:47" ip4="11.0.1.100" ip4_mask="24"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="30" node2="28">
+      <iface2 id="1" name="eth1" mac="00:00:00:aa:00:4e" ip4="3.22.85.1" ip4_mask="24" ip6="2001:11::1" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="30" node2="31">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:4f" ip4="3.22.85.20" ip4_mask="24" ip6="2001:11::20" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="7" node2="11">
+      <iface1 id="1" name="eth1" mac="00:00:00:aa:00:36" ip4="192.168.0.1" ip4_mask="24" ip6="2001:1::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:37" ip4="192.168.0.2" ip4_mask="24" ip6="2001:1::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="7" node2="14">
+      <iface1 id="2" name="eth2" mac="00:00:00:aa:00:3a" ip4="192.168.2.1" ip4_mask="24" ip6="2001:3::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:3b" ip4="192.168.2.2" ip4_mask="24" ip6="2001:3::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="11" node2="21">
+      <iface1 id="2" name="eth2" mac="00:00:00:aa:00:42" ip4="83.38.33.1" ip4_mask="24" ip6="2001:5::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:43" ip4="83.38.33.2" ip4_mask="24" ip6="2001:5::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="21" node2="24">
+      <iface1 id="2" name="eth2" mac="00:00:00:aa:00:48" ip4="11.0.0.1" ip4_mask="24" ip6="2001:7::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:49" ip4="11.0.0.2" ip4_mask="24" ip6="2001:7::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="21" node2="29">
+      <iface1 id="3" name="eth3" mac="00:00:00:aa:00:4a" ip4="77.66.55.1" ip4_mask="24" ip6="2001:9::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:4b" ip4="77.66.55.44" ip4_mask="24"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+    <link node1="24" node2="28">
+      <iface1 id="2" name="eth2" mac="00:00:00:aa:00:4c" ip4="3.22.84.1" ip4_mask="24" ip6="2001:10::1" ip6_mask="64"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:4d" ip4="3.22.84.2" ip4_mask="24" ip6="2001:10::2" ip6_mask="64"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+  </links>
+  <service_configurations>
+    <service name="UserDefined" node="5">
+      <startups>
+        <startup>iptables -A INPUT -p icmp -j REJECT</startup>
+      </startups>
+    </service>
+    <service name="HTTP" node="5">
+      <directories>
+        <directory>/etc/apache2</directory>
+        <directory>/var/run/apache2</directory>
+        <directory>/var/log/apache2</directory>
+        <directory>/var/lock/apache2</directory>
+        <directory>/var/www</directory>
+        <directory>/run/lock</directory>
+      </directories>
+      <startups>
+        <startup>chown www-data /var/lock/apache2</startup>
+        <startup>apache2ctl start</startup>
+      </startups>
+      <validates>
+        <validate>pidof apache2</validate>
+      </validates>
+      <shutdowns>
+        <shutdown>apache2ctl stop</shutdown>
+      </shutdowns>
+      <files>
+        <file name="/var/www/index.html"><![CDATA[file:///home/ubuntu/Desktop/c1/index.html]]></file>
+      </files>
+    </service>
+    <service name="UserDefined" node="6">
+      <startups>
+        <startup>ncat -k -l -p 8080</startup>
+      </startups>
+    </service>
+    <service name="UserDefined" node="13">
+      <startups>
+        <startup>/usr/bin/python3 client.py</startup>
+      </startups>
+      <files>
+        <file name="client.py"><![CDATA[file:///home/ubuntu/Desktop/c1/client.py]]></file>
+      </files>
+    </service>
+    <service name="UserDefined" node="16">
+      <startups>
+        <startup>ncat -k -l -p 3389</startup>
+        <startup>ncat -k -l -p 21</startup>
+        <startup>ncat -k -l -p 23</startup>
+      </startups>
+    </service>
+    <service name="HTTP" node="16">
+      <directories>
+        <directory>/etc/apache2</directory>
+        <directory>/var/run/apache2</directory>
+        <directory>/var/log/apache2</directory>
+        <directory>/var/lock/apache2</directory>
+        <directory>/var/www</directory>
+        <directory>/run/lock</directory>
+      </directories>
+      <startups>
+        <startup>chown www-data /var/lock/apache2</startup>
+        <startup>apache2ctl start</startup>
+        <startup>ncat -k -l -p 22</startup>
+        <startup>ncat -k -l -p 3389</startup>
+      </startups>
+      <validates>
+        <validate>pidof apache2</validate>
+      </validates>
+      <shutdowns>
+        <shutdown>apache2ctl stop</shutdown>
+      </shutdowns>
+      <files>
+        <file name="/var/www/index.html"><![CDATA[file:///home/ubuntu/Desktop/c2/index.html]]></file>
+      </files>
+    </service>
+    <service name="UserDefined" node="17">
+      <startups>
+        <startup>ncat -k -l -p 443</startup>
+        <startup>ncat -k -l -p 34</startup>
+        <startup>ncat -k -l -p 21</startup>
+      </startups>
+    </service>
+    <service name="UserDefined" node="18">
+      <startups>
+        <startup>ncat -k -l -p 443</startup>
+        <startup>ncat -k -l -p 21</startup>
+        <startup>ncat -k -l -p 80</startup>
+        <startup>ncat -k -l -p 5900</startup>
+      </startups>
+    </service>
+    <service name="UserDefined" node="19">
+      <startups>
+        <startup>ncat -k -l -p 443</startup>
+        <startup>ncat -k -l -p 34</startup>
+        <startup>ncat -k -l -p 21</startup>
+      </startups>
+    </service>
+    <service name="HTTP" node="20">
+      <directories>
+        <directory>/etc/apache2</directory>
+        <directory>/var/run/apache2</directory>
+        <directory>/var/log/apache2</directory>
+        <directory>/var/lock/apache2</directory>
+        <directory>/var/www</directory>
+        <directory>/run/lock</directory>
+      </directories>
+      <startups>
+        <startup>chown www-data /var/lock/apache2</startup>
+        <startup>apache2ctl start</startup>
+      </startups>
+      <validates>
+        <validate>pidof apache2</validate>
+      </validates>
+      <shutdowns>
+        <shutdown>apache2ctl stop</shutdown>
+      </shutdowns>
+      <files>
+        <file name="/var/www/clothing.zip"><![CDATA[file:///home/ubuntu/Desktop/c3/clothing.zip]]></file>
+        <file name="/var/www/index.html"><![CDATA[file:///home/ubuntu/Desktop/c3/index.html]]></file>
+      </files>
+    </service>
+    <service name="UserDefined" node="20">
+      <startups>
+        <startup>iptables -A INPUT -p icmp -j REJECT</startup>
+      </startups>
+    </service>
+    <service name="UserDefined" node="23">
+      <directories>
+        <directory>/etc/samba</directory>
+        <directory>/tmp</directory>
+      </directories>
+      <startups>
+        <startup>smbd</startup>
+      </startups>
+      <files>
+        <file name="/tmp/tribunes_strengths_weakness.xlsx"><![CDATA[file:///home/ubuntu/Desktop/c4/tribunes_strength_weakness.xlsx]]></file>
+        <file name="/etc/samba/smb.conf"><![CDATA[#
+# Sample configuration file for the Samba suite for Debian GNU/Linux.
+#
+#
+# This is the main Samba configuration file. You should read the
+# smb.conf(5) manual page in order to understand the options listed
+# here. Samba has a huge number of configurable options most of which 
+# are not shown in this example
+#
+# Some options that are often worth tuning have been included as
+# commented-out examples in this file.
+#  - When such options are commented with ";", the proposed setting
+#    differs from the default Samba behaviour
+#  - When commented with "#", the proposed setting is the default
+#    behaviour of Samba but the option is considered important
+#    enough to be mentioned here
+#
+# NOTE: Whenever you modify this file you should run the command
+# "testparm" to check that you have not made any basic syntactic 
+# errors. 
+
+#======================= Global Settings =======================
+
+[global]
+
+## Browsing/Identification ###
+
+# Change this to the workgroup/NT-domain name your Samba server will part of
+   workgroup = WORKGROUP
+
+# server string is the equivalent of the NT Description field
+   server string = %h server (Samba, Ubuntu)
+
+#### Networking ####
+
+# The specific set of interfaces / networks to bind to
+# This can be either the interface name or an IP address/netmask;
+# interface names are normally preferred
+;   interfaces = 127.0.0.0/8 eth0
+
+# Only bind to the named interfaces and/or networks; you must use the
+# 'interfaces' option above to use this.
+# It is recommended that you enable this feature if your Samba machine is
+# not protected by a firewall or is a firewall itself.  However, this
+# option cannot handle dynamic or non-broadcast interfaces correctly.
+;   bind interfaces only = yes
+
+
+
+#### Debugging/Accounting ####
+
+# This tells Samba to use a separate log file for each machine
+# that connects
+   log file = /var/log/samba/log.%m
+
+# Cap the size of the individual log files (in KiB).
+   max log size = 1000
+
+# We want Samba to only log to /var/log/samba/log.{smbd,nmbd}.
+# Append syslog@1 if you want important messages to be sent to syslog too.
+   logging = file
+
+# Do something sensible when Samba crashes: mail the admin a backtrace
+   panic action = /usr/share/samba/panic-action %d
+
+
+####### Authentication #######
+
+# Server role. Defines in which mode Samba will operate. Possible
+# values are "standalone server", "member server", "classic primary
+# domain controller", "classic backup domain controller", "active
+# directory domain controller". 
+#
+# Most people will want "standalone server" or "member server".
+# Running as "active directory domain controller" will require first
+# running "samba-tool domain provision" to wipe databases and create a
+# new domain.
+   server role = standalone server
+
+   obey pam restrictions = yes
+
+# This boolean parameter controls whether Samba attempts to sync the Unix
+# password with the SMB password when the encrypted SMB password in the
+# passdb is changed.
+   unix password sync = yes
+
+# For Unix password sync to work on a Debian GNU/Linux system, the following
+# parameters must be set (thanks to Ian Kahan <<kahan@informatik.tu-muenchen.de>
+ for
+# sending the correct chat script for the passwd program in Debian Sarge).
+   passwd program = /usr/bin/passwd %u
+   passwd chat = *Enter\snew\s*\spassword:* %n\n *Retype\snew\s*\spassword:* %n\
+n *password\supdated\ssuccessfully* .
+
+# This boolean controls whether PAM will be used for password changes
+# when requested by an SMB client instead of the program listed in
+# 'passwd program'. The default is 'no'.
+   pam password change = yes
+
+# This option controls how unsuccessful authentication attempts are mapped
+# to anonymous connections
+   map to guest = bad user
+
+########## Domains ###########
+
+#
+# The following settings only takes effect if 'server role = primary
+# classic domain controller', 'server role = backup domain controller'
+# or 'domain logons' is set 
+#
+
+# It specifies the location of the user's
+# profile directory from the client point of view) The following
+# required a [profiles] share to be setup on the samba server (see
+# below)
+;   logon path = \\%N\profiles\%U
+# Another common choice is storing the profile in the user's home directory
+# (this is Samba's default)
+#   logon path = \\%N\%U\profile
+
+# The following setting only takes effect if 'domain logons' is set
+# It specifies the location of a user's home directory (from the client
+# point of view)
+;   logon drive = H:
+#   logon home = \\%N\%U
+
+# The following setting only takes effect if 'domain logons' is set
+# It specifies the script to run during logon. The script must be stored
+# in the [netlogon] share
+# NOTE: Must be store in 'DOS' file format convention
+;   logon script = logon.cmd
+
+# This allows Unix users to be created on the domain controller via the SAMR
+# RPC pipe.  The example command creates a user account with a disabled Unix
+# password; please adapt to your needs
+; add user script = /usr/sbin/adduser --quiet --disabled-password --gecos "" %u
+
+# This allows machine accounts to be created on the domain controller via the 
+# SAMR RPC pipe.  
+# The following assumes a "machines" group exists on the system
+; add machine script  = /usr/sbin/useradd -g machines -c "%u machine account" -d
+ /var/lib/samba -s /bin/false %u
+
+# This allows Unix groups to be created on the domain controller via the SAMR
+# RPC pipe.  
+; add group script = /usr/sbin/addgroup --force-badname %g
+
+############ Misc ############
+
+# Using the following line enables you to customise your configuration
+# on a per machine basis. The %m gets replaced with the netbios name
+# of the machine that is connecting
+;   include = /home/samba/etc/smb.conf.%m
+
+# Some defaults for winbind (make sure you're not using the ranges
+# for something else.)
+;   idmap config * :              backend = tdb
+;   idmap config * :              range   = 3000-7999
+;   idmap config YOURDOMAINHERE : backend = tdb
+;   idmap config YOURDOMAINHERE : range   = 100000-999999
+;   template shell = /bin/bash
+
+# Setup usershare options to enable non-root users to share folders
+# with the net usershare command.
+
+# Maximum number of usershare. 0 means that usershare is disabled.
+#   usershare max shares = 100
+
+# Allow users who've been granted usershare privileges to create
+# public shares, not just authenticated ones
+   usershare allow guests = yes
+
+#======================= Share Definitions =======================
+
+# Un-comment the following (and tweak the other settings below to suit)
+# to enable the default home directory shares. This will share each
+# user's home directory as \\server\username
+;[homes]
+;   comment = Home Directories
+;   browseable = no
+
+# By default, the home directories are exported read-only. Change the
+# next parameter to 'no' if you want to be able to write to them.
+;   read only = yes
+
+# File creation mask is set to 0700 for security reasons. If you want to
+# create files with group=rw permissions, set next parameter to 0775.
+;   create mask = 0700
+
+# Directory creation mask is set to 0700 for security reasons. If you want to
+# create dirs. with group=rw permissions, set next parameter to 0775.
+;   directory mask = 0700
+
+# By default, \\server\username shares can be connected to by anyone
+# with access to the samba server.
+# Un-comment the following parameter to make sure that only "username"
+# can connect to \\server\username
+# This might need tweaking when using external authentication schemes
+;   valid users = %S
+
+# Un-comment the following and create the netlogon directory for Domain Logons
+# (you need to configure Samba to act as a domain controller too.)
+;[netlogon]
+;   comment = Network Logon Service
+;   path = /home/samba/netlogon
+;   guest ok = yes
+;   read only = yes
+
+# Un-comment the following and create the profiles directory to store
+# users profiles (see the "logon path" option above)
+# (you need to configure Samba to act as a domain controller too.)
+# The path below should be writable by all users so that their
+# profile directory may be created the first time they log on
+;[profiles]
+;   comment = Users profiles
+;   path = /home/samba/profiles
+;   guest ok = no
+;   browseable = no
+;   create mask = 0600
+;   directory mask = 0700
+
+[printers]
+   comment = All Printers
+   browseable = no
+   path = /var/spool/samba
+   printable = yes
+   guest ok = no
+   read only = yes
+   create mask = 0700
+
+# Windows clients look for this share name as a source of downloadable
+# printer drivers
+[print$]
+   comment = Printer Drivers
+   path = /var/lib/samba/printers
+   browseable = yes
+   read only = yes
+   guest ok = no
+# Uncomment to allow remote administration of Windows print drivers.
+# You may need to replace 'lpadmin' with the name of the group your
+# admin users are members of.
+# Please note that you also need to set appropriate Unix permissions
+# to the drivers directory for these users to have write rights in it
+;   write list = root, @lpadmin
+[public]
+path = /tmp/
+browsable = yes
+writable = yes
+public = yes
+guest only = yes]]></file>
+      </files>
+    </service>
+    <service name="UserDefined" node="24">
+      <startups>
+        <startup>iptables -A FORWARD -s 172.16.0.0/24 -d 11.0.1.0/24 -j REJECT</startup>
+      </startups>
+    </service>
+    <service name="HTTP" node="26">
+      <directories>
+        <directory>/etc/apache2</directory>
+        <directory>/var/run/apache2</directory>
+        <directory>/var/log/apache2</directory>
+        <directory>/var/lock/apache2</directory>
+        <directory>/var/www</directory>
+        <directory>/run/lock</directory>
+      </directories>
+      <startups>
+        <startup>chown www-data /var/lock/apache2</startup>
+        <startup>apache2ctl start</startup>
+      </startups>
+      <validates>
+        <validate>pidof apache2</validate>
+      </validates>
+      <shutdowns>
+        <shutdown>apache2ctl stop</shutdown>
+      </shutdowns>
+      <files>
+        <file name="/var/www/combos.html"><![CDATA[file:///home/ubuntu/Desktop/c5/combos.html]]></file>
+        <file name="/var/www/index.html"><![CDATA[file:///home/ubuntu/Desktop/c5/combos.html]]></file>
+      </files>
+    </service>
+    <service name="HTTP" node="29">
+      <directories>
+        <directory>/etc/apache2</directory>
+        <directory>/var/run/apache2</directory>
+        <directory>/var/log/apache2</directory>
+        <directory>/var/lock/apache2</directory>
+        <directory>/var/www</directory>
+        <directory>/run/lock</directory>
+      </directories>
+      <startups>
+        <startup>chown www-data /var/lock/apache2</startup>
+        <startup>apache2ctl start</startup>
+      </startups>
+      <validates>
+        <validate>pidof apache2</validate>
+      </validates>
+      <shutdowns>
+        <shutdown>apache2ctl stop</shutdown>
+      </shutdowns>
+      <files>
+        <file name="/var/www/index.html"><![CDATA[file:///home/ubuntu/Desktop/c6/index.html]]></file>
+      </files>
+    </service>
+    <service name="HTTP" node="31">
+      <directories>
+        <directory>/etc/apache2</directory>
+        <directory>/var/run/apache2</directory>
+        <directory>/var/log/apache2</directory>
+        <directory>/var/lock/apache2</directory>
+        <directory>/var/www</directory>
+        <directory>/run/lock</directory>
+      </directories>
+      <startups>
+        <startup>chown www-data /var/lock/apache2</startup>
+        <startup>apache2ctl start</startup>
+      </startups>
+      <validates>
+        <validate>pidof apache2</validate>
+      </validates>
+      <shutdowns>
+        <shutdown>apache2ctl stop</shutdown>
+      </shutdowns>
+      <files>
+        <file name="/var/www/medlog.pcapng"><![CDATA[file:///home/ubuntu/Desktop/c7/medicine_cap.pcapng]]></file>
+        <file name="/var/www/index.html"><![CDATA[<html><body>
+Cato's log
+Medicine Order 1 <a href="medlog.pcapng"> medlog.pcapng </a>
+</body></html>]]></file>
+      </files>
+    </service>
+  </service_configurations>
+  <session_origin lat="47.5791667" lon="-122.132322" alt="2.0" scale="150.0"/>
+  <session_options>
+    <configuration name="controlnet" value=""/>
+    <configuration name="controlnet0" value=""/>
+    <configuration name="controlnet1" value=""/>
+    <configuration name="controlnet2" value=""/>
+    <configuration name="controlnet3" value=""/>
+    <configuration name="controlnet_updown_script" value=""/>
+    <configuration name="enablerj45" value="1"/>
+    <configuration name="preservedir" value="0"/>
+    <configuration name="enablesdt" value="0"/>
+    <configuration name="sdturl" value="tcp://127.0.0.1:50000/"/>
+    <configuration name="ovs" value="0"/>
+    <configuration name="platform_id_start" value="1"/>
+    <configuration name="nem_id_start" value="1"/>
+    <configuration name="link_enabled" value="1"/>
+    <configuration name="loss_threshold" value="30"/>
+    <configuration name="link_interval" value="1"/>
+    <configuration name="link_timeout" value="4"/>
+    <configuration name="mtu" value="0"/>
+  </session_options>
+  <session_metadata>
+    <configuration name="annotation a1" value="{iconcoords {92.0 14.0}} {type text} {label {Capital}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {canvas c1}"/>
+    <configuration name="annotation a2" value="{iconcoords {21.0 300.0}} {type text} {label {District12}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {canvas c1}"/>
+    <configuration name="annotation a3" value="{iconcoords {89.0 126.0}} {type text} {label {VolForm}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {canvas c1}"/>
+    <configuration name="annotation a4" value="{iconcoords {267.0 10.0}} {type text} {label {DressForm}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {canvas c1}"/>
+    <configuration name="annotation a5" value="{iconcoords {415.0 26.0}} {type text} {label {SMB}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {canvas c1}"/>
+    <configuration name="annotation a6" value="{type text} {iconcoords {580.0 195.0}} {label {}} {canvas c1}"/>
+    <configuration name="annotation a7" value="{iconcoords {429.0 60.0}} {type text} {label {SnowSSH Pivot}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {canvas c1}"/>
+    <configuration name="annotation a8" value="{type text} {iconcoords {460.0 61.0}} {label {}} {canvas c1}"/>
+    <configuration name="annotation a9" value="{iconcoords {332.0 282.0}} {type text} {label {Medicine Order}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {canvas c1}"/>
+    <configuration name="annotation a10" value="{iconcoords {674.0 142.0}} {type text} {label {BowArrowCombos}} {labelcolor black} {fontfamily {Arial}} {fontsize {12}} {canvas c1}"/>
+    <configuration name="canvas c1" value="{name {Canvas1}}"/>
+    <configuration name="global_options" value="interface_names=no ip_addresses=yes ipv6_addresses=yes node_labels=yes link_labels=yes show_api=no background_images=no annotations=yes grid=yes traffic_start=0"/>
+  </session_metadata>
+  <default_services>
+    <node type="mdr">
+      <service name="zebra"/>
+      <service name="OSPFv3MDR"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="PC">
+      <service name="DefaultRoute"/>
+    </node>
+    <node type="prouter"/>
+    <node type="router">
+      <service name="zebra"/>
+      <service name="OSPFv2"/>
+      <service name="OSPFv3"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="host">
+      <service name="DefaultRoute"/>
+      <service name="SSH"/>
+    </node>
+  </default_services>
+</scenario>

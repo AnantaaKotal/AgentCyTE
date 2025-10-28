@@ -1,0 +1,203 @@
+{% extends 'layout.html' %}
+{% block title %}Base Scenario Details{% endblock %}
+{% block active_page %}{% set active_page='core' %}{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="mb-0">Base Scenario Details</h3>
+      <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('download_report') }}?path={{ xml_path | urlencode }}">Download XML</a>
+    </div>
+    <div class="mb-2">
+      {% if valid %}
+        <span class="badge text-bg-success">VALID</span>
+      {% else %}
+        <span class="badge text-bg-danger">INVALID</span>
+      {% endif %}
+    </div>
+
+    {% if not valid %}
+      <div class="alert alert-danger" role="alert" style="white-space: pre-wrap;">{{ errors }}</div>
+    {% endif %}
+
+    <div class="card mb-3">
+      <div class="card-header"><strong>Summary</strong></div>
+      <div class="card-body">
+        <ul class="mb-0">
+          <li>Nodes: {{ summary.nodes_count or summary.devices_count or 0 }}</li>
+          <li>Networks: {{ summary.networks_count or 0 }}</li>
+          <li>Links (count): {{ summary.links_count or 0 }} (showing sample: {{ summary.links_sample or 0 }})</li>
+          <li>Services (total occurrences): {{ summary.services_count or 0 }}</li>
+          {% if summary.file_size_bytes %}
+          <li>File size: {{ summary.file_size_bytes }} bytes</li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="row g-2 align-items-center">
+          <div class="col-md-6">
+            <input type="search" class="form-control" id="nodeFilter" placeholder="Filter nodes by name, id, type, service, or linked node">
+            <div class="form-text" id="visibleCount">&nbsp;</div>
+          </div>
+          <div class="col-md-6 d-flex justify-content-end gap-2">
+            <button class="btn btn-sm btn-outline-secondary" id="clearFilterBtn" type="button">Clear</button>
+            <button class="btn btn-sm btn-outline-primary" id="expandAllBtn" type="button">Expand All</button>
+            <button class="btn btn-sm btn-outline-primary" id="collapseAllBtn" type="button">Collapse All</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <div class="accordion" id="nodesAccordion">
+      {% if summary.nodes and summary.nodes|length > 0 %}
+        {% for node in summary.nodes %}
+          {% set nid = 'node' ~ loop.index %}
+          {% set searchtext = (node.name ~ ' ' ~ node.id ~ ' ' ~ (node.type or '') ~ ' ' ~ (node.services|join(' ')) ~ ' ' ~ (node.linked_nodes|join(' '))) %}
+          <div class="accordion-item" data-search="{{ searchtext|lower|e }}">
+            <h2 class="accordion-header" id="heading-{{ nid }}">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ nid }}" aria-expanded="false" aria-controls="collapse-{{ nid }}">
+                {{ node.name }} (ID: {{ node.id }})
+              </button>
+            </h2>
+            <div id="collapse-{{ nid }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ nid }}">
+              <div class="accordion-body">
+                <div class="row g-3">
+                  <div class="col-md-3">
+                    <div class="card h-100" data-card="type">
+                      <div class="card-header"><strong>Node Type</strong></div>
+                      <div class="card-body" data-role="node-type"><span class="badge bg-secondary">{{ node.type or 'N/A' }}</span></div>
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <div class="card h-100" data-card="linked">
+                      <div class="card-header"><strong>Linked Nodes</strong></div>
+                      <div class="card-body">
+                        {% if node.linked_nodes and node.linked_nodes|length > 0 %}
+                          <ul class="mb-0" data-role="linked-nodes-list">
+                            {% for ln in node.linked_nodes %}
+                              <li class="linked-item">{{ ln }}</li>
+                            {% endfor %}
+                          </ul>
+                        {% else %}
+                          <em>None</em>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card h-100" data-card="services">
+                      <div class="card-header"><strong>Services</strong></div>
+                      <div class="card-body" data-role="service-badges">
+                        {% if node.services and node.services|length > 0 %}
+                          <div class="d-flex flex-wrap gap-2">
+                            {% for s in node.services %}
+                              <span class="badge text-bg-info service-item">{{ s }}</span>
+                            {% endfor %}
+                          </div>
+                        {% else %}
+                          <em>None</em>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <em>No nodes found</em>
+      {% endif %}
+    </div>
+    <div id="noMatches" class="text-muted fst-italic d-none">No nodes match the filter.</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+  (function(){
+    const filterInput = document.getElementById('nodeFilter');
+    const clearBtn = document.getElementById('clearFilterBtn');
+    const expandAllBtn = document.getElementById('expandAllBtn');
+    const collapseAllBtn = document.getElementById('collapseAllBtn');
+    const acc = document.getElementById('nodesAccordion');
+    const noMatches = document.getElementById('noMatches');
+  const visibleCountEl = document.getElementById('visibleCount');
+
+    if (!acc) return;
+    const items = Array.from(acc.querySelectorAll('.accordion-item'));
+  const totalNodes = items.length;
+
+    function applyFilter() {
+      const q = (filterInput?.value || '').trim().toLowerCase();
+      let shown = 0;
+      items.forEach(item => {
+        const headerText = (item.querySelector('.accordion-button')?.textContent || '').toLowerCase();
+        const typeText = (item.querySelector('[data-role="node-type"]')?.textContent || '').toLowerCase();
+        const linkedList = item.querySelector('[data-role="linked-nodes-list"]');
+        const serviceWrap = item.querySelector('[data-role="service-badges"]');
+
+        // Determine match without changing inner visibility yet
+        let match = false;
+        if (q === '') {
+          match = true;
+        } else if (headerText.includes(q) || typeText.includes(q)) {
+          match = true;
+        } else {
+          if (linkedList) {
+            for (const li of Array.from(linkedList.querySelectorAll('.linked-item'))) {
+              if (((li.textContent || '').toLowerCase()).includes(q)) { match = true; break; }
+            }
+          }
+          if (!match && serviceWrap) {
+            for (const b of Array.from(serviceWrap.querySelectorAll('.service-item'))) {
+              if (((b.textContent || '').toLowerCase()).includes(q)) { match = true; break; }
+            }
+          }
+        }
+
+        if (match) {
+          // Show entire node row and ensure any previously hidden inner items/cards are visible
+          item.classList.remove('d-none');
+          const linkedCard = item.querySelector('[data-card="linked"]');
+          if (linkedCard) linkedCard.classList.remove('d-none');
+          if (linkedList) Array.from(linkedList.querySelectorAll('.linked-item')).forEach(li => li.classList.remove('d-none'));
+          const svcCard = item.querySelector('[data-card="services"]');
+          if (svcCard) svcCard.classList.remove('d-none');
+          if (serviceWrap) Array.from(serviceWrap.querySelectorAll('.service-item')).forEach(b => b.classList.remove('d-none'));
+          shown += 1;
+        } else {
+          // Hide whole node and collapse if open
+          item.classList.add('d-none');
+          const col = item.querySelector('.accordion-collapse');
+          try { if (col && col.classList.contains('show')) new bootstrap.Collapse(col, { toggle: false }).hide(); } catch(e){}
+        }
+      });
+      if (noMatches) noMatches.classList.toggle('d-none', shown !== 0);
+      if (visibleCountEl) visibleCountEl.textContent = `Showing ${shown} of ${totalNodes} nodes`;
+    }
+
+    function expandAll() {
+      items.forEach(item => {
+        if (item.classList.contains('d-none')) return;
+        const col = item.querySelector('.accordion-collapse');
+        try { if (col && !col.classList.contains('show')) new bootstrap.Collapse(col, { toggle: false }).show(); } catch(e){}
+      });
+    }
+
+    function collapseAll() {
+      items.forEach(item => {
+        const col = item.querySelector('.accordion-collapse');
+        try { if (col && col.classList.contains('show')) new bootstrap.Collapse(col, { toggle: false }).hide(); } catch(e){}
+      });
+    }
+
+    filterInput?.addEventListener('input', applyFilter);
+    clearBtn?.addEventListener('click', () => { if (filterInput) { filterInput.value = ''; } applyFilter(); });
+    expandAllBtn?.addEventListener('click', expandAll);
+    collapseAllBtn?.addEventListener('click', collapseAll);
+
+  // Initial apply (no filter) to normalize visibility toggles and update count
+    applyFilter();
+  })();
+  </script>
+{% endblock %}

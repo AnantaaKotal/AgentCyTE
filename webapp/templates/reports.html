@@ -1,0 +1,264 @@
+{% extends 'layout.html' %}
+{% block title %}Run Reports{% endblock %}
+{% block active_page %}{% set active_page='reports' %}{% endblock %}
+{% block extra_head %}
+<style>
+  body { padding-bottom: 0; }
+  .sidebar { max-height: calc(100vh - 220px); overflow:auto; }
+</style>
+{% endblock %}
+{% block nav_right_extra %}
+  <div class="d-flex align-items-center gap-2 small">
+    <span id="refreshStatus" class="text-muted">auto</span>
+    <button class="btn btn-sm btn-outline-light text-dark bg-white" id="toggleRefreshBtn" type="button">Pause</button>
+  </div>
+{% endblock %}
+{% block content %}
+<div class="container-fluid mt-3">
+  <div class="row">
+    <div class="col-3">
+      <div class="card mb-3">
+        <div class="card-header py-2 d-flex justify-content-between align-items-center">
+          <strong class="small mb-0">Scenarios</strong>
+          <button class="btn btn-sm btn-outline-secondary" id="clearScenarioFilter" type="button" title="Clear filter" style="display:none">Clear</button>
+        </div>
+        <div class="list-group list-group-flush sidebar" id="scenarioFilterList">
+          {% for s in scenarios %}
+          <button type="button" class="list-group-item list-group-item-action py-1 px-2 small" data-scen-name="{{ s }}">{{ s }}</button>
+          {% endfor %}
+          {% if not scenarios %}
+          <div class="p-2 small text-muted">No scenarios yet</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-9">
+      <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center py-2">
+          <strong class="mb-0">Run History</strong>
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-outline-danger" id="runsDeleteBtn" type="button" title="Delete Selected" disabled>
+              <i class="bi bi-trash"></i> Selected
+            </button>
+            <small class="text-muted" id="runCount"></small>
+          </div>
+        </div>
+        <div class="table-responsive" style="max-height:60vh; overflow:auto;">
+          <table class="table table-sm align-middle mb-0" id="runsTable">
+            <thead class="table-light">
+              <tr>
+                <th style="width:2rem; text-align:center;"><input type="checkbox" id="runsCheckAll"></th>
+                <th style="white-space:nowrap;">Timestamp (UTC)</th>
+                <th>Scenario(s)</th>
+                <th>Mode</th>
+                <th>Full Scenario</th>
+                <th>Scenario XML</th>
+                <th>Report</th>
+                <th>Summary</th>
+                <th>Session XML</th>
+                <th>RC</th>
+                <th style="white-space:nowrap;">Run ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in history %}
+              <tr data-scenarios="{{ (r.scenario_names or [])|join('||') }}">
+                <td style="text-align:center;"><input type="checkbox" class="row-select" data-run-id="{{ r.run_id or '' }}"></td>
+                <td>{{ r.timestamp }}</td>
+                <td class="small">{{ (r.scenario_names or [])|join(', ') }}</td>
+                <td>{{ r.mode }}</td>
+                <td>{% if r.full_scenario_path %}<a href="{{ url_for('download_report', path=r.full_scenario_path) }}">bundle</a>{% else %}-{% endif %}</td>
+                <td>{% if r.scenario_xml_path %}<a href="{{ url_for('download_report', path=r.scenario_xml_path) }}">scenario</a>{% else %}<span class="text-muted">n/a</span>{% endif %}</td>
+                <td>{% if r.report_path %}<a href="{{ url_for('download_report', path=r.report_path) }}">report</a>{% else %}<span class="text-muted">n/a</span>{% endif %}</td>
+                <td>{% if r.summary_path %}<a href="{{ url_for('download_report', path=r.summary_path) }}">summary</a>{% else %}<span class="text-muted">n/a</span>{% endif %}</td>
+                {% set session_path = r.session_xml_path or r.post_xml_path %}
+                <td>{% if session_path %}<a href="{{ url_for('download_report', path=session_path) }}">session</a>{% else %}<span class="text-muted">n/a</span>{% endif %}</td>
+                <td>{{ r.returncode }}</td>
+                <td>{{ r.run_id or '-' }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% include 'partials/dock.html' %}
+{% endblock %}
+{% block extra_scripts %}
+<script>
+let autoRefresh = true;
+let refreshTimer = null;
+const intervalMs = 5000;
+const tableBody = document.querySelector('#runsTable tbody');
+const runsCheckAll = document.getElementById('runsCheckAll');
+const runsDeleteBtn = document.getElementById('runsDeleteBtn');
+const selectedRunIds = new Set();
+// Tracks whether user explicitly activated select-all across currently visible rows.
+let masterSelectAllActive = false;
+function getVisibleCheckboxes(){ return tableBody.querySelectorAll('tr:not(.d-none) input.row-select'); }
+function updateHeader(){
+  const checkboxes = getVisibleCheckboxes();
+  const total = checkboxes.length;
+  const checkedCount = Array.from(checkboxes).filter(cb=>cb.checked).length;
+  if(runsCheckAll){
+    if (masterSelectAllActive) {
+      runsCheckAll.indeterminate = false;
+      runsCheckAll.checked = true;
+    } else {
+      runsCheckAll.indeterminate = checkedCount>0 && checkedCount<total;
+      runsCheckAll.checked = total>0 && checkedCount===total;
+    }
+  }
+  if(runsDeleteBtn){ runsDeleteBtn.disabled = selectedRunIds.size===0; }
+}
+function escapeHtml(str){ return (str||'').replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+function buildRow(r){
+  const scenNames = (r.scenario_names||[]).join(', ');
+  const rid = (r.run_id||'') || [r.timestamp||'', (r.scenario_xml_path||r.xml_path||''), (r.report_path||''), (r.summary_path||''), (r.full_scenario_path||'')].join('|');
+  const sessionPath = r.session_xml_path || r.post_xml_path;
+  return `<tr data-scenarios="${(r.scenario_names||[]).join('||')}">
+    <td style="text-align:center;"><input type="checkbox" class="row-select" data-run-id="${rid}"></td>
+    <td>${escapeHtml(r.timestamp||'')}</td>
+    <td class="small">${escapeHtml(scenNames)}</td>
+    <td>${escapeHtml(r.mode||'')}</td>
+  <td>${r.full_scenario_path?`<a href='/download_report?path=${encodeURIComponent(r.full_scenario_path)}'>bundle</a>`:'-'}</td>
+    <td>${r.scenario_xml_path?`<a href='/download_report?path=${encodeURIComponent(r.scenario_xml_path)}'>scenario</a>`:'<span class=\"text-muted\">n/a</span>'}</td>
+  <td>${r.report_path?`<a href='/download_report?path=${encodeURIComponent(r.report_path)}'>report</a>`:'<span class=\"text-muted\">n/a</span>'}</td>
+  <td>${r.summary_path?`<a href='/download_report?path=${encodeURIComponent(r.summary_path)}'>summary</a>`:'<span class=\"text-muted\">n/a</span>'}</td>
+  <td>${sessionPath?`<a href='/download_report?path=${encodeURIComponent(sessionPath)}'>session</a>`:'<span class=\"text-muted\">n/a</span>'}</td>
+    <td>${r.returncode ?? ''}</td>
+    <td>${escapeHtml(r.run_id||'-')}</td>
+  </tr>`;
+}
+function renderRows(history){
+  if(!tableBody) return;
+  tableBody.innerHTML = history.map(buildRow).join('\n');
+  applyScenarioFilter();
+  updateCount();
+  wireSelectionHandlers();
+  if (masterSelectAllActive) {
+    applyMasterSelectAll();
+  }
+  updateHeader();
+}
+async function fetchHistory(){
+  try {
+    const res = await fetch('/reports_data');
+    if(!res.ok) return;
+    const data = await res.json();
+    if(Array.isArray(data.history)) renderRows(data.history);
+    // Refresh scenario list if new ones appear
+    const list = document.getElementById('scenarioFilterList');
+    if(list && Array.isArray(data.scenarios)){
+      const existing = new Set(Array.from(list.querySelectorAll('[data-scen-name]')).map(b=>b.getAttribute('data-scen-name')));
+      let added = false;
+      data.scenarios.forEach(n => { if(!existing.has(n)){ added=true; const btn=document.createElement('button'); btn.type='button'; btn.className='list-group-item list-group-item-action py-1 px-2 small'; btn.dataset.scenName=n; btn.textContent=n; list.appendChild(btn);} });
+      if(added) wireScenarioButtons();
+    }
+  } catch(e) {
+    // transient errors ignored
+  }
+}
+function schedule(){
+  if(refreshTimer) clearTimeout(refreshTimer);
+  if(!autoRefresh) return;
+  refreshTimer = setTimeout(async () => { await fetchHistory(); schedule(); }, intervalMs);
+}
+document.getElementById('toggleRefreshBtn').addEventListener('click', () => {
+  autoRefresh = !autoRefresh;
+  document.getElementById('toggleRefreshBtn').textContent = autoRefresh? 'Pause':'Resume';
+  document.getElementById('refreshStatus').textContent = autoRefresh? 'auto':'paused';
+  schedule();
+});
+
+let activeScenarioFilter = null;
+function applyScenarioFilter(){
+  const rows = tableBody.querySelectorAll('tr');
+  rows.forEach(r => {
+    if(!activeScenarioFilter){ r.classList.remove('d-none'); return; }
+    const scenAttr = r.getAttribute('data-scenarios')||'';
+    const match = scenAttr.split('||').filter(Boolean).includes(activeScenarioFilter);
+    r.classList.toggle('d-none', !match);
+  });
+  updateHeader();
+}
+function updateCount(){
+  const rows = Array.from(tableBody.querySelectorAll('tr'));
+  const visible = rows.filter(r=>!r.classList.contains('d-none')).length;
+  document.getElementById('runCount').textContent = visible + ' run' + (visible===1?'':'s');
+}
+function wireScenarioButtons(){
+  const list = document.getElementById('scenarioFilterList');
+  list.querySelectorAll('[data-scen-name]').forEach(btn => {
+    btn.onclick = () => {
+      const name = btn.getAttribute('data-scen-name');
+      if(activeScenarioFilter === name){ activeScenarioFilter = null; } else { activeScenarioFilter = name; }
+      list.querySelectorAll('[data-scen-name]').forEach(b=>b.classList.toggle('active', b.getAttribute('data-scen-name')===activeScenarioFilter));
+      document.getElementById('clearScenarioFilter').style.display = activeScenarioFilter? 'inline-block':'none';
+      applyScenarioFilter();
+      updateCount();
+    };
+  });
+}
+document.getElementById('clearScenarioFilter').addEventListener('click', () => { activeScenarioFilter=null; wireScenarioButtons(); applyScenarioFilter(); updateCount(); document.getElementById('clearScenarioFilter').style.display='none'; });
+wireScenarioButtons();
+applyScenarioFilter();
+updateCount();
+// Bind row + header selection handlers for initial server-rendered rows
+wireSelectionHandlers();
+schedule();
+
+function wireSelectionHandlers(){
+  const checkboxes = tableBody.querySelectorAll('input.row-select');
+  checkboxes.forEach(cb=>{
+    const id = cb.getAttribute('data-run-id')||'';
+    if(id && selectedRunIds.has(id)) cb.checked = true; else cb.checked = false;
+    cb.addEventListener('change', ()=>{
+      const rid = cb.getAttribute('data-run-id')||'';
+      if(!rid) return;
+      if(cb.checked) {
+        selectedRunIds.add(rid);
+      } else {
+        selectedRunIds.delete(rid);
+        if (masterSelectAllActive) masterSelectAllActive = false; // user manually diverged
+      }
+      updateHeader();
+    });
+  });
+  if(runsCheckAll){
+    runsCheckAll.onchange = ()=>{
+      const newVal = !!runsCheckAll.checked;
+      if (newVal) {
+        masterSelectAllActive = true;
+        applyMasterSelectAll();
+      } else {
+        masterSelectAllActive = false;
+        const visibles = getVisibleCheckboxes();
+        visibles.forEach(cb=>{ const rid = cb.getAttribute('data-run-id')||''; if(!rid) return; cb.checked = false; selectedRunIds.delete(rid); });
+        updateHeader();
+      }
+    };
+  }
+  updateHeader();
+}
+
+function applyMasterSelectAll(){
+  const visibles = getVisibleCheckboxes();
+  visibles.forEach(cb=>{ const rid = cb.getAttribute('data-run-id')||''; if(!rid) return; cb.checked = true; selectedRunIds.add(rid); });
+  updateHeader();
+}
+
+async function deleteSelectedRuns(){
+  const ids = Array.from(selectedRunIds).filter(Boolean);
+  if(ids.length===0) return;
+  if(!confirm(`Delete ${ids.length} selected run entr${ids.length===1?'y':'ies'}?\nThis deletes run history entries and artifacts under outputs/ (scenario XMLs, session captures, bundles). Reports under ./reports are preserved.`)) return;
+  try{
+    const res = await fetch('/reports/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ run_ids: ids }) });
+    if(res.ok){ selectedRunIds.clear(); await fetchHistory(); } else { alert('Delete failed'); }
+  } catch(e){ alert('Delete failed'); }
+}
+document.getElementById('runsDeleteBtn')?.addEventListener('click', deleteSelectedRuns);
+</script>
+{% endblock %}

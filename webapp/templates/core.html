@@ -1,0 +1,707 @@
+{% extends 'layout.html' %}
+{% block title %}CORE Sessions & Topologies{% endblock %}
+{% block active_page %}{% set active_page='core' %}{% endblock %}
+{% block header_icon %}<i class="bi bi-diagram-3-fill fs-4"></i>{% endblock %}
+{% block header_title %}CORE Sessions & Topologies{% endblock %}
+{% block header_right_extra %}
+<div class="d-flex align-items-center gap-3 small flex-wrap justify-content-end">
+  <div class="d-flex align-items-center gap-2">
+    <label for="refreshInterval" class="form-label mb-0 text-white">Every</label>
+    <select id="refreshInterval" class="form-select form-select-sm w-auto" title="Auto-refresh interval">
+      <option value="2000">2s</option>
+      <option value="5000" selected>5s</option>
+      <option value="10000">10s</option>
+      <option value="30000">30s</option>
+      <option value="60000">60s</option>
+    </select>
+    <span id="refreshStatus" class="text-white-50">auto</span>
+    <button class="btn btn-sm btn-outline-light" id="toggleRefreshBtn" type="button">Pause</button>
+  </div>
+  <div class="text-white-50 small">Daemon: {{ host }}:{{ port }}</div>
+</div>
+{% endblock %}
+{% block extra_head %}
+<style>
+  body { padding-bottom: 0; }
+  th.actions-col, td.actions-col { white-space: nowrap; }
+  th.col-check, td.col-check { width: 2rem; text-align: center; }
+  th.filename-col, td.filename-col { width: 100%; }
+  .filename-scroll { max-width: 100%; display:block; overflow-x:auto; overflow-y:hidden; white-space:nowrap; }
+  #sessionsTable { table-layout: fixed; }
+  #sessionsTable th, #sessionsTable td { padding: .3rem .35rem; }
+  #sessionsTable th.col-id, #sessionsTable td.col-id { width: 5%; white-space: nowrap; text-align: center; overflow: hidden; text-overflow: ellipsis; }
+  #sessionsTable th.col-state, #sessionsTable td.col-state { width: 10%; white-space: nowrap; text-align: center; }
+  #sessionsTable th.col-nodes, #sessionsTable td.col-nodes { width: 10%; white-space: nowrap; text-align: center; overflow: hidden; text-overflow: ellipsis; }
+  #sessionsTable th.filename-col, #sessionsTable td.filename-col { width: 50%; }
+  .actions-col .btn { padding: .15rem .3rem; line-height: 1; vertical-align: middle; display: inline-flex; align-items: center; justify-content: center; }
+  .actions-col .btn i, .actions-col .btn .bi { font-size: .95em; line-height: 1; display: block; }
+  .actions-col .actions-wrap > a { display: inline-flex; align-items: center; margin-right: 2px; }
+  .actions-col .actions-wrap > form { display: contents; }
+  .actions-col .actions-wrap > form > .btn { margin-right: 2px; }
+  .actions-col .actions-wrap > a:last-child { margin-right: 0; }
+  .actions-col .actions-wrap > form:last-child > .btn { margin-right: 0; }
+  @media (max-width: 1200px) { #sessionsTable th.filename-col, #sessionsTable td.filename-col { width: 18%; } }
+  @media (max-width: 992px) { #sessionsTable th.filename-col, #sessionsTable td.filename-col { width: 16%; } }
+  @media (max-width: 768px) { #sessionsTable th.filename-col, #sessionsTable td.filename-col { width: 14%; } }
+  /* Inline loading bar */
+  #dataLoadingBar { height:4px; position:relative; margin-bottom:.5rem; overflow:hidden; border-radius:2px; background:rgba(0,0,0,0.08); }
+  #dataLoadingBar.d-none { display:none !important; }
+  #dataLoadingBar .bar { position:absolute; top:0; bottom:0; width:30%; background:linear-gradient(90deg,#0d6efd,#66b2ff); animation: coreLoadingBar 1.1s ease-in-out infinite; }
+  @keyframes coreLoadingBar { 0% { transform: translateX(-120%); } 50% { transform: translateX(30%); } 100% { transform: translateX(220%); } }
+  /* Skeleton row style (optional future) */
+  .skeleton-cell { position:relative; overflow:hidden; background:linear-gradient(90deg,#e9ecef 0%,#f8f9fa 40%,#e9ecef 80%); background-size:200% 100%; animation:skeletonPulse 1.2s linear infinite; color:transparent; }
+  @keyframes skeletonPulse { 0% { background-position:0 0; } 100% { background-position:-200% 0; } }
+</style>
+{% endblock %}
+{% block nav_right_extra %}{% endblock %}
+{% block content %}
+<div class="row">
+  <div id="dataLoadingBar" class="d-none"><div class="bar"></div></div>
+  <div class="col-6">
+    <div class="card mb-3">
+      <div class="card-header py-2 d-flex justify-content-between align-items-center">
+        <strong class="mb-0">Active Sessions</strong>
+        <div class="d-flex align-items-center gap-2">
+          <input id="sessionsFilter" class="form-control form-control-sm" type="text" placeholder="Filter..." style="width: 12rem;">
+          <button class="btn btn-sm btn-outline-danger" id="sessionsDeleteBtn" type="button" title="Delete Selected" disabled>
+            <i class="bi bi-trash"></i> Selected
+          </button>
+          <small class="text-muted ms-2">via gRPC</small>
+        </div>
+      </div>
+      <div class="table-responsive" style="max-height:60vh; overflow:auto;">
+        <table class="table table-sm align-middle mb-0" id="sessionsTable">
+          <thead class="table-light">
+            <tr>
+              <th class="col-check"><input type="checkbox" id="sessionsCheckAll"></th>
+              <th class="col-id">ID</th>
+              <th class="col-state">State</th>
+              <th class="col-nodes">Nodes</th>
+              <th class="filename-col">File</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="card mb-3">
+      <div class="card-header py-2 d-flex justify-content-between align-items-center">
+        <strong class="mb-0">Saved XML Topologies</strong>
+        <div class="d-flex align-items-center gap-2">
+          <input id="xmlsFilter" class="form-control form-control-sm" type="text" placeholder="Filter..." style="width: 12rem;">
+          <button class="btn btn-sm btn-outline-danger" id="xmlsDeleteBtn" type="button" title="Delete Selected" disabled>
+            <i class="bi bi-trash"></i> Selected
+          </button>
+          <small class="text-muted ms-2">on disk</small>
+        </div>
+      </div>
+      <div class="table-responsive" style="max-height:60vh; overflow:auto;">
+        <table class="table table-sm align-middle mb-0" id="xmlsTable">
+          <thead class="table-light">
+            <tr>
+              <th class="col-check"><input type="checkbox" id="xmlsCheckAll"></th>
+              <th class="filename-col">File</th>
+              <th>Valid</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card mb-3">
+      <div class="card-header py-2 d-flex justify-content-between align-items-center">
+        <strong class="mb-0">Docker Compose (per-node)</strong>
+        <div class="d-flex gap-2 align-items-center">
+          <button class="btn btn-sm btn-outline-secondary" id="dockerRefreshBtn" type="button">Refresh</button>
+          <button class="btn btn-sm btn-outline-danger" id="dockerCleanupBtn" type="button">Clean Stale Containers</button>
+        </div>
+      </div>
+      <div class="table-responsive" style="max-height:40vh; overflow:auto;">
+        <table class="table table-sm align-middle mb-0" id="dockerTable">
+          <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Compose</th>
+              <th>File</th>
+              <th>Images</th>
+              <th>Container</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% include 'partials/dock.html' %}
+<!-- Progress Modal -->
+<div class="modal fade" id="progressModal" tabindex="-1" aria-labelledby="progressModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="progressModalLabel">Processing…</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2 small text-muted" id="progressStatusText"></div>
+        <div class="progress mb-3" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+        </div>
+        <div class="border rounded" style="max-height: 200px; overflow: auto;">
+          <pre class="m-0 p-2 small" id="progressLog"></pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+(function(){
+  let auto = true;
+  let timer = null;
+  let intervalMs = parseInt(localStorage.getItem('coreRefreshMs') || '5000', 10);
+  const sessionsTable = document.getElementById('sessionsTable');
+  const sessionsTBody = sessionsTable?.querySelector('tbody');
+  const xmlsTable = document.getElementById('xmlsTable');
+  const xmlsTBody = xmlsTable?.querySelector('tbody');
+  const dockerTable = document.getElementById('dockerTable');
+  const dockerTBody = dockerTable?.querySelector('tbody');
+  const sessionsFilterInput = document.getElementById('sessionsFilter');
+  const xmlsFilterInput = document.getElementById('xmlsFilter');
+  const sessionsCheckAll = document.getElementById('sessionsCheckAll');
+  const xmlsCheckAll = document.getElementById('xmlsCheckAll');
+  const sessionsDeleteBtn = document.getElementById('sessionsDeleteBtn');
+  const xmlsDeleteBtn = document.getElementById('xmlsDeleteBtn');
+  let sessionsFilterText = '';
+  let xmlsFilterText = '';
+  // Persistent selection state (restored across full page reloads)
+  const LS_KEYS = {
+    sessions: 'coreSelectedSessions',
+    xmls: 'coreSelectedXmls',
+    masterSessions: 'coreMasterSessionsAll',
+    masterXmls: 'coreMasterXmlsAll'
+  };
+  function loadJsonArray(key){
+    try { const raw = localStorage.getItem(key); if(!raw) return []; const arr = JSON.parse(raw); return Array.isArray(arr)? arr: []; } catch(e){ return []; }
+  }
+  function loadBool(key){
+    try { const raw = localStorage.getItem(key); return raw === 'true'; } catch(e){ return false; }
+  }
+  const selectedSessions = new Set(loadJsonArray(LS_KEYS.sessions));
+  const selectedXmlPaths = new Set(loadJsonArray(LS_KEYS.xmls));
+  let sessionsMasterSelectAll = loadBool(LS_KEYS.masterSessions);
+  let xmlsMasterSelectAll = loadBool(LS_KEYS.masterXmls);
+  // Auto reapply flags (so user can permanently opt-out of reapplication until they re-enable)
+  let sessionsAutoReapply = true;
+  let xmlsAutoReapply = true;
+  // Timestamp of last manual header toggle (used if we want throttling)
+  let lastHeaderToggleTs = 0;
+  function persistSelections(){
+    try {
+      localStorage.setItem(LS_KEYS.sessions, JSON.stringify(Array.from(selectedSessions)));
+      localStorage.setItem(LS_KEYS.xmls, JSON.stringify(Array.from(selectedXmlPaths)));
+      localStorage.setItem(LS_KEYS.masterSessions, sessionsMasterSelectAll ? 'true':'false');
+      localStorage.setItem(LS_KEYS.masterXmls, xmlsMasterSelectAll ? 'true':'false');
+    } catch(e) {}
+  }
+
+  let progressModalInstance = null;
+  function ensureProgressModal(){
+    if(!progressModalInstance){
+      const el = document.getElementById('progressModal');
+      if(el) progressModalInstance = new bootstrap.Modal(el, { backdrop: 'static', keyboard: false });
+    }
+    return progressModalInstance;
+  }
+  function openProgress(title, total){
+    ensureProgressModal();
+    document.getElementById('progressModalLabel').textContent = title || 'Processing…';
+    document.getElementById('progressStatusText').textContent = `0 of ${total}`;
+    const bar = document.getElementById('progressBar');
+    bar.style.width = '0%';
+    bar.textContent = '0%';
+    document.getElementById('progressLog').textContent = '';
+    progressModalInstance?.show();
+  }
+  function updateProgress(done, total, msg){
+    const pct = total > 0 ? Math.round((done/total)*100) : 0;
+    const bar = document.getElementById('progressBar');
+    bar.style.width = pct + '%';
+    bar.textContent = pct + '%';
+    document.getElementById('progressStatusText').textContent = `${done} of ${total}`;
+    if(msg){
+      const line = `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+      document.getElementById('progressLog').textContent += line;
+      try { window.dispatchEvent(new CustomEvent('dock-log', { detail: { level: 'INFO', message: msg } })); } catch(e) {}
+    }
+  }
+  function closeProgress(){ progressModalInstance?.hide(); }
+
+  function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+
+  function buildSessionRow(s){
+    const id = esc(s.id);
+    const state = esc(s.state||'');
+    const nodesVal = (s.nodes === null || s.nodes === undefined) ? '-' : String(s.nodes);
+    const nodes = esc(nodesVal);
+    const rawFile = s.file || s.filename || s.path || '';
+    const baseName = rawFile ? rawFile.split(/[/\\\\]/).pop() : '—';
+    const file = esc(baseName);
+    const fullFileTitle = esc(rawFile || '');
+    const lower = (s.state||'').toString().toLowerCase();
+    const hasFile = !!s.file;
+    const rowStr = `${id} ${state} ${nodes} ${file}`.toLowerCase();
+    if (sessionsFilterText && !rowStr.includes(sessionsFilterText)) return '';
+    const detailsHref = hasFile
+      ? (`{{ url_for('core_details') }}?path=` + encodeURIComponent(s.file))
+      : (`{{ url_for('core_details') }}?session_id=` + encodeURIComponent(String(s.id||'')));
+    const stopBtn = `
+      <form action="{{ url_for('core_stop') }}" method="post">
+        <input type="hidden" name="session_id" value="${id}">
+        <button class="btn btn-sm btn-outline-warning" title="Stop"><i class="bi bi-stop-circle"></i></button>
+      </form>`;
+    const startBtn = `
+      <form action="{{ url_for('core_start_session') }}" method="post">
+        <input type="hidden" name="session_id" value="${id}">
+        <button class="btn btn-sm btn-outline-success" title="Start"><i class="bi bi-play-circle"></i></button>
+      </form>`;
+    const stateIcon = (
+      lower.includes('run')
+        ? `<i class="bi bi-play-circle-fill text-success" data-bs-toggle="tooltip" title="${state}"></i>`
+        : (lower.includes('shutdown')
+          ? `<i class="bi bi-power text-secondary" data-bs-toggle="tooltip" title="${state}"></i>`
+          : `<i class="bi bi-question-circle text-muted" data-bs-toggle="tooltip" title="${state}"></i>`)
+    );
+    const actions = `
+      <div class="d-flex align-items-center flex-nowrap actions-wrap">
+        <a class=\"btn btn-sm btn-outline-info\" href=\"${detailsHref}\" title=\"Details\"><i class=\"bi bi-info-circle\"></i></a>
+        ${lower.includes('run') ? stopBtn : (lower.includes('shutdown') ? startBtn : '')}
+        <form action=\"{{ url_for('core_delete') }}\" method=\"post\" onsubmit=\"return confirm('Delete session ${id}?')\">
+          <input type=\"hidden\" name=\"session_id\" value=\"${id}\">
+          <button class=\"btn btn-sm btn-outline-danger\" title=\"Delete\"><i class=\"bi bi-trash\"></i></button>
+        </form>
+        <form action=\"{{ url_for('core_save_xml') }}\" method=\"post\" title=\"Save XML\">
+          <input type=\"hidden\" name=\"session_id\" value=\"${id}\">
+          <button class=\"btn btn-sm btn-outline-secondary\"><i class=\"bi bi-download\"></i></button>
+        </form>
+      </div>`;
+    return `<tr>
+      <td class="col-check"><input type="checkbox" class="row-select" data-type="session" data-id="${id}" ${selectedSessions.has(String(s.id))? 'checked':''}></td>
+      <td class="col-id">${id}</td>
+      <td class="col-state">${stateIcon}</td>
+      <td class="col-nodes">${nodes}</td>
+      <td class="filename-col"><div class="filename-scroll" title="${fullFileTitle}">${file}</div></td>
+      <td class="actions-col">${actions}</td>
+    </tr>`;
+  }
+
+  function buildXmlRow(x){
+    const path = esc(x.path);
+    const name = esc(x.name);
+    const validBadge = x.valid ? '<span class="badge text-bg-success">yes</span>' : '<span class="badge text-bg-danger">no</span>';
+  const detailsHref = `{{ url_for('core_details') }}?path=` + encodeURIComponent(x.path);
+    const startDisabled = x.valid ? '' : 'disabled';
+    const rowStr = `${name} ${path} ${x.valid? 'yes':'no'}`.toLowerCase();
+    if (xmlsFilterText && !rowStr.includes(xmlsFilterText)) return '';
+    return `<tr>
+      <td class="col-check"><input type="checkbox" class="row-select" data-type="xml" data-path="${path}" ${selectedXmlPaths.has(x.path)? 'checked':''}></td>
+      <td class="filename-col"><div class="filename-scroll" title="${path}">${name}</div></td>
+      <td>${validBadge}</td>
+      <td class="actions-col">
+        <a class="btn btn-sm btn-outline-info" href="${detailsHref}" title="Details"><i class="bi bi-info-circle"></i></a>
+        <form action="{{ url_for('core_start') }}" method="post" class="d-inline">
+          <input type="hidden" name="path" value="${path}">
+          <button class="btn btn-sm btn-outline-success" title="Start" ${startDisabled}><i class="bi bi-play-circle"></i></button>
+        </form>
+        <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('download_report') }}?path=${encodeURIComponent(x.path)}" title="Download"><i class="bi bi-download"></i></a>
+        <form action="{{ url_for('core_delete') }}" method="post" class="d-inline" onsubmit="return confirm('Delete file ${name}?')">
+          <input type="hidden" name="path" value="${path}">
+          <button class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
+        </form>
+      </td>
+    </tr>`;
+  }
+
+  let isFetching = false;
+  let firstLoadDone = false;
+  const minLoadDisplayMs = 300;
+  function setLoading(on){
+    const bar = document.getElementById('dataLoadingBar');
+    if(!bar) return;
+    if(on){ bar.classList.remove('d-none'); }
+    else { bar.classList.add('d-none'); }
+  }
+  async function refresh(){
+    if(isFetching) return; // avoid overlaps
+    isFetching = true;
+    const startTs = performance.now();
+    setLoading(true);
+    try{
+      const res = await fetch("{{ url_for('core_data') }}", { cache:'no-store' });
+      if(!res.ok) return;
+      const data = await res.json();
+      if(Array.isArray(data.sessions) && sessionsTBody){
+        sessionsTBody.innerHTML = data.sessions.map(buildSessionRow).filter(Boolean).join('\n');
+        try { document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el)); } catch(e) {}
+        bindSelectionHandlers('session');
+        // Re-apply master select-all if active AND auto-reapply still allowed
+        if (sessionsMasterSelectAll && sessionsAutoReapply) applyMasterSelectAll('session');
+      }
+      if(Array.isArray(data.xmls) && xmlsTBody){
+        xmlsTBody.innerHTML = data.xmls.map(buildXmlRow).filter(Boolean).join('\n');
+        bindSelectionHandlers('xml');
+        if (xmlsMasterSelectAll && xmlsAutoReapply) applyMasterSelectAll('xml');
+      }
+      await refreshDocker();
+    }catch(e){ }
+    finally {
+      const elapsed = performance.now() - startTs;
+      const remain = elapsed < minLoadDisplayMs ? (minLoadDisplayMs - elapsed) : 0;
+      setTimeout(()=> { setLoading(false); isFetching=false; firstLoadDone=true; }, remain);
+    }
+  }
+
+  function schedule(){
+    if(timer) clearTimeout(timer);
+    if(!auto) return;
+    // Show loading bar immediately upon scheduling next cycle (visual immediacy)
+    setLoading(true);
+    timer = setTimeout(async ()=>{ await refresh(); schedule(); }, intervalMs);
+  }
+
+  document.getElementById('toggleRefreshBtn')?.addEventListener('click', ()=>{
+    auto = !auto;
+    document.getElementById('toggleRefreshBtn').textContent = auto ? 'Pause' : 'Resume';
+    document.getElementById('refreshStatus').textContent = auto ? 'auto' : 'paused';
+    schedule();
+  });
+
+  const sel = document.getElementById('refreshInterval');
+  if (sel) {
+    if ([2000,5000,10000,30000,60000].includes(intervalMs)) {
+      sel.value = String(intervalMs);
+    }
+    sel.addEventListener('change', ()=>{
+      const v = parseInt(sel.value, 10);
+      if (!isNaN(v) && v > 0) {
+        intervalMs = v;
+        localStorage.setItem('coreRefreshMs', String(intervalMs));
+        schedule();
+      }
+    });
+  }
+
+  // Show bar immediately on initial load, then kick first refresh now (not after interval)
+  setLoading(true);
+  refresh().then(()=> schedule());
+  try { bindSelectionHandlers('session'); } catch(e) {}
+  try { bindSelectionHandlers('xml'); } catch(e) {}
+
+  function badge(ok, yes, no){ return ok ? `<span class="badge text-bg-success">${yes}</span>` : `<span class="badge text-bg-secondary">${no}</span>`; }
+  function badgeWarn(ok, yes, no){ return ok ? `<span class="badge text-bg-success">${yes}</span>` : `<span class="badge text-bg-danger">${no}</span>`; }
+  async function refreshDocker(){
+    if(!dockerTBody) return;
+    try{
+      const res = await fetch("/docker/status");
+      if(!res.ok) return;
+      const js = await res.json();
+      const rows = (js.items||[]).map(it=>{
+        const file = badge(!!it.exists, 'yes', 'no');
+        const pulled = badge(!!it.pulled, 'yes', 'no');
+        const cont = it.container_exists ? badgeWarn(!!it.running, 'running', 'stopped') : '<span class="badge text-bg-secondary">none</span>';
+        const name = (it.name||'');
+        const comp = (it.compose||'');
+        return `<tr>
+          <td>${name}</td>
+          <td><div class="filename-scroll" title="${comp}">${comp}</div></td>
+          <td>${file}</td>
+          <td>${pulled}</td>
+          <td>${cont}</td>
+        </tr>`;
+      });
+      dockerTBody.innerHTML = rows.join('\n');
+    }catch(e){ }
+  }
+  document.getElementById('dockerRefreshBtn')?.addEventListener('click', refreshDocker);
+  document.getElementById('dockerCleanupBtn')?.addEventListener('click', async ()=>{
+    if(!confirm('Stop and remove containers for all assigned docker nodes?')) return;
+    openProgress('Cleaning stale containers…', 1);
+    try{
+      const res = await fetch('/docker/cleanup', { method:'POST' });
+      if(res.ok){ updateProgress(1,1,'Cleanup done'); await refreshDocker(); }
+      else { updateProgress(0,1,'Cleanup failed'); }
+    }catch(e){ updateProgress(0,1,'Cleanup failed'); }
+    finally{ closeProgress(); }
+  });
+
+  sessionsFilterInput?.addEventListener('input', ()=>{
+    sessionsFilterText = sessionsFilterInput.value.trim().toLowerCase();
+    refresh();
+  });
+  xmlsFilterInput?.addEventListener('input', ()=>{
+    xmlsFilterText = xmlsFilterInput.value.trim().toLowerCase();
+    refresh();
+  });
+
+  function bindSelectionHandlers(type){
+    const table = type==='session' ? sessionsTable : xmlsTable;
+    const checkAll = type==='session' ? sessionsCheckAll : xmlsCheckAll;
+    const deleteBtn = type==='session' ? sessionsDeleteBtn : xmlsDeleteBtn;
+    if (!table) return;
+    const checkboxes = table.querySelectorAll('tbody input.row-select');
+    const updateSetsFromDom = ()=>{
+      if(!checkboxes || checkboxes.length===0){
+        if(checkAll){
+          checkAll.indeterminate = false;
+          checkAll.checked = false;
+          // keep enabled even with zero rows
+        }
+        if(deleteBtn) deleteBtn.disabled = true;
+        persistSelections();
+        return;
+      }
+      if(type==='session'){
+        checkboxes.forEach(cb=>{
+          const id = cb.getAttribute('data-id');
+          if(!id) return;
+          if(cb.checked) selectedSessions.add(id); else selectedSessions.delete(id);
+        });
+      } else {
+        checkboxes.forEach(cb=>{
+          const p = cb.getAttribute('data-path');
+          if(!p) return;
+          if(cb.checked) selectedXmlPaths.add(p); else selectedXmlPaths.delete(p);
+        });
+      }
+      const anyChecked = (type==='session') ? (selectedSessions.size>0) : (selectedXmlPaths.size>0);
+      if(deleteBtn){ deleteBtn.disabled = !anyChecked; }
+      const total = checkboxes.length;
+      const checkedCount = Array.from(checkboxes).filter(cb=>cb.checked).length;
+      if(checkAll){
+        if(total === 0){
+          checkAll.indeterminate = false;
+          checkAll.checked = false;
+        } else {
+          const master = (type==='session') ? sessionsMasterSelectAll : xmlsMasterSelectAll;
+          if (master) {
+            checkAll.indeterminate = false;
+            checkAll.checked = true;
+          } else {
+            checkAll.indeterminate = checkedCount>0 && checkedCount<total;
+            checkAll.checked = checkedCount===total;
+          }
+        }
+      }
+      persistSelections();
+    };
+    checkboxes.forEach(cb=> cb.addEventListener('change', ()=>{
+      updateSetsFromDom();
+      // If user manually unchecks any box while master select-all was active, disable master for that table
+      const master = (type==='session') ? sessionsMasterSelectAll : xmlsMasterSelectAll;
+      if (master) {
+        const allChecked = Array.from(checkboxes).every(c=>c.checked);
+        if(!allChecked){
+          if(type==='session') sessionsMasterSelectAll = false; else xmlsMasterSelectAll = false;
+          // disable auto reapply for this table until user re-enables explicitly
+          if(type==='session') sessionsAutoReapply = false; else xmlsAutoReapply = false;
+          updateSetsFromDom();
+        }
+      }
+    }));
+    checkboxes.forEach(cb=>{
+      if(type==='session'){
+        const id = cb.getAttribute('data-id');
+        if(id && selectedSessions.has(id)) cb.checked = true;
+      } else {
+        const p = cb.getAttribute('data-path');
+        if(p && selectedXmlPaths.has(p)) cb.checked = true;
+      }
+    });
+    updateSetsFromDom();
+    if(checkAll && !checkAll.dataset.selAllBound){
+      checkAll.dataset.selAllBound = '1';
+      checkAll.addEventListener('change', ()=>{
+        lastHeaderToggleTs = Date.now();
+        const target = checkAll.checked;
+        if (target){
+          if(type==='session') sessionsMasterSelectAll = true; else xmlsMasterSelectAll = true;
+          if(type==='session') sessionsAutoReapply = true; else xmlsAutoReapply = true; // re-enable auto reapply when user explicitly selects all
+          applyMasterSelectAll(type);
+        } else {
+          if(type==='session') sessionsMasterSelectAll = false; else xmlsMasterSelectAll = false;
+          if(type==='session') sessionsAutoReapply = false; else xmlsAutoReapply = false; // user turned it off
+          // Clear ALL selections (including those not currently visible due to filtering)
+          if(type==='session') selectedSessions.clear(); else selectedXmlPaths.clear();
+          const rows = table.querySelectorAll('tbody input.row-select');
+          rows.forEach(cb=>{ cb.checked = false; });
+          // Reflect cleared state in UI (no indeterminate, unchecked)
+          if(checkAll){ checkAll.indeterminate = false; checkAll.checked = false; }
+          updateSetsFromDom(); // will persist cleared sets
+        }
+        persistSelections();
+      });
+    }
+  }
+
+  function applyMasterSelectAll(type){
+    const table = type==='session' ? sessionsTable : xmlsTable;
+    if(!table) return;
+    const rows = table.querySelectorAll('tbody input.row-select');
+    // Mark all as checked (only current visible rows)
+    rows.forEach(cb=>{ cb.checked = true; });
+    // Update internal selection sets without rebinding handlers (avoid duplicate listeners)
+    if(type==='session'){
+      selectedSessions.clear();
+      rows.forEach(cb=>{ const id = cb.getAttribute('data-id'); if(id) selectedSessions.add(id); });
+    } else {
+      selectedXmlPaths.clear();
+      rows.forEach(cb=>{ const p = cb.getAttribute('data-path'); if(p) selectedXmlPaths.add(p); });
+    }
+    // Reflect header & action button state
+    const checkAll = type==='session' ? sessionsCheckAll : xmlsCheckAll;
+    const deleteBtn = type==='session' ? sessionsDeleteBtn : xmlsDeleteBtn;
+    if(checkAll){
+      checkAll.indeterminate = false;
+      checkAll.checked = rows.length > 0;
+    }
+    if(deleteBtn){ deleteBtn.disabled = rows.length === 0; }
+    persistSelections();
+  }
+
+  async function postForm(url, formData){
+    const res = await fetch(url, { method: 'POST', body: formData });
+    return res.ok;
+  }
+
+  sessionsDeleteBtn?.addEventListener('click', async ()=>{
+    const ids = Array.from(selectedSessions);
+    if(ids.length===0) return;
+    if(!confirm(`Delete ${ids.length} selected session(s)?`)) return;
+    openProgress(`Deleting ${ids.length} session(s)…`, ids.length);
+    let done = 0;
+    for(const id of ids){
+      const fd = new FormData();
+      fd.append('session_id', id);
+      const ok = await postForm("{{ url_for('core_delete') }}", fd);
+      if(ok){
+        selectedSessions.delete(id);
+        updateProgress(++done, ids.length, `Deleted session ${id}`);
+      } else {
+        updateProgress(done, ids.length, `Failed to delete session ${id}`);
+      }
+    }
+    closeProgress();
+    persistSelections();
+    refresh();
+  });
+
+  xmlsDeleteBtn?.addEventListener('click', async ()=>{
+    const paths = Array.from(selectedXmlPaths);
+    if(paths.length===0) return;
+    if(!confirm(`Delete ${paths.length} selected file(s)?`)) return;
+    openProgress(`Deleting ${paths.length} file(s)…`, paths.length);
+    let done = 0;
+    for(const path of paths){
+      const fd = new FormData();
+      fd.append('path', path);
+      const ok = await postForm("{{ url_for('core_delete') }}", fd);
+      if(ok){
+        selectedXmlPaths.delete(path);
+        updateProgress(++done, paths.length, `Deleted ${path}`);
+      } else {
+        updateProgress(done, paths.length, `Failed to delete ${path}`);
+      }
+    }
+    closeProgress();
+    persistSelections();
+    refresh();
+  });
+
+  const PATHS = {
+    stop: "{{ url_for('core_stop') }}",
+    startSession: "{{ url_for('core_start_session') }}",
+    startXml: "{{ url_for('core_start') }}",
+    saveXml: "{{ url_for('core_save_xml') }}",
+  };
+  function actionPathname(url){ try { return new URL(url, window.location.href).pathname; } catch(e){ return url; } }
+  function filenameFromContentDisposition(header){
+    if(!header) return null;
+    const match = /filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i.exec(header);
+    if(match){
+      const val = match[1] || match[2];
+      try { return decodeURIComponent(val); } catch { return val; }
+    }
+    return null;
+  }
+  function downloadBlob(blob, filename){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'download.xml';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+  }
+  document.addEventListener('submit', async (ev)=>{
+    const form = ev.target;
+    if(!(form instanceof HTMLFormElement)) return;
+    const p = actionPathname(form.action);
+    const targets = [PATHS.stop, PATHS.startSession, PATHS.startXml, PATHS.saveXml];
+    if(!targets.includes(p)) return;
+    ev.preventDefault();
+    const fd = new FormData(form);
+    let title = 'Processing…';
+    if(p === PATHS.stop){
+      const id = fd.get('session_id');
+      title = `Stopping session ${id}…`;
+    } else if(p === PATHS.startSession){
+      const id = fd.get('session_id');
+      title = `Starting session ${id}…`;
+    } else if(p === PATHS.saveXml){
+      const id = fd.get('session_id');
+      title = `Saving XML for session ${id}…`;
+    } else if(p === PATHS.startXml){
+      const path = fd.get('path');
+      title = `Starting topology from ${path}…`;
+    }
+    openProgress(title, 1);
+    try{
+      if(p === PATHS.saveXml){
+        const res = await fetch(p, { method: 'POST', body: fd });
+        if(res.ok){
+          const blob = await res.blob();
+          const cd = res.headers.get('Content-Disposition');
+          const fname = filenameFromContentDisposition(cd) || `session-${fd.get('session_id')||'export'}.xml`;
+          downloadBlob(blob, fname);
+          updateProgress(1, 1, title.replace('…','') + ' done');
+        } else {
+          updateProgress(0, 1, title.replace('…','') + ' failed');
+        }
+      } else {
+        const ok = await postForm(p, fd);
+        if(ok){
+          updateProgress(1, 1, title.replace('…','') + ' done');
+        } else {
+          updateProgress(0, 1, title.replace('…','') + ' failed');
+        }
+      }
+    } catch(e){
+      updateProgress(0, 1, title.replace('…','') + ' failed');
+    } finally {
+      closeProgress();
+      refresh();
+    }
+  });
+})();
+</script>
+{% endblock %}

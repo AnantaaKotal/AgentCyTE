@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scenario name="/home/ubuntu/Downloads/xml_scenarios/sample6-emane-rfpipe.xml">
+  <networks>
+    <network id="11" name="wlan11" type="EMANE">
+      <position x="65" y="558" lat="47.57409442426242" lon="-122.13144614259798" alt="2.0"/>
+    </network>
+  </networks>
+  <devices>
+    <device id="1" name="n1" type="mdr" class="" image="">
+      <position x="263" y="76" lat="47.57847588131251" lon="-122.12877814620416" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv3MDR"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="2" name="n2" type="mdr" class="" image="">
+      <position x="184" y="532" lat="47.574330777773525" lon="-122.12984264981584" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv3MDR"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="3" name="n3" type="mdr" class="" image="">
+      <position x="121" y="313" lat="47.57632155924249" lon="-122.13069155775932" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv3MDR"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="4" name="n4" type="mdr" class="" image="">
+      <position x="443" y="586" lat="47.57383988851896" lon="-122.12635269493701" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv3MDR"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="5" name="n5" type="mdr" class="" image="">
+      <position x="548" y="209" lat="47.57726692667662" lon="-122.12493784836454" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv3MDR"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="6" name="n6" type="mdr" class="" image="">
+      <position x="757" y="61" lat="47.57861222782805" lon="-122.12212162994884" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv3MDR"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="7" name="n7" type="mdr" class="" image="">
+      <position x="778" y="489" lat="47.57472166777772" lon="-122.12183866063431" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv3MDR"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="8" name="n8" type="mdr" class="" image="">
+      <position x="93" y="135" lat="47.577939581573105" lon="-122.13106885017866" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv3MDR"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="9" name="n9" type="mdr" class="" image="">
+      <position x="528" y="84" lat="47.578403163025705" lon="-122.12520734294976" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv3MDR"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+    <device id="10" name="n10" type="mdr" class="" image="">
+      <position x="569" y="475" lat="47.57484893366105" lon="-122.12465487905004" alt="2.0"/>
+      <services>
+        <service name="zebra"/>
+        <service name="OSPFv3MDR"/>
+        <service name="IPForward"/>
+      </services>
+    </device>
+  </devices>
+  <links>
+    <link node1="11" node2="1">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:8d" ip4="10.0.0.1" ip4_mask="32" ip6="a::1" ip6_mask="128"/>
+    </link>
+    <link node1="11" node2="2">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:8e" ip4="10.0.0.2" ip4_mask="32" ip6="a::2" ip6_mask="128"/>
+    </link>
+    <link node1="11" node2="3">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:8f" ip4="10.0.0.3" ip4_mask="32" ip6="a::3" ip6_mask="128"/>
+    </link>
+    <link node1="11" node2="4">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:90" ip4="10.0.0.4" ip4_mask="32" ip6="a::4" ip6_mask="128"/>
+    </link>
+    <link node1="11" node2="5">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:91" ip4="10.0.0.5" ip4_mask="32" ip6="a::5" ip6_mask="128"/>
+    </link>
+    <link node1="11" node2="6">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:92" ip4="10.0.0.6" ip4_mask="32" ip6="a::6" ip6_mask="128"/>
+    </link>
+    <link node1="11" node2="7">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:93" ip4="10.0.0.7" ip4_mask="32" ip6="a::7" ip6_mask="128"/>
+    </link>
+    <link node1="11" node2="8">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:94" ip4="10.0.0.8" ip4_mask="32" ip6="a::8" ip6_mask="128"/>
+    </link>
+    <link node1="11" node2="9">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:95" ip4="10.0.0.9" ip4_mask="32" ip6="a::9" ip6_mask="128"/>
+    </link>
+    <link node1="11" node2="10">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:96" ip4="10.0.0.10" ip4_mask="32" ip6="a::10" ip6_mask="128"/>
+    </link>
+  </links>
+  <session_origin lat="47.5791667" lon="-122.132322" alt="2.0" scale="150.0"/>
+  <session_options>
+    <configuration name="controlnet" value=""/>
+    <configuration name="controlnet0" value=""/>
+    <configuration name="controlnet1" value=""/>
+    <configuration name="controlnet2" value=""/>
+    <configuration name="controlnet3" value=""/>
+    <configuration name="controlnet_updown_script" value=""/>
+    <configuration name="enablerj45" value="1"/>
+    <configuration name="preservedir" value="0"/>
+    <configuration name="enablesdt" value="0"/>
+    <configuration name="sdturl" value="tcp://127.0.0.1:50000/"/>
+    <configuration name="ovs" value="0"/>
+    <configuration name="platform_id_start" value="1"/>
+    <configuration name="nem_id_start" value="1"/>
+    <configuration name="link_enabled" value="1"/>
+    <configuration name="loss_threshold" value="30"/>
+    <configuration name="link_interval" value="1"/>
+    <configuration name="link_timeout" value="4"/>
+    <configuration name="mtu" value="0"/>
+  </session_options>
+  <session_metadata>
+    <configuration name="canvas c1" value="{name {Canvas1}}"/>
+    <configuration name="global_options" value="interface_names=no ip_addresses=yes ipv6_addresses=yes node_labels=yes link_labels=yes show_api=no background_images=no annotations=yes grid=yes traffic_start=0"/>
+  </session_metadata>
+  <default_services>
+    <node type="mdr">
+      <service name="zebra"/>
+      <service name="OSPFv3MDR"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="PC">
+      <service name="DefaultRoute"/>
+    </node>
+    <node type="prouter"/>
+    <node type="router">
+      <service name="zebra"/>
+      <service name="OSPFv2"/>
+      <service name="OSPFv3"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="host">
+      <service name="DefaultRoute"/>
+      <service name="SSH"/>
+    </node>
+  </default_services>
+</scenario>

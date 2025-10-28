@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scenario name="/home/ubuntu/Downloads/xml_scenarios/HTTP (1).xml">
+  <networks>
+    <network id="2" name="n2" type="SWITCH">
+      <position x="465" y="157" lat="47.57773960399303" lon="-122.12605625089326" alt="2.0"/>
+    </network>
+    <network id="1" name="eth0" type="RJ45">
+      <position/>
+    </network>
+  </networks>
+  <devices>
+    <device id="3" name="n3" type="host" class="" image="">
+      <position x="695" y="310" lat="47.57634882969601" lon="-122.12295706316304" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="HTTP"/>
+        <service name="UserDefined"/>
+      </services>
+    </device>
+  </devices>
+  <links>
+    <link node1="2" node2="3">
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:01:55" ip4="10.0.0.10" ip4_mask="24"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0"/>
+    </link>
+  </links>
+  <service_configurations>
+    <service name="UserDefined" node="3">
+      <startups>
+        <startup>sh HTTPserver.sh</startup>
+      </startups>
+      <files>
+        <file name="HTTPserver.sh"><![CDATA[file:///root/scenario/HTTP/scripts/individual/HTTPserver.sh]]></file>
+      </files>
+    </service>
+    <service name="HTTP" node="3">
+      <directories>
+        <directory>/etc/apache2</directory>
+        <directory>/var/run/apache2</directory>
+        <directory>/var/log/apache2</directory>
+        <directory>/var/lock/apache2</directory>
+        <directory>/var/www</directory>
+        <directory>/run/lock</directory>
+      </directories>
+      <startups>
+        <startup>chown www-data /var/lock/apache2</startup>
+        <startup>apache2ctl start</startup>
+      </startups>
+      <validates>
+        <validate>pidof apache2</validate>
+      </validates>
+      <shutdowns>
+        <shutdown>apache2ctl stop</shutdown>
+      </shutdowns>
+    </service>
+  </service_configurations>
+  <session_origin lat="47.5791667" lon="-122.132322" alt="2.0" scale="150.0"/>
+  <session_options>
+    <configuration name="controlnet" value=""/>
+    <configuration name="controlnet0" value=""/>
+    <configuration name="controlnet1" value=""/>
+    <configuration name="controlnet2" value=""/>
+    <configuration name="controlnet3" value=""/>
+    <configuration name="controlnet_updown_script" value=""/>
+    <configuration name="enablerj45" value="1"/>
+    <configuration name="preservedir" value="0"/>
+    <configuration name="enablesdt" value="0"/>
+    <configuration name="sdturl" value="tcp://127.0.0.1:50000/"/>
+    <configuration name="ovs" value="0"/>
+    <configuration name="platform_id_start" value="1"/>
+    <configuration name="nem_id_start" value="1"/>
+    <configuration name="link_enabled" value="1"/>
+    <configuration name="loss_threshold" value="30"/>
+    <configuration name="link_interval" value="1"/>
+    <configuration name="link_timeout" value="4"/>
+    <configuration name="mtu" value="0"/>
+  </session_options>
+  <session_metadata>
+    <configuration name="canvas c1" value="{name {Canvas1}}"/>
+    <configuration name="global_options" value="interface_names=no ip_addresses=yes ipv6_addresses=yes node_labels=yes link_labels=yes show_api=no background_images=no annotations=yes grid=yes traffic_start=0"/>
+  </session_metadata>
+  <default_services>
+    <node type="mdr">
+      <service name="zebra"/>
+      <service name="OSPFv3MDR"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="PC">
+      <service name="DefaultRoute"/>
+    </node>
+    <node type="prouter"/>
+    <node type="router">
+      <service name="zebra"/>
+      <service name="OSPFv2"/>
+      <service name="OSPFv3"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="host">
+      <service name="DefaultRoute"/>
+      <service name="SSH"/>
+    </node>
+  </default_services>
+</scenario>
