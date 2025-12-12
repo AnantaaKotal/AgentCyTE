@@ -20,6 +20,7 @@ Generate reproducible CORE network topologies from scenario XML files using a ri
 - [Troubleshooting](#troubleshooting)
 - [Additional documentation](#additional-documentation)
 - [Contributing](#contributing)
+- [Citation](#citation)
 
 ## Highlights
 - **Single-source planning** – edit scenarios in the browser or any XML editor and reproduce results with the CLI.
@@ -124,3 +125,11 @@ Popular options:
 
 ## Contributing
 Pull requests and issue reports are welcome! Please run the relevant pytest targets (`pytest -q`) before submitting changes and keep documentation up to date when behaviour changes.
+
+## Cite our work:
+@article{rodriguez2025agentcyte,
+  title={AgentCyTE: Leveraging Agentic AI to Generate Cybersecurity Training \& Experimentation Scenarios},
+  author={Rodriguez, Ana M and Acosta, Jaime and Kotal, Anantaa and Piplai, Aritran},
+  journal={Annual Computer Security Applications Conference Workshop (ACSACW)},
+  year={2025}
+}
