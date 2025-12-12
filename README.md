@@ -128,8 +128,14 @@ Pull requests and issue reports are welcome! Please run the relevant pytest targ
 
 ## Cite our work:
 @article{rodriguez2025agentcyte,
+
+
   title={AgentCyTE: Leveraging Agentic AI to Generate Cybersecurity Training \& Experimentation Scenarios},
+
   author={Rodriguez, Ana M and Acosta, Jaime and Kotal, Anantaa and Piplai, Aritran},
+  
   journal={Annual Computer Security Applications Conference Workshop (ACSACW)},
+  
   year={2025}
+  
 }
